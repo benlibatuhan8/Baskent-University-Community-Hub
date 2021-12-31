@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:comhub/routes/route.dart';
+import 'package:comhub/widgets/drawer.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
@@ -21,6 +23,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.blue.shade900,
       ),
       //drawer:
+      drawer: MyDrawer(),
       body: ListView(
         children: [
           CarouselSlider(
@@ -31,6 +34,26 @@ class HomeScreen extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       "Computer Society",
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "Computer Society",
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "Computer ",
                       textAlign: TextAlign.center,
                     )
                   ],

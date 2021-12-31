@@ -1,14 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-class User {
-  final String id;
-  final String password;
-  final String image;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
+class User {
   User({
-    required this.id,
     required this.password,
-    required this.image,
+    required this.user_type,
+    required this.user_id,
   });
+
+  User.fromJson(Map<String, Object?> json)
+      : this(
+          user_id: json['user_id']! as String,
+          user_type: json['user_type']! as bool,
+          password: json['password']! as String,
+        );
+
+  final String password;
+  final String user_id;
+  final bool user_type;
+
+  Map<String, Object?> toJson() {
+    return {
+      'student_id': user_id,
+      'user_type': user_type,
+      'password': password,
+    };
+  }
 }

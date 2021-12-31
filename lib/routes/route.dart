@@ -1,3 +1,5 @@
+import 'package:comhub/screens/compage.dart';
+import 'package:comhub/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/screens/login.dart';
 import 'package:comhub/screens/register.dart';
@@ -8,8 +10,10 @@ class Routes {
   static const login = '/login';
   static const home = '/home';
   static const register = '/register';
-  static const prodlist = '/prodlist';
   static const settings = '/settings';
+  static const profile = '/profile';
+  static const compage = '/compage';
+
 
   static MaterialPageRoute generateRoute(RouteSettings routeSettings,
       {Widget? root, String? routeName}) {
@@ -35,6 +39,16 @@ class Routes {
 
       case register:
         return RegisterScreen();
+
+      case profile:
+        return ProfileScreen();
+
+      case settings:
+        return SettingsScreen();
+
+      case compage:
+        return ComPageScreen();
+
 
       default:
         return LoginScreen(); // 404 page

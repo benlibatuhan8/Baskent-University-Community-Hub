@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:comhub/screens/assets.dart';
+import 'package:comhub/widgets/drawer.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
@@ -20,12 +21,13 @@ class SettingsScreen extends StatelessWidget {
       key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          "Profile",
+          "Settings",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,
         backgroundColor: Colors.blue.shade900,
       ),
+      drawer: MyDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

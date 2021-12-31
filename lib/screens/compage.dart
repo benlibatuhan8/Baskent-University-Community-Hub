@@ -4,6 +4,7 @@ import 'package:comhub/models/chatMessageModel.dart';
 import 'package:comhub/screens/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:comhub/widgets/drawer.dart';
 
 class ComPageScreen extends StatefulWidget {
   @override
@@ -44,73 +45,8 @@ class comPageState extends State<ComPageScreen> {
           elevation: 0,
           // give the app bar rounded corners
         ),
-        drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.indigoAccent,
-                ),
-                child: Center(
-                  child: const Image(
-                    image: NetworkImage(
-                        'https://www.baskent.edu.tr/img/logo_tr_standart.png'),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: const Text('Home'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('My Communities'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Calendar'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Profile'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Settings'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
+              drawer: MyDrawer(),
+
         body: Column(
           children: <Widget>[
             // construct the profile details widget here
