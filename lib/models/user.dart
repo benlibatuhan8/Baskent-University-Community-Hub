@@ -4,14 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-class User {
-  User({
+class Users {
+  Users({
     required this.password,
     required this.user_type,
     required this.user_id,
   });
 
-  User.fromJson(Map<String, Object?> json)
+  Users.fromJson(Map<String, Object?> json)
       : this(
           user_id: json['user_id']! as String,
           user_type: json['user_type']! as bool,
@@ -19,7 +19,7 @@ class User {
         );
 
   final String password;
-  final String user_id;
+  late final String user_id;
   final bool user_type;
 
   Map<String, Object?> toJson() {

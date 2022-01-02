@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/user.dart';
+import 'package:comhub/screens/register/state/register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class User_Service {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final usersRef =
-      FirebaseFirestore.instance.collection('users').withConverter<User>(
-            fromFirestore: (snapshot, _) => User.fromJson(snapshot.data()!),
+      FirebaseFirestore.instance.collection('users').withConverter<Users>(
+            fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
             toFirestore: (user, _) => user.toJson(),
           );
 
-  Future<void> addUser(User user) {
+  Future<void> addUser(Users user) {
     var newRef = users.doc(user.user_id);
     return newRef.set({
       'user_id': newRef.id,
@@ -20,7 +22,7 @@ class User_Service {
     });
   }
 
-  Future<User> getUserById(String userId) async {
+  Future<Users> getUserById(String userId) async {
     var user = await usersRef.doc(userId).get().then((value) {
       if (value.exists) {
         return value.data();
@@ -35,7 +37,7 @@ class User_Service {
         return false;
     }
 
-    User user2 = new User(
+    Users user2 = new Users(
         password: "${user?.password}",
         user_type: boolfunc(),
         user_id: "${user?.user_id}");

@@ -22,6 +22,7 @@ environment:
   flutter: ">=2.0.0"
 
 dependencies:
+  firebase_auth: ^3.3.4
   cloud_firestore:
   flutter:
     sdk: flutter
@@ -46,6 +47,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - assets/images/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

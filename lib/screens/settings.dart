@@ -43,9 +43,6 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(avatars[4]),
-                    ),
                     title: Text("Oguzhan KELES"),
                     onTap: () {},
                   ),

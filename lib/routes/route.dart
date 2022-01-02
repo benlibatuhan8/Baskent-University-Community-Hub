@@ -1,11 +1,13 @@
+import 'package:comhub/screens/comlistpage.dart';
 import 'package:comhub/screens/compage.dart';
 import 'package:comhub/screens/modPage.dart';
 import 'package:comhub/screens/modPageAnn.dart';
 import 'package:comhub/screens/modPageEvent.dart';
+import 'package:comhub/screens/MyComListPage.dart';
 import 'package:comhub/screens/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:comhub/screens/login.dart';
-import 'package:comhub/screens/register.dart';
+import 'package:comhub/screens/login/view/login.dart';
+import 'package:comhub/screens/register/view/register.dart';
 import 'package:comhub/screens/home.dart';
 import 'package:comhub/screens/profile.dart';
 
@@ -19,6 +21,9 @@ class Routes {
   static const modpage1 = '/modpage1';
   static const modpage2 = '/modpage2';
   static const modpage3 = '/modpage3';
+  static const mycompage = '/mycompage';
+  static const allcompage = '/allcompage';
+  static const computersocietypage = '/computersocietypage';
 
   static MaterialPageRoute generateRoute(RouteSettings routeSettings,
       {Widget? root, String? routeName}) {
@@ -62,6 +67,15 @@ class Routes {
 
       case modpage3:
         return ModPageAnnScreen();
+
+      case mycompage:
+        return MyComListPageScreen();
+
+      case allcompage:
+        return ComListPageScreen();
+
+      case computersocietypage:
+        return ComPageScreen();
 
       default:
         return LoginScreen(); // 404 page

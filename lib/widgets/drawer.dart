@@ -1,3 +1,6 @@
+import 'package:comhub/models/user.dart';
+import 'package:comhub/services/user_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -5,8 +8,12 @@ import 'package:comhub/routes/route.dart';
 import 'package:comhub/widgets/restart.dart';
 
 class MyDrawer extends StatelessWidget {
+  var currentUser = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
+    var currentUser = FirebaseAuth.instance.currentUser;
+
     return Drawer(
       // Add a ListView to the drawer. This ensures the user can scroll
       // through the options in the drawer if there isn't enough vertical
@@ -41,7 +48,16 @@ class MyDrawer extends StatelessWidget {
               // Update the state of the app
               // ...
               // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.compage);
+              Navigator.of(context).pushNamed(Routes.mycompage);
+            },
+          ),
+          ListTile(
+            title: const Text('All Communities'),
+            onTap: () {
+              // Update the state of the app
+              // ...
+              // Then close the drawer
+              Navigator.of(context).pushNamed(Routes.allcompage);
             },
           ),
           ListTile(
@@ -73,20 +89,49 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Moderator Page'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.modpage1);
+            onTap: () async {
+              if (currentUser != null) {
+                print(currentUser.email);
+                List<String>? result = currentUser.email?.split("@");
+                String currentUserID = result![0];
+                User_Service user_service = new User_Service();
+                Users currUser = await user_service.getUserById(currentUserID);
+                print(currUser.user_type.toString());
+                if (currUser.user_type) {
+                  Navigator.of(context).pushNamed(Routes.modpage1);
+                } else {
+                  Widget okButton = TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Permission Denied !"),
+                    content: Text("You are not a society moderator"),
+                    actions: [
+                      okButton,
+                    ],
+                  );
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                }
+              }
             },
           ),
           ListTile(
             title: const Text('Log Out'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
+              FirebaseAuth.instance.signOut().then(
+                (value) {
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil(Routes.login, (route) => false);
+                },
+              );
             },
           ),
         ],
