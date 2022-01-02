@@ -4,7 +4,6 @@ import 'package:comhub/models/user.dart';
 import 'package:comhub/screens/login/state/login.dart';
 import 'package:comhub/screens/register/state/register.dart';
 import 'package:comhub/services/user_services.dart';
-import 'package:comhub/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -45,7 +44,6 @@ class RegisterScreen extends StatelessWidget {
         elevation: 0.0,
         backgroundColor: Colors.blue.shade900,
       ),
-      drawer: MyDrawer(),
       body: Container(
         child: Column(
           children: [
