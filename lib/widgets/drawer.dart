@@ -22,24 +22,21 @@ class MyDrawer extends StatelessWidget {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.indigoAccent,
             ),
             child: Center(
-              child: const Image(
-                image: NetworkImage(
-                    'https://www.baskent.edu.tr/img/logo_tr_standart.png'),
-              ),
+              child: Image.asset('assets/images/logo.png'),
             ),
           ),
           ListTile(
             title: const Text('Home'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
+              if(ModalRoute.of(context)!.settings.name.toString() == "/home"){
+                 Navigator.pop(context);}
+                 else{
+                   Navigator.of(context).pushNamed(Routes.home);                 }
             },
           ),
           ListTile(
@@ -66,16 +63,17 @@ class MyDrawer extends StatelessWidget {
               // Update the state of the app
               // ...
               // Then close the drawer
-              Navigator.pop(context);
+              Navigator.of(context).pushNamed(Routes.calendarscreen);
             },
           ),
           ListTile(
             title: const Text('Profile'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.profile);
+              if(ModalRoute.of(context)!.settings.name.toString() == "/profile"){
+                 Navigator.pop(context);}
+                 else{
+                   Navigator.of(context).pushNamed(Routes.profile);
+                               }
             },
           ),
           ListTile(

@@ -21,7 +21,7 @@ List<ChatMessage> messages = [
       messageType: "receiver1",
       messageSender: "Batuhan"),
   ChatMessage(
-      messageContent: "Bugün quiz var mı?",
+      messageContent: "Bugün etkinlik var mı ?",
       messageType: "sender",
       messageSender: "Oğuzhan"),
   ChatMessage(

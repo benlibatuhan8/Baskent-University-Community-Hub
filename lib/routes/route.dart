@@ -1,3 +1,4 @@
+import 'package:comhub/screens/calendar.dart';
 import 'package:comhub/screens/comlistpage.dart';
 import 'package:comhub/screens/compage.dart';
 import 'package:comhub/screens/modPage.dart';
@@ -24,6 +25,8 @@ class Routes {
   static const mycompage = '/mycompage';
   static const allcompage = '/allcompage';
   static const computersocietypage = '/computersocietypage';
+  static const calendarscreen = '/calendarscreen';
+
 
   static MaterialPageRoute generateRoute(RouteSettings routeSettings,
       {Widget? root, String? routeName}) {
@@ -76,6 +79,10 @@ class Routes {
 
       case computersocietypage:
         return ComPageScreen();
+      
+      case calendarscreen:
+        return CalendarScreen();
+
 
       default:
         return LoginScreen(); // 404 page
