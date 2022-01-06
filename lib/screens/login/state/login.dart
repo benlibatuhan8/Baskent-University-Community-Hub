@@ -58,11 +58,14 @@ class LoginState {
       } else if (e.code == 'wrong-password') {
         AlertDialog alert = AlertDialog(
           title: Text("Invalid password"),
-          actions: [
-            okButton,
-          ],
+          actions: [okButton],
         );
-        print('Wrong password provided for that user.');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       }
     }
   }

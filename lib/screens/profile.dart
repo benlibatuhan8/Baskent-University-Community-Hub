@@ -39,23 +39,23 @@ class ProfileScreen extends StatelessWidget {
               child: Center(
                   child: Column(children: <Widget>[
                 Container(
-                    margin: EdgeInsets.all(20.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff022711).withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 10,
-                          offset: Offset(0, 5), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Clipart.png'),
-                      radius: 35.0,
-                    )),
+                  margin: EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff022711).withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: Offset(0, 5), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    "assets/images/pp.png",
+                    scale: 10.0,
+                  ),
+                ),
                 Container(
                     child: Text('Ahmet Oğuzhan KELEŞ',
                         style: TextStyle(
@@ -72,7 +72,6 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
         Container(
-          
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -86,6 +85,9 @@ class ProfileScreen extends StatelessWidget {
                 ), //BoXDecoration
             child: Column(children: <Widget>[
               Text("Change Password"),
+              SizedBox(
+                height: 10.0,
+              ),
               Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -93,7 +95,7 @@ class ProfileScreen extends StatelessWidget {
                           Border(bottom: BorderSide(color: Colors.white54))),
                   child: TextField(
                       decoration: InputDecoration(
-                          hintText: "Old Passoword",
+                          hintText: "Old Password",
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none))),
               Container(
@@ -103,9 +105,12 @@ class ProfileScreen extends StatelessWidget {
                           Border(bottom: BorderSide(color: Colors.white54))),
                   child: TextField(
                       decoration: InputDecoration(
-                          hintText: " New Password",
+                          hintText: "New Password",
                           hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none)))
+                          border: InputBorder.none))),
+              Container(
+                child: TextButton(onPressed: () {}, child: Text("Save")),
+              )
             ])),
       ]),
     );

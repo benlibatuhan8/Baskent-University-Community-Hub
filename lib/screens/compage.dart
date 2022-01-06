@@ -45,8 +45,7 @@ class comPageState extends State<ComPageScreen> {
           elevation: 0,
           // give the app bar rounded corners
         ),
-              drawer: MyDrawer(),
-
+        drawer: MyDrawer(),
         body: Column(
           children: <Widget>[
             // construct the profile details widget here
@@ -110,8 +109,8 @@ class comPageState extends State<ComPageScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Image.network(
-                                      'https://baskentkutuphane.files.wordpress.com/2012/03/basres1.jpg',
+                                    Image.asset(
+                                      "assets/images/basres1.jpg",
                                       scale: 25.0,
                                     ),
                                     SizedBox(
@@ -294,8 +293,7 @@ class comPageState extends State<ComPageScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          messages[index].messageSender +
-                                              "\n",
+                                          messages[index].messageSender + "\n",
                                           style: TextStyle(
                                               fontSize: 17.0,
                                               fontWeight: FontWeight.bold,

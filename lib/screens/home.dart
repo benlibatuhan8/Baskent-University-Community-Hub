@@ -64,8 +64,8 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       child: Row(
                         children: [
-                          Image.network(
-                            'https://baskentkutuphane.files.wordpress.com/2012/03/basres1.jpg',
+                          Image.asset(
+                            "assets/images/basres1.jpg",
                             scale: 50.0,
                           ),
                           SizedBox(
@@ -75,7 +75,9 @@ class HomeScreen extends StatelessWidget {
                             "Avni Akyol Conference Hall\n\nFatih Sultan 06790\nEtimesgut/Ankara",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                           SizedBox(width: 15.0,),
+                          SizedBox(
+                            width: 15.0,
+                          ),
                           Icon(Icons.assistant_direction_rounded)
                         ],
                       ),
@@ -155,8 +157,8 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       child: Row(
                         children: [
-                          Image.network(
-                            'https://media-cdn.tripadvisor.com/media/photo-s/0d/61/18/ee/kahveci-efendi.jpg',
+                          Image.asset(
+                            "assets/images/kahveci-efendi.jpg",
                             scale: 6.0,
                           ),
                           SizedBox(
@@ -166,7 +168,9 @@ class HomeScreen extends StatelessWidget {
                             "Kahveci Efendi Kızılay\n\nAşkabat Cad. No:17/B\nÇankaya/Ankara",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(width: 15.0,),
+                          SizedBox(
+                            width: 15.0,
+                          ),
                           Icon(Icons.assistant_direction_rounded)
                         ],
                       ),

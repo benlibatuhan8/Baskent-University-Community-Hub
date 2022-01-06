@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                   SwitchListTile(
                     activeColor: Colors.purple,
                     value: true,
-                    title: Text("News Notifications"),
+                    title: Text("Chat Notifications"),
                     onChanged: (val) {},
                   ),
                 ],
@@ -118,17 +118,7 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Card(
-              margin: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 0,
-              ),
-              child: ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text("Logout"),
-                onTap: () {},
-              ),
-            ),
+            
             const SizedBox(height: 60.0),
           ],
         ),

@@ -136,7 +136,7 @@ class RegisterScreen extends StatelessWidget {
                       onPressed: () {},
                       icon: Icon(Icons.photo),
                       label:
-                          Text("Please upload an image of your studednt card"))
+                          Text("Please upload an image of your student card"))
                 ],
               ),
             ),
