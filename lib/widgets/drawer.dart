@@ -33,10 +33,11 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Home'),
             onTap: () {
-              if(ModalRoute.of(context)!.settings.name.toString() == "/home"){
-                 Navigator.pop(context);}
-                 else{
-                   Navigator.of(context).pushNamed(Routes.home);                 }
+              if (ModalRoute.of(context)!.settings.name.toString() == "/home") {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).pushNamed(Routes.home);
+              }
             },
           ),
           ListTile(
@@ -69,11 +70,12 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Profile'),
             onTap: () {
-              if(ModalRoute.of(context)!.settings.name.toString() == "/profile"){
-                 Navigator.pop(context);}
-                 else{
-                   Navigator.of(context).pushNamed(Routes.profile);
-                               }
+              if (ModalRoute.of(context)!.settings.name.toString() ==
+                  "/profile") {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).pushNamed(Routes.profile);
+              }
             },
           ),
           ListTile(

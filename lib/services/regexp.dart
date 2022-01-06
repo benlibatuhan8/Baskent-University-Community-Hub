@@ -8,7 +8,7 @@ bool validatePassword(String value) {
 }
 
 bool validateUserId(String value) {
-  RegExp regExp = new RegExp("r'^[0-9]{8}'");
-
+  String pattern = r'^(?=.*?[0-9]).{8}$';
+  RegExp regExp = new RegExp(pattern);
   return regExp.hasMatch(value);
 }
