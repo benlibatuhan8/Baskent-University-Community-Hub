@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:comhub/screens/home.dart';
+import 'package:comhub/screens/login/view/login.dart';
 import 'package:comhub/services/regexp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,8 @@ import 'package:comhub/routes/route.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:comhub/models/user.dart';
 import 'package:comhub/services/user_services.dart';
+
+import '../../verify.dart';
 
 class RegisterState {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -69,7 +73,7 @@ class RegisterState {
       try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-                email: user.user_id + "@ogr.baskent.edu.tr",
+                email: user.user_id + "@mail.baskent.edu.tr",
                 password: user.password)
             .then((kullanici) {
           var newRef = users.doc(user.user_id);
@@ -79,21 +83,22 @@ class RegisterState {
             'user_type': user.user_type,
           });
         });
-        Navigator.of(context).pop();
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                title: Text("Registiration Successful"),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text("OK"))
-                ]);
-          },
-        );
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => VerifyScreen()));
+        // showDialog(
+        //   context: context,
+        //   builder: (BuildContext context) {
+        //     return AlertDialog(
+        //         title: Text("Registiration Successful"),
+        //         actions: [
+        //           TextButton(
+        //               onPressed: () {
+        //                 Navigator.of(context).pop();
+        //               },
+        //               child: Text("OK"))
+        //         ]);
+        //   },
+        // );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
           Widget okButton = TextButton(

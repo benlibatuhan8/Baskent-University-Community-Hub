@@ -24,6 +24,7 @@ environment:
 dependencies:
   firebase_auth: ^3.3.4
   cloud_firestore:
+  circular_countdown_timer: 
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0

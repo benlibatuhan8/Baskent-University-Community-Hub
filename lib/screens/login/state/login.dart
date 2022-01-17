@@ -16,14 +16,35 @@ class LoginState {
   LoginState(this._reader);
 
   Future<void> login(Users user, BuildContext context) async {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-              email: user.user_id + "@ogr.baskent.edu.tr",
+              email: user.user_id + "@mail.baskent.edu.tr",
               password: user.password)
           .then((kullanici) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(Routes.home, (route) => false);
+        if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
+          AlertDialog alert = AlertDialog(
+            title: Text("You must verify your account"),
+            actions: [
+              okButton,
+            ],
+          );
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+        } else {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.home, (route) => false);
+        }
       });
       var currentUser = FirebaseAuth.instance.currentUser;
 
@@ -36,12 +57,6 @@ class LoginState {
         print(currUser.user_type.toString());
       }
     } on FirebaseAuthException catch (e) {
-      Widget okButton = TextButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
       if (e.code == 'user-not-found') {
         AlertDialog alert = AlertDialog(
           title: Text("User not found"),
