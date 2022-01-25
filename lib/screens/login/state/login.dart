@@ -6,6 +6,9 @@ import 'package:comhub/routes/route.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:comhub/services/user_services.dart';
 
+import '../../chat.dart';
+import '../../verify.dart';
+
 class LoginState {
   static final provider =
       Provider.autoDispose<LoginState>((ref) => LoginState(ref.read));
@@ -44,6 +47,8 @@ class LoginState {
         } else {
           Navigator.of(context)
               .pushNamedAndRemoveUntil(Routes.home, (route) => false);
+          // Navigator.of(context).pushReplacement(
+          //     MaterialPageRoute(builder: (context) => ChatScreen()));
         }
       });
       var currentUser = FirebaseAuth.instance.currentUser;

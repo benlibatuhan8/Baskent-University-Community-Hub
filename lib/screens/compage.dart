@@ -1,10 +1,18 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/chatMessageModel.dart';
+import 'package:comhub/screens/assets.dart';
 import 'package:comhub/screens/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/widgets/drawer.dart';
+
+import 'chat.dart';
+
+final _firestore = FirebaseFirestore.instance;
+var loggedInUser;
 
 class ComPageScreen extends StatefulWidget {
   @override
@@ -31,6 +39,28 @@ List<ChatMessage> messages = [
 ];
 
 class comPageState extends State<ComPageScreen> {
+  final _auth = FirebaseAuth.instance;
+
+  late String messageText;
+  final messageTextController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -250,135 +280,48 @@ class comPageState extends State<ComPageScreen> {
                   ),
 
                   // third tab bar view widget
-                  Container(
-                    color: Colors.indigo.shade700,
-                    child: Center(
-                      child: Stack(
-                        children: <Widget>[
-                          ListView.builder(
-                            itemCount: messages.length,
-                            shrinkWrap: true,
-                            padding: EdgeInsets.only(top: 10, bottom: 10),
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Container(
-                                padding: EdgeInsets.only(
-                                    left: 16, right: 16, top: 10, bottom: 10),
-                                child: Align(
-                                  alignment: (messages[index].messageType ==
-                                              "receiver1" ||
-                                          messages[index].messageType ==
-                                              "receiver2" ||
-                                          messages[index].messageType ==
-                                              "receiver3"
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].messageType ==
-                                              "receiver"
-                                          ? Colors.green
-                                          : messages[index].messageType ==
-                                                  "receiver"
-                                              ? Colors.yellow
-                                              : messages[index].messageType ==
-                                                      "receiver"
-                                                  ? Colors.blue
-                                                  : Colors.white),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          messages[index].messageSender + "\n",
-                                          style: TextStyle(
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: (messages[index]
-                                                          .messageType ==
-                                                      "receiver1"
-                                                  ? Colors.green
-                                                  : messages[index]
-                                                              .messageType ==
-                                                          "receiver2"
-                                                      ? Colors.orange
-                                                      : messages[index]
-                                                                  .messageType ==
-                                                              "receiver3"
-                                                          ? Colors.blue
-                                                          : Colors.grey)),
-                                        ),
-                                        Text(
-                                          messages[index].messageContent,
-                                          style: TextStyle(fontSize: 16.0),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                  SafeArea(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        MessagesStream(),
+                        Container(
+                          decoration: kMessageContainerDecoration,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                child: TextField(
+                                  controller: messageTextController,
+                                  onChanged: (value) {
+                                    messageText = value;
+                                  },
+                                  decoration: kMessageTextFieldDecoration,
                                 ),
-                              );
-                            },
-                          ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  left: 10, bottom: 10, top: 10),
-                              height: 60,
-                              width: double.infinity,
-                              color: Colors.white,
-                              child: Row(
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.lightBlue,
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Expanded(
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                          hintText: "Write message...",
-                                          hintStyle:
-                                              TextStyle(color: Colors.black54),
-                                          border: InputBorder.none),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    child: Icon(
-                                      Icons.send,
-                                      color: Colors.white,
-                                      size: 18,
-                                    ),
-                                    backgroundColor: Colors.blue,
-                                    elevation: 0,
-                                  ),
-                                ],
                               ),
-                            ),
+                              FlatButton(
+                                onPressed: () {
+                                  messageTextController.clear();
+                                  _firestore
+                                      .collection('communities')
+                                      .doc("Computer Society")
+                                      .collection("chat")
+                                      .add({
+                                    'text': messageText,
+                                    'sender': loggedInUser.email,
+                                    'timestamp': FieldValue.serverTimestamp(),
+                                  });
+                                },
+                                child: Text(
+                                  'Send',
+                                  style: kSendButtonTextStyle,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -386,6 +329,104 @@ class comPageState extends State<ComPageScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MessagesStream extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore
+          .collection('communities')
+          .doc("Computer Society")
+          .collection("chat")
+          .orderBy("timestamp")
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+          );
+        }
+        final messages = snapshot.data?.docs.reversed;
+        List<MessageBubble> messageBubbles = [];
+        for (var message in messages!) {
+          final messageText = message.get("text");
+          final messageSender = message.get("sender");
+
+          final currentUser = loggedInUser.email;
+
+          final messageBubble = MessageBubble(
+            sender: messageSender,
+            text: messageText,
+            isMe: currentUser == messageSender,
+          );
+
+          messageBubbles.add(messageBubble);
+        }
+        return Expanded(
+          child: ListView(
+            reverse: true,
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            children: messageBubbles,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  MessageBubble({required this.sender, required this.text, required this.isMe});
+
+  final String sender;
+  final String text;
+  final bool isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment:
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            sender,
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Colors.black54,
+            ),
+          ),
+          Material(
+            borderRadius: isMe
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0))
+                : BorderRadius.only(
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
+                  ),
+            elevation: 5.0,
+            color: isMe ? Colors.lightBlueAccent : Colors.white,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: isMe ? Colors.white : Colors.black54,
+                  fontSize: 15.0,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
