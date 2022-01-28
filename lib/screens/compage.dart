@@ -9,8 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/widgets/drawer.dart';
 
-import 'chat.dart';
-
 final _firestore = FirebaseFirestore.instance;
 var loggedInUser;
 

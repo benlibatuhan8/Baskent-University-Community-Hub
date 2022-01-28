@@ -6,7 +6,6 @@ import 'package:comhub/routes/route.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:comhub/services/user_services.dart';
 
-import '../../chat.dart';
 import '../../verify.dart';
 
 class LoginState {
