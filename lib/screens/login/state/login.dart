@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,18 +32,40 @@ class LoginState {
               password: user.password)
           .then((kullanici) {
         if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
-          AlertDialog alert = AlertDialog(
-            title: Text("You must verify your account"),
-            actions: [
-              okButton,
-            ],
-          );
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
+          if (DateTime.now().isAfter(FirebaseAuth
+              .instance.currentUser!.metadata.creationTime!
+              .add(const Duration(minutes: 5)))) {
+            AlertDialog alert = AlertDialog(
+              title: Text(
+                  "You must verify your account in time please register again"),
+              actions: [
+                okButton,
+              ],
+            );
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return alert;
+              },
+            );
+            var doc = FirebaseAuth.instance.currentUser!.email!.split("@")[0];
+            FirebaseFirestore.instance.collection('users').doc(doc).delete();
+            FirebaseAuth.instance.currentUser!.delete();
+          } else {
+            AlertDialog alert = AlertDialog(
+              title: Text(
+                  "You must verify your account before the timeout Hury UPP!! "),
+              actions: [
+                okButton,
+              ],
+            );
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return alert;
+              },
+            );
+          }
         } else {
           Navigator.of(context)
               .pushNamedAndRemoveUntil(Routes.home, (route) => false);

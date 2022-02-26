@@ -1,22 +1,26 @@
+import 'dart:ffi';
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class Event {
-  final String id;
+  final String event_id;
   final String name;
-  final String community;
-  final String location;
-  final String date;
-  final String hour;
+  final String community_id;
+  final List participants;
+  final Location location;
+  final DateTime date;
+
   final String description;
 
   Event({
-    required this.id,
+    required this.event_id,
+    required this.participants,
     required this.name,
-    required this.community,
+    required this.community_id,
     required this.location,
     required this.date,
-    required this.hour,
     required this.description,
   });
 }

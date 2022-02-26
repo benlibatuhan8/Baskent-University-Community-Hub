@@ -90,7 +90,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
               height: MediaQuery.of(context).size.height / 2,
               isReverseAnimation: true,
               isReverse: true,
-              duration: 120,
+              duration: 300,
               fillColor: Colors.blueAccent[100]!,
               backgroundColor: Colors.blue[500],
               ringColor: Colors.grey[300]!,

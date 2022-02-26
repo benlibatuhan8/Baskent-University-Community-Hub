@@ -5,6 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class Users {
+  final String password;
+  late final String user_id;
+  final bool user_type;
+  late List Communities;
+
   Users({
     required this.password,
     required this.user_type,
@@ -17,10 +22,6 @@ class Users {
           user_type: json['user_type']! as bool,
           password: json['password']! as String,
         );
-
-  final String password;
-  late final String user_id;
-  final bool user_type;
 
   Map<String, Object?> toJson() {
     return {
