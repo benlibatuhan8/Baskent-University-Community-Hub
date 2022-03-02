@@ -9,9 +9,8 @@ class Event {
   final String name;
   final String community_id;
   final List participants;
-  final Location location;
+  final String location;
   final DateTime date;
-
   final String description;
 
   Event({

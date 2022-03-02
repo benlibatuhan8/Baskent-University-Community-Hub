@@ -8,7 +8,6 @@ class Users {
   final String password;
   late final String user_id;
   final bool user_type;
-  late List Communities;
 
   Users({
     required this.password,

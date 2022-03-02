@@ -14,15 +14,17 @@ final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
 
 const PrimaryColor = Color(0xffECFEF3);
 const SecondaryColor = Color(0xffD9FDE8);
+late final _im;
 
-_getFromGallery() async {
-  PickedFile? pickedFile = await ImagePicker().getImage(
-    source: ImageSource.gallery,
+_getFromCamera() async {
+  final ImagePicker _imagePicker = ImagePicker();
+  XFile? _file = await _imagePicker.pickImage(
+    source: ImageSource.camera,
     maxWidth: 1800,
     maxHeight: 1800,
   );
-  if (pickedFile != null) {
-    File imageFile = File(pickedFile.path);
+  if (_file != null) {
+    _im = await _file.readAsBytes();
   }
 }
 
@@ -133,7 +135,9 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   TextButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        _getFromCamera();
+                      },
                       icon: Icon(Icons.photo),
                       label:
                           Text("Please upload an image of your student card"))
@@ -156,7 +160,7 @@ class RegisterScreen extends StatelessWidget {
                             user_id: usernameController.text);
                         if (passwordController.text ==
                             passwordController2.text) {
-                          state.addUser(newUser, context);
+                          state.addUser(newUser, context, _im);
                         } else {
                           Widget okButton = TextButton(
                             child: Text("OK"),

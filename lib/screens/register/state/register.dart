@@ -1,11 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/screens/home.dart';
 import 'package:comhub/screens/login/view/login.dart';
 import 'package:comhub/services/regexp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comhub/routes/route.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:comhub/models/user.dart';
 import 'package:comhub/services/user_services.dart';
@@ -19,6 +24,7 @@ class RegisterState {
             fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
             toFirestore: (user, _) => user.toJson(),
           );
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   static final provider =
       Provider.autoDispose<RegisterState>((ref) => RegisterState(ref.read));
   static final isButtonLoading = StateProvider.autoDispose<bool>((_) => false);
@@ -27,7 +33,7 @@ class RegisterState {
 
   RegisterState(this._reader);
 
-  Future<void> addUser(Users user, BuildContext context) async {
+  Future<void> addUser(Users user, BuildContext context, Uint8List im) async {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
@@ -75,30 +81,21 @@ class RegisterState {
             .createUserWithEmailAndPassword(
                 email: user.user_id + "@mail.baskent.edu.tr",
                 password: user.password)
-            .then((kullanici) {
+            .then((kullanici) async {
           var newRef = users.doc(user.user_id);
+          Reference ref = _storage.ref().child("usercards").child(user.user_id);
+          UploadTask uploadtask = ref.putData(im);
+          TaskSnapshot snap = await uploadtask;
+          String downloadUrl = await snap.ref.getDownloadURL();
           return newRef.set({
             'user_id': newRef.id,
             'password': user.password,
             'user_type': user.user_type,
+            'card_url': downloadUrl
           });
         });
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => VerifyScreen()));
-        // showDialog(
-        //   context: context,
-        //   builder: (BuildContext context) {
-        //     return AlertDialog(
-        //         title: Text("Registiration Successful"),
-        //         actions: [
-        //           TextButton(
-        //               onPressed: () {
-        //                 Navigator.of(context).pop();
-        //               },
-        //               child: Text("OK"))
-        //         ]);
-        //   },
-        // );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
           Widget okButton = TextButton(
