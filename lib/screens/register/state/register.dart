@@ -13,14 +13,13 @@ import 'package:comhub/routes/route.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:comhub/models/user.dart';
-import 'package:comhub/services/user_services.dart';
 
+import '../../../services/user_services.dart';
 import '../../verify.dart';
 
 class RegisterState {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-  final FirebaseStorage _storage = FirebaseStorage.instance;
   static final provider =
       Provider.autoDispose<RegisterState>((ref) => RegisterState(ref.read));
   static final isButtonLoading = StateProvider.autoDispose<bool>((_) => false);
@@ -73,23 +72,8 @@ class RegisterState {
       );
     } else {
       try {
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: user.user_id + "@mail.baskent.edu.tr",
-                password: user.password)
-            .then((kullanici) async {
-          var newRef = users.doc(user.user_id);
-          Reference ref = _storage.ref().child("usercards").child(user.user_id);
-          UploadTask uploadtask = ref.putData(im);
-          TaskSnapshot snap = await uploadtask;
-          String downloadUrl = await snap.ref.getDownloadURL();
-          return newRef.set({
-            'user_id': newRef.id,
-            'password': user.password,
-            'user_type': user.user_type,
-            'card_url': downloadUrl
-          });
-        });
+        await User_Service().signUpUser(user, im);
+
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => VerifyScreen()));
       } on FirebaseAuthException catch (e) {
