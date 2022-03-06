@@ -13,16 +13,14 @@ class VerifyScreen extends StatefulWidget {
   _VerifyScreenState createState() => _VerifyScreenState();
 }
 
+CollectionReference users = FirebaseFirestore.instance.collection('users');
+
 class _VerifyScreenState extends State<VerifyScreen> {
   final auth = FirebaseAuth.instance;
   late User user;
   late Timer timer, timer2;
   late bool canResendEmail = true;
-  final usersRef =
-      FirebaseFirestore.instance.collection('users').withConverter<Users>(
-            fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
+
   CountDownController controller = CountDownController();
 
   @override
@@ -97,7 +95,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
               onComplete: () {
                 List<String>? result = user.email?.split("@");
                 String currentUserID = result![0];
-                usersRef.doc(currentUserID).delete().then((value) {
+                users.doc(currentUserID).delete().then((value) {
                   FirebaseAuth.instance.currentUser!.delete();
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => LoginScreen()));

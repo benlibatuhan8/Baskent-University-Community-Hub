@@ -157,7 +157,8 @@ class RegisterScreen extends StatelessWidget {
                         Users newUser = new Users(
                             password: passwordController.text,
                             user_type: false,
-                            user_id: usernameController.text);
+                            user_id: usernameController.text,
+                            card_url: '');
                         if (passwordController.text ==
                             passwordController2.text) {
                           state.addUser(newUser, context, _im);

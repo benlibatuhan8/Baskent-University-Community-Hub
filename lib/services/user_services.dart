@@ -7,11 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class User_Service {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  final usersRef =
-      FirebaseFirestore.instance.collection('users').withConverter<Users>(
-            fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
 
   Future<void> addUser(Users user) {
     var newRef = users.doc(user.user_id);
@@ -23,39 +18,8 @@ class User_Service {
   }
 
   Future<Users> getUserById(String userId) async {
-    var user = await usersRef.doc(userId).get().then((value) {
-      if (value.exists) {
-        return value.data();
-      } else {
-        print("Veri bulunamadi");
-      }
-    });
-    bool boolfunc() {
-      if ("${user?.user_type}" == "true") {
-        return true;
-      } else
-        return false;
-    }
-
-    Users user2 = new Users(
-        password: "${user?.password}",
-        user_type: boolfunc(),
-        user_id: "${user?.user_id}");
-
-    return user2;
-  }
-
-  Future<Map<String, dynamic>?> getUserList() async {
-    var data = await usersRef.doc().get().then((value) {
-      if (value.exists) {
-        return value.data() as Map<String, dynamic>;
-      } else {
-        print("Veri bulunamadı");
-      }
-    });
-
-    print("${data!['user_id']}");
-    return data;
+    DocumentSnapshot documentSnapshot = await users.doc(userId).get();
+    return Users.fromSnap(documentSnapshot);
   }
 
   Future<void> updateUser(String user_id, String password) {

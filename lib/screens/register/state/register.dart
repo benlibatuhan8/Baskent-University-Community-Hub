@@ -19,11 +19,7 @@ import '../../verify.dart';
 
 class RegisterState {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  final usersRef =
-      FirebaseFirestore.instance.collection('users').withConverter<Users>(
-            fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
+
   final FirebaseStorage _storage = FirebaseStorage.instance;
   static final provider =
       Provider.autoDispose<RegisterState>((ref) => RegisterState(ref.read));
