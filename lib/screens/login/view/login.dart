@@ -135,7 +135,11 @@ class LoginScreen extends StatelessWidget {
                                   password: passwordController.text,
                                   user_type: false,
                                   user_id: usernameController.text,
-                                  card_url: '');
+                                  card_url: '',
+                                  department: '',
+                                  following_comms: [],
+                                  mod_com: '',
+                                  user_name: '');
                               state.login(newUser, context);
                             },
                             style: ButtonStyle(

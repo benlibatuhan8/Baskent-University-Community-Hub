@@ -154,14 +154,10 @@ class RegisterScreen extends StatelessWidget {
                   final state = ref.watch(RegisterState.provider);
                   return ElevatedButton(
                       onPressed: () {
-                        Users newUser = new Users(
-                            password: passwordController.text,
-                            user_type: false,
-                            user_id: usernameController.text,
-                            card_url: '');
                         if (passwordController.text ==
                             passwordController2.text) {
-                          state.addUser(newUser, context, _im);
+                          state.addUser(passwordController.text,
+                              usernameController.text, context, _im);
                         } else {
                           Widget okButton = TextButton(
                             child: Text("OK"),

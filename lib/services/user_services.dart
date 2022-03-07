@@ -12,30 +12,33 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../routes/route.dart';
 
 class User_Service {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   Future<Users> getUserById(String userId) async {
-    DocumentSnapshot documentSnapshot = await users.doc(userId).get();
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection("users").doc(userId).get();
     return Users.fromSnap(documentSnapshot);
   }
 
-  Future<void> signUpUser(Users user, Uint8List im) async {
+  Future<void> signUpUser(String user_id, String password, Uint8List im) async {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
-            email: user.user_id + "@mail.baskent.edu.tr",
-            password: user.password)
+            email: user_id + "@mail.baskent.edu.tr", password: password)
         .then((kullanici) async {
-      var newRef = users.doc(user.user_id);
-      Reference ref = _storage.ref().child("usercards").child(user.user_id);
+      Reference ref = _storage.ref().child("usercards").child(user_id);
       UploadTask uploadtask = ref.putData(im);
       TaskSnapshot snap = await uploadtask;
       String downloadUrl = await snap.ref.getDownloadURL();
-      return newRef.set({
-        'user_id': newRef.id,
-        'password': user.password,
-        'user_type': user.user_type,
-        'card_url': downloadUrl
-      });
+      Users user = new Users(
+          department: '',
+          following_comms: [],
+          user_name: '',
+          mod_com: '',
+          password: password,
+          card_url: downloadUrl,
+          user_type: false,
+          user_id: user_id);
+      await _firestore.collection("users").doc(user.user_id).set(user.toJson());
     });
   }
 
@@ -91,7 +94,7 @@ class User_Service {
   }
 
   Future<void> updateUser(String user_id, String password) {
-    return users
+    return _firestore
         .doc(user_id)
         .update({
           'password': password,

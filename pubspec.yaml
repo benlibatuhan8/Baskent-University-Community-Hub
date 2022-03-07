@@ -42,6 +42,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   carousel_slider: ^4.0.0
   image_picker: 
+  uuid: 
   
 
 dev_dependencies:
