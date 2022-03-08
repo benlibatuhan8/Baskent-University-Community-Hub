@@ -17,6 +17,7 @@ class User_Service {
   Future<Users> getUserById(String userId) async {
     DocumentSnapshot documentSnapshot =
         await _firestore.collection("users").doc(userId).get();
+    print(Users.fromSnap(documentSnapshot));
     return Users.fromSnap(documentSnapshot);
   }
 
@@ -30,14 +31,16 @@ class User_Service {
       TaskSnapshot snap = await uploadtask;
       String downloadUrl = await snap.ref.getDownloadURL();
       Users user = new Users(
-          department: '',
-          following_comms: [],
-          user_name: '',
-          mod_com: '',
-          password: password,
-          card_url: downloadUrl,
-          user_type: false,
-          user_id: user_id);
+        department: '',
+        following_comms: [],
+        user_name: '',
+        mod_com: '',
+        password: password,
+        card_url: downloadUrl,
+        user_type: "user",
+        user_id: user_id,
+        my_events: [],
+      );
       await _firestore.collection("users").doc(user.user_id).set(user.toJson());
     });
   }

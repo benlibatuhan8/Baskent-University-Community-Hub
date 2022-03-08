@@ -11,6 +11,8 @@ class Community {
   final List events;
   final Form com_form;
   final File logo_image;
+  final List news;
+  final List forms;
 
   const Community({
     required this.com_id,
@@ -20,6 +22,8 @@ class Community {
     required this.events,
     required this.com_form,
     required this.logo_image,
+    required this.news,
+    required this.forms,
   });
 
   static Community fromSnap(DocumentSnapshot snap) {
@@ -31,8 +35,10 @@ class Community {
       members: snapshot["members"],
       mods: snapshot["mods"],
       events: snapshot["events"],
+      news: snapshot["news"],
       com_form: snapshot["com_form"],
       logo_image: snapshot['logo_image'],
+      forms: snapshot['forms'],
     );
   }
 
@@ -44,5 +50,6 @@ class Community {
         "events": events,
         "com_form": com_form,
         "logo_image": logo_image,
+        "forms": forms
       };
 }

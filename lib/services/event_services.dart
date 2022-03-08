@@ -7,7 +7,7 @@ class Event_Services {
 
   Future<String> uploadEvent(String event_name, String community_name,
       String location, DateTime date, String description) async {
-    String event_id = const Uuid().v1();
+    String event_id = community_name + event_name;
     String res = "Some error occured";
     try {
       Event event = new Event(

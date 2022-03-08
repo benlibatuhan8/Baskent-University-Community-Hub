@@ -97,7 +97,7 @@ class MyDrawer extends StatelessWidget {
                 User_Service user_service = new User_Service();
                 Users currUser = await user_service.getUserById(currentUserID);
                 print(currUser.user_type.toString());
-                if (currUser.user_type) {
+                if (currUser.user_type == "mod") {
                   Navigator.of(context).pushNamed(Routes.modpage1);
                 } else {
                   Widget okButton = TextButton(

@@ -133,13 +133,14 @@ class LoginScreen extends StatelessWidget {
                             onPressed: () {
                               Users newUser = new Users(
                                   password: passwordController.text,
-                                  user_type: false,
+                                  user_type: "user",
                                   user_id: usernameController.text,
                                   card_url: '',
                                   department: '',
                                   following_comms: [],
                                   mod_com: '',
-                                  user_name: '');
+                                  user_name: '',
+                                  my_events: []);
                               state.login(newUser, context);
                             },
                             style: ButtonStyle(
