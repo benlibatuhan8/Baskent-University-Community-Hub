@@ -20,6 +20,7 @@ class comListPageState extends State<ComListPageScreen> {
     String soc5 = 'Law Society';
     String soc6 = 'Ahbap Society';
     String soc7 = 'Biomedical Engineering Society';
+    String soc8 = " ";
 
     return Scaffold(
       appBar: AppBar(
@@ -38,38 +39,43 @@ class comListPageState extends State<ComListPageScreen> {
               child: CircularProgressIndicator(),
             );
           }
+          final coms = snapshot.data?.docs;
+          
+
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (ctx, index) => Container(
+              
               margin: EdgeInsets.symmetric(),
               child: Card(
-                  child: Container(
-                height: 120,
-                child: TextButton(
-                  onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      // title: Text(),
-                      content: Text('Do you want to join the ' + soc1),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'Cancel'),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () =>
-                              Navigator.pop(context, 'Request Join'),
-                          child: const Text('Send Join Request'),
-                        ),
-                      ],
+                child: Container(
+                  height: 120,
+                  child: TextButton(
+                    onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        // title: Text(),
+                        content: Text('Do you want to join the ' + soc1),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(context, 'Request Join'),
+                            child: const Text('Send Join Request'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    child: Text(
+                      coms![index].get("id"),
+                      style: TextStyle(fontSize: 40.0),
                     ),
                   ),
-                  child: Text(
-                    soc1,
-                    style: TextStyle(fontSize: 40.0),
-                  ),
                 ),
-              )),
+              ),
             ),
           );
         },
