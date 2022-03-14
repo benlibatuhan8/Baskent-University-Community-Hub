@@ -1,6 +1,7 @@
 import 'package:comhub/screens/calendar.dart';
 import 'package:comhub/screens/comlistpage.dart';
 import 'package:comhub/screens/compage.dart';
+import 'package:comhub/screens/denememodpage.dart';
 import 'package:comhub/screens/modPage.dart';
 import 'package:comhub/screens/modPageAnn.dart';
 import 'package:comhub/screens/modPageEvent.dart';
@@ -19,7 +20,7 @@ class Routes {
   static const settings = '/settings';
   static const profile = '/profile';
   static const compage = '/compage';
-  static const modpage1 = '/modpage1';
+  static const modpage1 = 'denememodpage';
   static const modpage2 = '/modpage2';
   static const modpage3 = '/modpage3';
   static const mycompage = '/mycompage';
@@ -63,7 +64,7 @@ class Routes {
         return ComPageScreen();
 
       case modpage1:
-        return ModPageScreen();
+        return denememodpageScreen();
 
       case modpage2:
         return ModPageEventScreen();

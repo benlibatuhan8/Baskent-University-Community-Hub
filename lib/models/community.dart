@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class Community {
   final String com_id;
   final String description;
+  final String name;
   final List members;
   final List mods;
   final List events;
@@ -17,6 +18,7 @@ class Community {
   const Community({
     required this.com_id,
     required this.description,
+    required this.name,
     required this.members,
     required this.mods,
     required this.events,
@@ -32,6 +34,7 @@ class Community {
     return Community(
       com_id: snapshot["com_id"],
       description: snapshot["description"],
+      name: snapshot["name"],
       members: snapshot["members"],
       mods: snapshot["mods"],
       events: snapshot["events"],
@@ -45,6 +48,7 @@ class Community {
   Map<String, dynamic> toJson() => {
         "com_id": com_id,
         "description": description,
+        "name":name,
         "members": members,
         "mods": mods,
         "events": events,

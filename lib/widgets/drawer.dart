@@ -80,6 +80,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Settings'),
+            
             onTap: () {
               // Update the state of the app
               // ...
@@ -88,6 +89,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            
             title: const Text('Moderator Page'),
             onTap: () async {
               if (currentUser != null) {

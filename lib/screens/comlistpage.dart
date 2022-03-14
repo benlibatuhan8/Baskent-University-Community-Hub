@@ -1,14 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/community.dart';
 import 'package:comhub/screens/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/models/community.dart';
+
+import '../models/user.dart';
+import '../services/user_services.dart';
 
 class ComListPageScreen extends StatefulWidget {
   @override
   comListPageState createState() => comListPageState();
 }
+
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+var currentUser = FirebaseAuth.instance.currentUser;
+List<String>? result = currentUser!.email?.split("@");
+String currentUserID = result![0];
 
 class comListPageState extends State<ComListPageScreen> {
   @override
@@ -40,12 +49,10 @@ class comListPageState extends State<ComListPageScreen> {
             );
           }
           final coms = snapshot.data?.docs;
-          
 
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (ctx, index) => Container(
-              
               margin: EdgeInsets.symmetric(),
               child: Card(
                 child: Container(
@@ -55,22 +62,34 @@ class comListPageState extends State<ComListPageScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                         // title: Text(),
-                        content: Text('Do you want to join the ' + soc1),
+                        content: Text('Do you want to join the ' +
+                            coms![index].get("name")),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'Cancel'),
                             child: const Text('Cancel'),
                           ),
                           TextButton(
-                            onPressed: () =>
-                                Navigator.pop(context, 'Request Join'),
+                            onPressed: () async {
+                              User_Service user_service = new User_Service();
+                              Users currUser =
+                                  await user_service.getUserById(currentUserID);
+
+                              _firestore
+                                  .collection('communities')
+                                  .doc(coms![index].get("name"))
+                                  .collection('join_requests')
+                                  .doc(currentUserID)
+                                  .set(currUser.toJson());
+                            },
+                            //Navigator.pop(context, 'Request Join'),
                             child: const Text('Send Join Request'),
                           ),
                         ],
                       ),
                     ),
                     child: Text(
-                      coms![index].get("id"),
+                      coms![index].get("name"),
                       style: TextStyle(fontSize: 40.0),
                     ),
                   ),
