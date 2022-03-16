@@ -15,13 +15,17 @@ import '../routes/route.dart';
 import '../services/user_services.dart';
 import 'comlistpage.dart';
 
-final _firestore = FirebaseFirestore.instance;
 var loggedInUser;
 
 class denememodpageScreen extends StatefulWidget {
   @override
   denememodpageState createState() => denememodpageState();
 }
+
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+var currentUser = FirebaseAuth.instance.currentUser;
+List<String>? result = currentUser!.email?.split("@");
+String currentUserID = result![0];
 
 class denememodpageState extends State<denememodpageScreen> {
   final _auth = FirebaseAuth.instance;
@@ -105,9 +109,30 @@ class denememodpageState extends State<denememodpageScreen> {
                       alignment: Alignment.topCenter,
                       child: Column(
                         children: [
-                          Text("Event"),
+                          Row(
+                            children: [
+                              Text(
+                                "Created Events",
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              Spacer(),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(Routes.modpage2);
+                                },
+                                child: Text(
+                                  'Create New!',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          ),
                           Container(
-                            height: 500,
+                            height: 490,
                             child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection('communities')
@@ -136,55 +161,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                         children: [
                                           Container(
                                             height: 80,
-                                            child: TextButton(
-                                              onPressed: () =>
-                                                  showDialog<String>(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        AlertDialog(
-                                                  // title: Text(),
-                                                  content: Text(
-                                                      'Do you want to join the ' +
-                                                          events![index]
-                                                              .get("event_id")),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(context,
-                                                              'Cancel'),
-                                                      child:
-                                                          const Text('Cancel'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () async {
-                                                        User_Service
-                                                            user_service =
-                                                            new User_Service();
-                                                        Users currUser =
-                                                            await user_service
-                                                                .getUserById(
-                                                                    currentUserID);
-
-                                                        _firestore
-                                                            .collection(
-                                                                'communities')
-                                                            .doc(events![index]
-                                                                .get(
-                                                                    "event_id"))
-                                                            .collection(
-                                                                'join_requests')
-                                                            .doc(currentUserID)
-                                                            .set(currUser
-                                                                .toJson());
-                                                      },
-                                                      //Navigator.pop(context, 'Request Join'),
-                                                      child: const Text(
-                                                          'Send Join Request'),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                            child: Card(
                                               child: Row(
                                                 children: [
                                                   Container(
@@ -210,7 +187,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                                 ],
                                               ),
                                             ),
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -293,76 +270,9 @@ class denememodpageState extends State<denememodpageScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    color: Colors.indigo.shade700,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n14/11/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "\nChairperson selection  will be held on 20 December.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n02/12/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            "\nMember registration can be done by filling a form pusplished just now.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // third tab bar view widget
+                  Container(),
+                  // four tab bar view widget
                   Container(
                     color: Colors.indigo.shade700,
                     child: Center(

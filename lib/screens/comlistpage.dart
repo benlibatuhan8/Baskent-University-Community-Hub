@@ -81,6 +81,8 @@ class comListPageState extends State<ComListPageScreen> {
                                   .collection('join_requests')
                                   .doc(currentUserID)
                                   .set(currUser.toJson());
+
+                              Navigator.pop(context, 'Send Join Request');
                             },
                             //Navigator.pop(context, 'Request Join'),
                             child: const Text('Send Join Request'),

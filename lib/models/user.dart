@@ -13,7 +13,7 @@ class Users {
   late final String card_url;
   final String department;
   final List following_comms;
-  final List my_events;
+
   final String mod_com;
 
   Users({
@@ -24,7 +24,6 @@ class Users {
     required this.card_url,
     required this.department,
     required this.following_comms,
-    required this.my_events,
     required this.mod_com,
   });
 
@@ -40,7 +39,6 @@ class Users {
       department: snapshot["department"],
       following_comms: snapshot["following_comms"],
       mod_com: snapshot["mod_com"],
-      my_events: snapshot["my_events"],
     );
   }
 

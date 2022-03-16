@@ -39,7 +39,6 @@ class User_Service {
         card_url: downloadUrl,
         user_type: "user",
         user_id: user_id,
-        my_events: [],
       );
       await _firestore.collection("users").doc(user.user_id).set(user.toJson());
     });
