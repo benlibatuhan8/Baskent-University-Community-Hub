@@ -226,7 +226,12 @@ class adminpageState extends State<adminpageScreen> {
                                                                                 print(userId),
                                                                                 FirebaseFirestore.instance.collection('users').doc(userId).update({
                                                                                   'mod_com': comId
-                                                                                })
+                                                                                }),
+                                                                                FirebaseFirestore.instance.collection('users').doc(userId).update({
+                                                                                  'user_type': 'mod'
+                                                                                }),
+                                                                                Navigator.pop(context),
+                                                                                Navigator.pop(context)
                                                                               },
                                                                               child: Text("Complete"),
                                                                             ),
