@@ -1,14 +1,46 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/user.dart';
 import 'package:comhub/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:comhub/routes/route.dart';
 import 'package:comhub/widgets/restart.dart';
 
+import '../screens/denememodpage.dart';
+
 class MyDrawer extends StatelessWidget {
   var currentUser = FirebaseAuth.instance.currentUser;
+
+  final _auth = FirebaseAuth.instance;
+
+  bool _isVisible = false;
+
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        List<String>? result = currentUser!.email?.split("@");
+        String currentUserID = result![0];
+        Users userfields = await User_Service().getUserById(currentUserID);
+        if (userfields.user_type == 'mod') {
+          _isVisible = true;
+        }
+        var snap = FirebaseFirestore.instance
+            .collection("communities")
+            .where('mod_com', isEqualTo: userfields.mod_com)
+            .get()
+            .then((value) {
+          return value;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +112,6 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Settings'),
-            
             onTap: () {
               // Update the state of the app
               // ...
@@ -89,7 +120,6 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            
             title: const Text('Moderator Page'),
             onTap: () async {
               if (currentUser != null) {
@@ -111,6 +141,42 @@ class MyDrawer extends StatelessWidget {
                   AlertDialog alert = AlertDialog(
                     title: Text("Permission Denied !"),
                     content: Text("You are not a society moderator"),
+                    actions: [
+                      okButton,
+                    ],
+                  );
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                }
+              }
+            },
+          ),
+          ListTile(
+            title: const Text('Admin Page'),
+            onTap: () async {
+              if (currentUser != null) {
+                print(currentUser.email);
+                List<String>? result = currentUser.email?.split("@");
+                String currentUserID = result![0];
+                User_Service user_service = new User_Service();
+                Users currUser = await user_service.getUserById(currentUserID);
+                print(currUser.user_type.toString());
+                if (currUser.user_type == "admin") {
+                  Navigator.of(context).pushNamed(Routes.adminpagescreen);
+                } else {
+                  Widget okButton = TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Permission Denied !"),
+                    content: Text("You are not an Admin!"),
                     actions: [
                       okButton,
                     ],
