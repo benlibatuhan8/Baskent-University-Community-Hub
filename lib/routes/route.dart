@@ -30,7 +30,6 @@ class Routes {
   static const calendarscreen = '/calendarscreen';
   static const adminpagescreen = ' /adminpagescreen';
 
-
   static MaterialPageRoute generateRoute(RouteSettings routeSettings,
       {Widget? root, String? routeName}) {
     return MaterialPageRoute(
@@ -72,7 +71,7 @@ class Routes {
         return ModPageEventScreen();
 
       case modpage3:
-        return ModPageAnnScreen();
+        return ModPageAnnouncementScreen();
 
       case mycompage:
         return MyComListPageScreen();
@@ -82,13 +81,12 @@ class Routes {
 
       case computersocietypage:
         return ComPageScreen();
-      
+
       case calendarscreen:
         return CalendarScreen();
 
       case adminpagescreen:
         return adminpageScreen();
-
 
       default:
         return LoginScreen(); // 404 page

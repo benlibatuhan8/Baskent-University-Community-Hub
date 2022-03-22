@@ -125,185 +125,261 @@ class denememodpageState extends State<denememodpageScreen> {
                           // first tab bar view widget
 
                           Container(
-                            alignment: Alignment.topCenter,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Created Events",
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                    Spacer(),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pushNamed(Routes.modpage2);
-                                      },
-                                      child: Text(
-                                        'Create New!',
-                                        style: TextStyle(fontSize: 20),
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Created Events",
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 490,
-                                  child: StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('communities')
-                                        .doc(snapshot.data.toString())
-                                        .collection('events')
-                                        .snapshots(),
-                                    builder: (context,
-                                        AsyncSnapshot<
-                                                QuerySnapshot<
-                                                    Map<String, dynamic>>>
-                                            snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                      final events = snapshot.data?.docs;
+                                      Spacer(),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pushNamed(Routes.modpage2);
+                                        },
+                                        child: Text(
+                                          'Create New!',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 490,
+                                    child: StreamBuilder(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('communities')
+                                          .doc(snapshot.data.toString())
+                                          .collection('events')
+                                          .snapshots(),
+                                      builder: (context,
+                                          AsyncSnapshot<
+                                                  QuerySnapshot<
+                                                      Map<String, dynamic>>>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                        final events = snapshot.data?.docs;
 
-                                      return ListView.builder(
-                                        itemCount: snapshot.data!.docs.length,
-                                        itemBuilder: (ctx, index) => Container(
-                                          margin: EdgeInsets.symmetric(),
-                                          child: Card(
-                                            child: Column(
-                                              //height: 120,
-                                              children: [
-                                                Container(
-                                                  height: 80,
-                                                  child: Card(
-                                                    child: Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 250,
-                                                          child: Expanded(
-                                                            child: TextButton(
-                                                              onPressed: () {},
-                                                              child: Text(
-                                                                events![index].get(
-                                                                    "event_id"),
-                                                                textDirection:
-                                                                    TextDirection
-                                                                        .ltr,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        18.0),
+                                        return ListView.builder(
+                                          itemCount: snapshot.data!.docs.length,
+                                          itemBuilder: (ctx, index) =>
+                                              Container(
+                                            margin: EdgeInsets.symmetric(),
+                                            child: Card(
+                                              child: Column(
+                                                //height: 120,
+                                                children: [
+                                                  Container(
+                                                    height: 80,
+                                                    child: Card(
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 250,
+                                                            child: Expanded(
+                                                              child: TextButton(
+                                                                onPressed:
+                                                                    () {},
+                                                                child: Text(
+                                                                  events![index]
+                                                                      .get(
+                                                                          "event_id"),
+                                                                  textDirection:
+                                                                      TextDirection
+                                                                          .ltr,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18.0),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        Spacer(),
-                                                        IconButton(
-                                                            onPressed: () {},
-                                                            icon: Icon(
-                                                                Icons.delete))
-                                                      ],
+                                                          Spacer(),
+                                                          IconButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                String
+                                                                    selectedeventid =
+                                                                    events[index]
+                                                                        .get(
+                                                                            "event_id");
+                                                                print(
+                                                                    selectedeventid);
+
+                                                                String comId = await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'users')
+                                                                    .where(
+                                                                        'user_id',
+                                                                        isEqualTo:
+                                                                            currentUserID)
+                                                                    .get()
+                                                                    .then((value) => value
+                                                                        .docs[0]
+                                                                            [
+                                                                            "mod_com"]
+                                                                        .toString());
+                                                                String comName = await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'communities')
+                                                                    .where('id',
+                                                                        isEqualTo:
+                                                                            comId)
+                                                                    .get()
+                                                                    .then((value) => value
+                                                                        .docs[0]
+                                                                            [
+                                                                            "name"]
+                                                                        .toString());
+                                                                print(
+                                                                    "ComName: " +
+                                                                        comName);
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'communities')
+                                                                    .doc(
+                                                                        comName)
+                                                                    .collection(
+                                                                        "events")
+                                                                    .doc(
+                                                                        selectedeventid)
+                                                                    .delete();
+                                                              },
+                                                              icon: Icon(
+                                                                  Icons.delete))
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              )),
 
                           // second tab bar view widget
                           Container(
-                            color: Colors.indigo.shade700,
-                            child: Center(
+                              alignment: Alignment.topCenter,
                               child: Column(
                                 children: [
-                                  SizedBox(
-                                    height: 5.0,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Created Announcement",
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                      Spacer(),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pushNamed(Routes.modpage3);
+                                        },
+                                        child: Text(
+                                          'Create New!',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Card(
-                                      child: SizedBox(
-                                          height: 150.0,
-                                          width: double.infinity,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                "\n14/11/2021",
-                                                //textDirection: TextDirection.rtl,
-                                                //textAlign: TextAlign.end,
-                                                textDirection:
-                                                    TextDirection.ltr,
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                  Container(
+                                    height: 490,
+                                    child: StreamBuilder(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('communities')
+                                          .doc(snapshot.data.toString())
+                                          .collection('announcements')
+                                          .orderBy("created_date")
+                                          .snapshots(),
+                                      builder: (context,
+                                          AsyncSnapshot<
+                                                  QuerySnapshot<
+                                                      Map<String, dynamic>>>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                        final announcements =
+                                            snapshot.data?.docs;
+
+                                        return ListView.builder(
+                                          itemCount: snapshot.data!.docs.length,
+                                          itemBuilder: (ctx, index) =>
+                                              Container(
+                                            margin: EdgeInsets.symmetric(),
+                                            child: Card(
+                                              child: Column(
+                                                //height: 120,
                                                 children: [
-                                                  Text(
-                                                    "\nChairperson selection  will be held on 20 December.",
-                                                    style: TextStyle(
-                                                        fontSize: 16.0),
-                                                    textDirection:
-                                                        TextDirection.ltr,
+                                                  Container(
+                                                    height: 80,
+                                                    child: Card(
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 250,
+                                                            child: Expanded(
+                                                              child: TextButton(
+                                                                onPressed:
+                                                                    () {},
+                                                                child: Text(
+                                                                  announcements![
+                                                                          index]
+                                                                      .get(
+                                                                          "description"),
+                                                                  textDirection:
+                                                                      TextDirection
+                                                                          .ltr,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Spacer(),
+                                                          IconButton(
+                                                              onPressed: () {},
+                                                              icon: Icon(
+                                                                  Icons.delete))
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
-                                              )
-                                            ],
-                                          ))),
-                                  SizedBox(
-                                    height: 5.0,
-                                  ),
-                                  Card(
-                                      child: SizedBox(
-                                          height: 150.0,
-                                          width: double.infinity,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                "\n02/12/2021",
-                                                //textDirection: TextDirection.rtl,
-                                                //textAlign: TextAlign.end,
-                                                textDirection:
-                                                    TextDirection.ltr,
-                                                textAlign: TextAlign.end,
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
                                               ),
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    "\nMember registration can be done by filling a form pusplished just now.",
-                                                    style: TextStyle(
-                                                        fontSize: 16.0),
-                                                    textDirection:
-                                                        TextDirection.ltr,
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ))),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
                                 ],
-                              ),
-                            ),
-                          ),
+                              )),
                           // third tab bar view widget
                           //*************************
                           //****************************
@@ -407,7 +483,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                                                               String userId = participants[index].get("user_id");
                                                                               print("UserId: " + userId);
                                                                               DummyRemoveRequests dummyRemoveRequests = new DummyRemoveRequests(user_id: userId, com_id: comId);
-                                                                              FirebaseFirestore.instance.collection('remove_requests').doc(userId).set(dummyRemoveRequests.toJson());
+                                                                              FirebaseFirestore.instance.collection('remove_requests').add(dummyRemoveRequests.toJson());
                                                                               Navigator.pop(context, 'Cancel');
                                                                             },
                                                                             child:
