@@ -137,7 +137,7 @@ class LoginScreen extends StatelessWidget {
                                 user_id: usernameController.text,
                                 card_url: '',
                                 department: '',
-                                following_comms: [],
+                                //following_comms: [],
                                 mod_com: '',
                                 user_name: '',
                               );

@@ -32,7 +32,7 @@ class User_Service {
       String downloadUrl = await snap.ref.getDownloadURL();
       Users user = new Users(
         department: '',
-        following_comms: [],
+        //following_comms: [],
         user_name: '',
         mod_com: '',
         password: password,
@@ -41,6 +41,8 @@ class User_Service {
         user_id: user_id,
       );
       await _firestore.collection("users").doc(user.user_id).set(user.toJson());
+      await _firestore.collection('users').doc(user_id).collection('following_coms').doc(user.user_id).set(user.toJson());
+      await _firestore.collection('users').doc(user_id).collection('following_coms').doc(user_id).delete();
     });
   }
 

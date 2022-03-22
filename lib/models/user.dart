@@ -12,7 +12,7 @@ class Users {
   final String user_type;
   late final String card_url;
   final String department;
-  final List following_comms;
+  //final List following_comms;
 
   final String mod_com;
 
@@ -23,7 +23,7 @@ class Users {
     required this.user_type,
     required this.card_url,
     required this.department,
-    required this.following_comms,
+    //required this.following_comms,
     required this.mod_com,
   });
 
@@ -37,14 +37,14 @@ class Users {
       user_type: snapshot["user_type"],
       card_url: snapshot["card_url"],
       department: snapshot["department"],
-      following_comms: snapshot["following_comms"],
+      //following_comms: snapshot["following_comms"],
       mod_com: snapshot["mod_com"],
     );
   }
 
   Map<String, dynamic> toJson() => {
         'department': department,
-        'following_comms': following_comms,
+        //'following_comms': following_comms,
         'mod_com': mod_com,
         'user_name': user_name,
         'card_url': card_url,

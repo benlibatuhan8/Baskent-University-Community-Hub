@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/chatMessageModel.dart';
+import 'package:comhub/screens/admin_page.dart';
 import 'package:comhub/screens/assets.dart';
 import 'package:comhub/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -308,6 +309,7 @@ class comPageState extends State<ComPageScreen> {
                                       .collection("chat")
                                       .add({
                                     'text': messageText,
+                                    
                                     'sender': loggedInUser.email,
                                     'timestamp': FieldValue.serverTimestamp(),
                                   });

@@ -81,11 +81,11 @@ class adminpageState extends State<adminpageScreen> {
                 bottom: TabBar(
                   tabs: [
                     Tab(
-                      icon: Icon(Icons.event),
+                      icon: Icon(Icons.person),
                     ),
                     Tab(
                       icon: Icon(
-                        Icons.announcement,
+                        Icons.remove_circle,
                       ),
                     ),
                     Tab(
@@ -118,7 +118,7 @@ class adminpageState extends State<adminpageScreen> {
                               Text(
                                 "Users",
                                 style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: 26,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.italic),
                               ),
@@ -166,6 +166,7 @@ class adminpageState extends State<adminpageScreen> {
                                             child: Card(
                                               child: Row(
                                                 children: [
+                                                  Spacer(),
                                                   Container(
                                                     width: 250,
                                                     child: Expanded(
@@ -202,7 +203,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                             (BuildContext context) =>
                                                                                 AlertDialog(
                                                                           title:
-                                                                              Text(users![index].get("user_id")),
+                                                                              Text(users[index].get("user_id")),
                                                                           content:
                                                                               Text('Which community do you want to set a moderator?'),
                                                                           actions: <
@@ -255,9 +256,6 @@ class adminpageState extends State<adminpageScreen> {
                                                     ),
                                                   ),
                                                   Spacer(),
-                                                  IconButton(
-                                                      onPressed: () {},
-                                                      icon: Icon(Icons.delete))
                                                 ],
                                               ),
                                             ),
@@ -275,73 +273,90 @@ class adminpageState extends State<adminpageScreen> {
 
                   // second tab bar view widget
                   Container(
-                    color: Colors.indigo.shade700,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n14/11/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "\nChairperson selection  will be held on 20 December.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
+                    alignment: Alignment.topCenter,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Remove Requests",
+                              style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          height: 490,
+                          child: StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('remove_requests')
+                                .snapshots(),
+                            builder: (context,
+                                AsyncSnapshot<
+                                        QuerySnapshot<Map<String, dynamic>>>
+                                    snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              final remove_requests = snapshot.data?.docs;
+
+                              return ListView.builder(
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: (ctx, index) => Container(
+                                  margin: EdgeInsets.symmetric(),
+                                  child: Card(
+                                    child: Column(
+                                      //height: 120,
+                                      children: [
+                                        Container(
+                                          height: 80,
+                                          child: Card(
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 250,
+                                                  child: Expanded(
+                                                    child: TextButton(
+                                                      onPressed: () {},
+                                                      child: Text(
+                                                        remove_requests![index]
+                                                            .get("user_id"),
+                                                        textDirection:
+                                                            TextDirection.ltr,
+                                                        style: TextStyle(
+                                                            fontSize: 18.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(Icons.cancel)),
+                                                SizedBox(
+                                                  width: 2,
+                                                ),
+                                                IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(Icons.check))
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                          SizedBox(
-                            height: 5.0,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n02/12/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            "\nMember registration can be done by filling a form pusplished just now.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   // third tab bar view widget

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/community.dart';
 import 'package:comhub/screens/home.dart';
+import 'package:comhub/screens/mycomlistpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,13 +72,14 @@ class comListPageState extends State<ComListPageScreen> {
                           ),
                           TextButton(
                             onPressed: () async {
+                              
                               User_Service user_service = new User_Service();
                               Users currUser =
                                   await user_service.getUserById(currentUserID);
 
                               _firestore
                                   .collection('communities')
-                                  .doc(coms![index].get("name"))
+                                  .doc(coms[index].get("name"))
                                   .collection('join_requests')
                                   .doc(currentUserID)
                                   .set(currUser.toJson());

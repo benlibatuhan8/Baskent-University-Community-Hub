@@ -8,6 +8,7 @@ class MyComListPageScreen extends StatefulWidget {
   myComListPageState createState() => myComListPageState();
 }
 
+late String currentuserCom;
 class myComListPageState extends State<MyComListPageScreen> {
   @override
   Widget build(BuildContext context) {
