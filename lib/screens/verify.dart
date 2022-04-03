@@ -64,7 +64,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      key: scaffoldKey,
+      // key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
           "Verification",
@@ -97,8 +97,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 String currentUserID = result![0];
                 users.doc(currentUserID).delete().then((value) {
                   FirebaseAuth.instance.currentUser!.delete();
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
                 });
               },
             ),
@@ -154,8 +153,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     await user2.reload();
     if (user2.emailVerified) {
       timer.cancel();
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
     }
   }
 }

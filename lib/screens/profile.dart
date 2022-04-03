@@ -18,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
+      // key: scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.blue.shade900,
@@ -58,16 +58,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 Container(
                     child: Text('Ahmet Oğuzhan KELEŞ',
-                        style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff1B4B3D),
-                            fontFamily: 'Futura'))),
+                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500, color: Color(0xff1B4B3D), fontFamily: 'Futura'))),
               ])),
-              decoration: BoxDecoration(
-                  color: PrimaryColor,
-                  borderRadius:
-                      BorderRadius.only(bottomRight: Radius.circular(70.0))),
+              decoration: BoxDecoration(color: PrimaryColor, borderRadius: BorderRadius.only(bottomRight: Radius.circular(70.0))),
             ),
           ],
         ),
@@ -76,12 +69,7 @@ class ProfileScreen extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(225, 95, 27, .3),
-                      blurRadius: 20,
-                      offset: Offset(0, 10))
-                ] //BoxShadow
+                boxShadow: [BoxShadow(color: Color.fromRGBO(225, 95, 27, .3), blurRadius: 20, offset: Offset(0, 10))] //BoxShadow
                 ), //BoXDecoration
             child: Column(children: <Widget>[
               Text("Change Password"),
@@ -90,24 +78,14 @@ class ProfileScreen extends StatelessWidget {
               ),
               Container(
                   padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border:
-                          Border(bottom: BorderSide(color: Colors.white54))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white54))),
                   child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "Old Password",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none))),
+                      decoration: InputDecoration(hintText: "Old Password", hintStyle: TextStyle(color: Colors.grey), border: InputBorder.none))),
               Container(
                   padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border:
-                          Border(bottom: BorderSide(color: Colors.white54))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white54))),
                   child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "New Password",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none))),
+                      decoration: InputDecoration(hintText: "New Password", hintStyle: TextStyle(color: Colors.grey), border: InputBorder.none))),
               Container(
                 child: TextButton(onPressed: () {}, child: Text("Save")),
               )
@@ -127,8 +105,7 @@ class ImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        image:
-            DecorationImage(fit: BoxFit.cover, image: NetworkImage(this.url)),
+        image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(this.url)),
         borderRadius: BorderRadius.all(Radius.circular(40.0)),
       ),
       alignment: Alignment.center,

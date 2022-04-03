@@ -3,10 +3,9 @@ import 'package:comhub/screens/calendar.dart';
 import 'package:comhub/screens/comlistpage.dart';
 import 'package:comhub/screens/compage.dart';
 import 'package:comhub/screens/denememodpage.dart';
-import 'package:comhub/screens/modPage.dart';
 import 'package:comhub/screens/modPageAnn.dart';
 import 'package:comhub/screens/modPageEvent.dart';
-import 'package:comhub/screens/MyComListPage.dart';
+import 'package:comhub/screens/mycomlistpage.dart';
 import 'package:comhub/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/screens/login/view/login.dart';
@@ -30,18 +29,14 @@ class Routes {
   static const calendarscreen = '/calendarscreen';
   static const adminpagescreen = ' /adminpagescreen';
 
-
-  static MaterialPageRoute generateRoute(RouteSettings routeSettings,
-      {Widget? root, String? routeName}) {
+  static MaterialPageRoute generateRoute(RouteSettings routeSettings, {Widget? root, String? routeName}) {
     return MaterialPageRoute(
       settings: routeSettings,
-      builder: (context) => _buildPage(
-          routeSettings.name, routeSettings.arguments, root, routeName),
+      builder: (context) => _buildPage(routeSettings.name, routeSettings.arguments, root, routeName),
     );
   }
 
-  static Widget _buildPage(
-      String? name, Object? arguments, Widget? newRoot, String? routeName) {
+  static Widget _buildPage(String? name, Object? arguments, Widget? newRoot, String? routeName) {
     if (routeName != null) {
       newRoot = _buildPage(routeName, arguments, null, null);
     }
@@ -82,13 +77,12 @@ class Routes {
 
       case computersocietypage:
         return ComPageScreen();
-      
+
       case calendarscreen:
         return CalendarScreen();
 
       case adminpagescreen:
         return adminpageScreen();
-
 
       default:
         return LoginScreen(); // 404 page

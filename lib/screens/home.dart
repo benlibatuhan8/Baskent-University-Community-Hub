@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
+      // key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
           "Home",
@@ -58,8 +58,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ListTile(
                       title: Text("MEETING EVENT"),
-                      subtitle: Text(
-                          "First even of semester. Come and meet with members!"),
+                      subtitle: Text("First even of semester. Come and meet with members!"),
                     ),
                     Card(
                       child: Row(
@@ -151,8 +150,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ListTile(
                       title: Text("BREAKFAST EVENT"),
-                      subtitle: Text(
-                          "Come and taste delicious food with our members!"),
+                      subtitle: Text("Come and taste delicious food with our members!"),
                     ),
                     Card(
                       child: Row(

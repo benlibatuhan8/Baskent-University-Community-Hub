@@ -28,7 +28,24 @@ _getFromCamera() async {
   }
 }
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  bool _switchValue = false;
+  bool isAdvisor = false;
+  String dropdownvalue = 'Item 1';
+
+  // List of items in our dropdown menu
+  var items = [
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+  ];
   @override
   Widget build(BuildContext context) {
     final usernameController = TextEditingController();
@@ -66,25 +83,82 @@ class RegisterScreen extends StatelessWidget {
                   ), //BoXDecoration
               child: Column(
                 children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border:
-                            Border(bottom: BorderSide(color: Colors.white54))),
-                    child: TextFormField(
-                      controller: usernameController,
-                      validator: (value) {
-                        if (value?.isEmpty ?? true) {
-                          return 'Student ID cant be empty';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      autofocus: false,
-                      decoration: InputDecoration(
-                        hintText: 'Student ID',
-                        contentPadding:
-                            EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  Visibility(
+                    visible: !isAdvisor,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.white54))),
+                      child: TextFormField(
+                        controller: usernameController,
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Student ID cant be empty';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        autofocus: false,
+                        decoration: InputDecoration(
+                          hintText: 'Student ID',
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: isAdvisor,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.white54))),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: usernameController,
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Advisor Mail cant be empty';
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            autofocus: false,
+                            decoration: InputDecoration(
+                              hintText: 'Advisor mail',
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            ),
+                          ),
+                              Text(
+                                  "Choose the community you would like to advise"),
+                              DropdownButton(
+                                // Initial Value
+                                value: dropdownvalue,
+
+                                // Down Arrow Icon
+                                icon: const Icon(Icons.keyboard_arrow_down),
+
+                                // Array list of items
+                                items: items.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Text(items),
+                                  );
+                                }).toList(),
+                                // After selecting the desired option,it will
+                                // change button value to selected value
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    dropdownvalue = newValue!;
+                                  });
+                                },
+                              ),
+                         
+                        ],
                       ),
                     ),
                   ),
@@ -140,7 +214,19 @@ class RegisterScreen extends StatelessWidget {
                       },
                       icon: Icon(Icons.photo),
                       label:
-                          Text("Please upload an image of your student card"))
+                          Text("Please upload an image of your student card")),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Are you an advisor ?"),
+                      Switch.adaptive(
+                          value: _switchValue,
+                          onChanged: (_switchValue) => setState(() {
+                                this._switchValue = _switchValue;
+                                isAdvisor = !isAdvisor;
+                              })),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -154,7 +240,10 @@ class RegisterScreen extends StatelessWidget {
                   final state = ref.watch(RegisterState.provider);
                   return ElevatedButton(
                       onPressed: () {
-                        if (passwordController.text ==
+                        if (isAdvisor) {
+                          // addAdvisor ekle
+                        }
+                        else if (passwordController.text ==
                             passwordController2.text) {
                           state.addUser(passwordController.text,
                               usernameController.text, context, _im);

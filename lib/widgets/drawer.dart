@@ -68,35 +68,45 @@ class MyDrawer extends StatelessWidget {
               if (ModalRoute.of(context)!.settings.name.toString() == "/home") {
                 Navigator.pop(context);
               } else {
-                Navigator.of(context).pushNamed(Routes.home);
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(Routes.home, (route) => false);
               }
             },
           ),
           ListTile(
             title: const Text('My Communities'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.mycompage);
+              if (ModalRoute.of(context)!.settings.name.toString() ==
+                  "/mycompage") {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.mycompage, (route) => false);
+              }
             },
           ),
           ListTile(
             title: const Text('All Communities'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.allcompage);
+              if (ModalRoute.of(context)!.settings.name.toString() ==
+                  "/allcompage") {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.allcompage, (route) => false);
+              }
             },
           ),
           ListTile(
             title: const Text('Calendar'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.calendarscreen);
+              if (ModalRoute.of(context)!.settings.name.toString() ==
+                  "/calendarscreen") {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.calendarscreen, (route) => false);
+              }
             },
           ),
           ListTile(
@@ -113,10 +123,13 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Settings'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.of(context).pushNamed(Routes.settings);
+              if (ModalRoute.of(context)!.settings.name.toString() ==
+                  "/settings") {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(Routes.settings, (route) => false);
+              }
             },
           ),
           ListTile(
@@ -130,7 +143,8 @@ class MyDrawer extends StatelessWidget {
                 Users currUser = await user_service.getUserById(currentUserID);
                 print(currUser.user_type.toString());
                 if (currUser.user_type == "mod") {
-                  Navigator.of(context).pushNamed(Routes.modpage1);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      Routes.modpage1, (route) => false);
                 } else {
                   Widget okButton = TextButton(
                     child: Text("OK"),
