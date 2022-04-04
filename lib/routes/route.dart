@@ -29,14 +29,17 @@ class Routes {
   static const calendarscreen = '/calendarscreen';
   static const adminpagescreen = ' /adminpagescreen';
 
-  static MaterialPageRoute generateRoute(RouteSettings routeSettings, {Widget? root, String? routeName}) {
+  static MaterialPageRoute generateRoute(RouteSettings routeSettings,
+      {Widget? root, String? routeName}) {
     return MaterialPageRoute(
       settings: routeSettings,
-      builder: (context) => _buildPage(routeSettings.name, routeSettings.arguments, root, routeName),
+      builder: (context) => _buildPage(
+          routeSettings.name, routeSettings.arguments, root, routeName),
     );
   }
 
-  static Widget _buildPage(String? name, Object? arguments, Widget? newRoot, String? routeName) {
+  static Widget _buildPage(
+      String? name, Object? arguments, Widget? newRoot, String? routeName) {
     if (routeName != null) {
       newRoot = _buildPage(routeName, arguments, null, null);
     }
@@ -67,7 +70,7 @@ class Routes {
         return ModPageEventScreen();
 
       case modpage3:
-        return ModPageAnnScreen();
+        return ModPageAnnouncementScreen();
 
       case mycompage:
         return MyComListPageScreen();

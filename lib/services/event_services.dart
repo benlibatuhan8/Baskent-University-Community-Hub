@@ -4,6 +4,12 @@ import 'package:uuid/uuid.dart';
 
 class Event_Services {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<Event> getEventById(String event_id) async {
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection("users").doc(event_id).get();
+    print(Event.fromSnap(documentSnapshot));
+    return Event.fromSnap(documentSnapshot);
+  }
 
   Future<String> uploadEvent(String event_name, String community_name,
       String location, DateTime date, String description) async {

@@ -1,8 +1,13 @@
-import 'package:comhub/models/event.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:comhub/screens/comlistpage.dart';
+import 'package:comhub/widgets/button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:comhub/services/event_services.dart';
+
+import '../models/user.dart';
+import '../services/user_services.dart';
 
 class ModPageEventScreen extends StatefulWidget {
   const ModPageEventScreen({Key? key}) : super(key: key);
@@ -16,15 +21,75 @@ class modPageEventState extends State<ModPageEventScreen> {
   String title = '';
   String description = '';
   String location = '';
-  DateTime date = DateTime.now();
-  double maxValue = 0;
-  bool? brushedTeeth = false;
-  bool enableFeature = false;
+  DateTime dateTime = DateTime.now();
 
-  void _submit() {
+  double maxValue = 0;
+
+  String getText() {
+    if (dateTime == null) {
+      return 'Select DateTime';
+    } else {
+      return intl.DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+    }
+  }
+
+  Future<DateTime?> pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: dateTime,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+    );
+
+    if (newDate == null) return null;
+
+    return newDate;
+  }
+
+  Future<TimeOfDay?> pickTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: dateTime != null
+          ? TimeOfDay(hour: dateTime.hour, minute: dateTime.minute)
+          : initialTime,
+    );
+
+    if (newTime == null) return null;
+
+    return newTime;
+  }
+
+  Future pickDateTime(BuildContext context) async {
+    final date = await pickDate(context);
+    if (date == null) return;
+
+    final time = await pickTime(context);
+    if (time == null) return;
+
+    setState(() {
+      dateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+      );
+    });
+  }
+
+  _submit() async {
     // BURDA SUBMİTE BASINCA YAPILCAKLAR Yazılır
-    Event_Services()
-        .uploadEvent(title, 'Computer Society', location, date, description);
+    Users userfields = await User_Service().getUserById(currentUserID);
+    var snap = await FirebaseFirestore.instance
+        .collection("communities")
+        .where('id', isEqualTo: userfields.mod_com)
+        .get()
+        .then((value) => value.docs[0]["name"]);
+    print(dateTime);
+    print(Event_Services().getEventById("Computer Societydeneme"));
+    Event_Services().uploadEvent(title, snap, location, dateTime, description);
   }
 
   @override
@@ -72,13 +137,10 @@ class modPageEventState extends State<ModPageEventScreen> {
                           },
                           maxLines: 5,
                         ),
-                        _FormDatePicker(
-                          date: date,
-                          onChanged: (value) {
-                            setState(() {
-                              date = value;
-                            });
-                          },
+                        ButtonHeaderWidget(
+                          title: 'DateTime',
+                          text: getText(),
+                          onClicked: () => pickDateTime(context),
                         ),
                         TextFormField(
                           decoration: const InputDecoration(
@@ -110,62 +172,6 @@ class modPageEventState extends State<ModPageEventScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _FormDatePicker extends StatefulWidget {
-  final DateTime date;
-  final ValueChanged<DateTime> onChanged;
-
-  const _FormDatePicker({
-    required this.date,
-    required this.onChanged,
-  });
-
-  @override
-  _FormDatePickerState createState() => _FormDatePickerState();
-}
-
-class _FormDatePickerState extends State<_FormDatePicker> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              'Date',
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            Text(
-              intl.DateFormat.yMd().add_Hm().format(widget.date),
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ],
-        ),
-        TextButton(
-          child: const Text('Edit'),
-          onPressed: () async {
-            var newDate = await showDatePicker(
-              context: context,
-              initialDate: widget.date,
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-            );
-            // Don't change the date if the date picker returns null.
-            if (newDate == null) {
-              return;
-            }
-
-            widget.onChanged(newDate);
-          },
-        )
-      ],
     );
   }
 }
