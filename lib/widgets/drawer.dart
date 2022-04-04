@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/user.dart';
+import 'package:comhub/screens/admin_page.dart';
 import 'package:comhub/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,8 @@ import 'package:comhub/routes/route.dart';
 import 'package:comhub/widgets/restart.dart';
 
 import '../screens/denememodpage.dart';
+
+var loggedInUser;
 
 class MyDrawer extends StatelessWidget {
   var currentUser = FirebaseAuth.instance.currentUser;
@@ -155,6 +158,42 @@ class MyDrawer extends StatelessWidget {
                   AlertDialog alert = AlertDialog(
                     title: Text("Permission Denied !"),
                     content: Text("You are not a society moderator"),
+                    actions: [
+                      okButton,
+                    ],
+                  );
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                }
+              }
+            },
+          ),
+          ListTile(
+            title: const Text('Advisor Page'),
+            onTap: () async {
+              if (currentUser != null) {
+                print(currentUser.email);
+                List<String>? result = currentUser.email?.split("@");
+                String currentUserID = result![0];
+                User_Service user_service = new User_Service();
+                Users currUser = await user_service.getUserById(currentUserID);
+                print(currUser.user_type.toString());
+                if (currUser.user_type == "advisor") {
+                  Navigator.of(context).pushNamed(Routes.advisorpagescreen);
+                } else {
+                  Widget okButton = TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Permission Denied !"),
+                    content: Text("You are not a society Advisor"),
                     actions: [
                       okButton,
                     ],

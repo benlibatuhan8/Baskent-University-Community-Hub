@@ -1,4 +1,5 @@
 import 'package:comhub/screens/admin_page.dart';
+import 'package:comhub/screens/advisor_page.dart';
 import 'package:comhub/screens/calendar.dart';
 import 'package:comhub/screens/comlistpage.dart';
 import 'package:comhub/screens/compage.dart';
@@ -28,6 +29,7 @@ class Routes {
   static const computersocietypage = '/computersocietypage';
   static const calendarscreen = '/calendarscreen';
   static const adminpagescreen = ' /adminpagescreen';
+  static const advisorpagescreen = ' /advisorpagescreen';
 
   static MaterialPageRoute generateRoute(RouteSettings routeSettings,
       {Widget? root, String? routeName}) {
@@ -86,6 +88,9 @@ class Routes {
 
       case adminpagescreen:
         return adminpageScreen();
+
+      case advisorpagescreen:
+        return AdvisorPageScreen();
 
       default:
         return LoginScreen(); // 404 page

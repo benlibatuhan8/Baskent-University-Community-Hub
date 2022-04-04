@@ -322,7 +322,44 @@ class adminpageState extends State<adminpageScreen> {
                                                   width: 250,
                                                   child: Expanded(
                                                     child: TextButton(
-                                                      onPressed: () {},
+                                                      onPressed: () async {
+                                                        String comId =
+                                                            remove_requests![
+                                                                    index]
+                                                                .get("com_id");
+                                                        print(
+                                                            "ComId: " + comId);
+                                                        String comName =
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'communities')
+                                                                .where('id',
+                                                                    isEqualTo:
+                                                                        comId)
+                                                                .get()
+                                                                .then((value) => value
+                                                                    .docs[0]
+                                                                        ["name"]
+                                                                    .toString());
+                                                        print("ComName: " +
+                                                            comName);
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) => AlertDialog(
+                                                                title: Text(
+                                                                    "User Information"),
+                                                                content: Text('User ID: ' +
+                                                                    remove_requests[
+                                                                            index]
+                                                                        .get(
+                                                                            "user_id") +
+                                                                    "\n\n" +
+                                                                    "Society: " +
+                                                                    comName),
+                                                                actions: <
+                                                                    Widget>[]));
+                                                      },
                                                       child: Text(
                                                         remove_requests![index]
                                                             .get("user_id"),
@@ -334,15 +371,121 @@ class adminpageState extends State<adminpageScreen> {
                                                     ),
                                                   ),
                                                 ),
+                                                // Text(
+                                                //   remove_requests[index]
+                                                //       .get("com_id"),
+                                                //   textDirection:
+                                                //       TextDirection.ltr,
+                                                //   style:
+                                                //       TextStyle(fontSize: 18.0),
+                                                // ),
                                                 Spacer(),
                                                 IconButton(
-                                                    onPressed: () {},
+                                                    onPressed: () async {
+                                                      String comId =
+                                                          remove_requests[index]
+                                                              .get("com_id");
+                                                      print("ComId: " + comId);
+                                                      String userId =
+                                                          remove_requests[index]
+                                                              .get('user_id');
+                                                      String comName =
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'communities')
+                                                              .where('id',
+                                                                  isEqualTo:
+                                                                      comId)
+                                                              .get()
+                                                              .then((value) => value
+                                                                  .docs[0]
+                                                                      ["name"]
+                                                                  .toString());
+                                                      print("ComName: " +
+                                                          comName);
+
+                                                      var collection =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'remove_requests');
+                                                      var snapshot =
+                                                          await collection
+                                                              .where('com_id',
+                                                                  isEqualTo:
+                                                                      comId)
+                                                              .where('user_id',
+                                                                  isEqualTo:
+                                                                      userId)
+                                                              .get();
+                                                      await snapshot
+                                                          .docs.first.reference
+                                                          .delete();
+                                                    },
                                                     icon: Icon(Icons.cancel)),
                                                 SizedBox(
                                                   width: 2,
                                                 ),
                                                 IconButton(
-                                                    onPressed: () {},
+                                                    onPressed: () async {
+                                                      String comId =
+                                                          remove_requests[index]
+                                                              .get("com_id");
+                                                      print("ComId: " + comId);
+                                                      String userId =
+                                                          remove_requests[index]
+                                                              .get('user_id');
+                                                      print(
+                                                          "UserID: " + userId);
+                                                      String comName =
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'communities')
+                                                              .where('id',
+                                                                  isEqualTo:
+                                                                      comId)
+                                                              .get()
+                                                              .then((value) => value
+                                                                  .docs[0]
+                                                                      ["name"]
+                                                                  .toString());
+                                                      print("ComName: " +
+                                                          comName);
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'communities')
+                                                          .doc(comName)
+                                                          .collection(
+                                                              'participants')
+                                                          .doc(userId)
+                                                          .delete();
+                                                      FirebaseFirestore.instance
+                                                          .collection('users')
+                                                          .doc(userId)
+                                                          .collection(
+                                                              'following_coms')
+                                                          .doc(comId)
+                                                          .delete();
+                                                      var collection =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'remove_requests');
+                                                      var snapshot =
+                                                          await collection
+                                                              .where('com_id',
+                                                                  isEqualTo:
+                                                                      comId)
+                                                              .where('user_id',
+                                                                  isEqualTo:
+                                                                      userId)
+                                                              .get();
+                                                      await snapshot
+                                                          .docs.first.reference
+                                                          .delete();
+                                                    },
                                                     icon: Icon(Icons.check))
                                               ],
                                             ),

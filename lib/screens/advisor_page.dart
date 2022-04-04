@@ -7,6 +7,7 @@ import 'package:comhub/models/dummyremove_requests.dart';
 import 'package:comhub/models/dummyuser.dart';
 import 'package:comhub/screens/assets.dart';
 import 'package:comhub/screens/home.dart';
+import 'package:comhub/screens/verify.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,12 @@ import 'comlistpage.dart';
 
 var loggedInUser;
 
-class denememodpageScreen extends StatefulWidget {
+class AdvisorPageScreen extends StatefulWidget {
   @override
-  denememodpageState createState() => denememodpageState();
+  AdvisorPageState createState() => AdvisorPageState();
 }
 
-class denememodpageState extends State<denememodpageScreen> {
+class AdvisorPageState extends State<AdvisorPageScreen> {
   final _auth = FirebaseAuth.instance;
 
   late String messageText;
@@ -96,11 +97,11 @@ class denememodpageState extends State<denememodpageScreen> {
                         bottom: TabBar(
                           tabs: [
                             Tab(
-                              icon: Icon(Icons.event),
+                              icon: Icon(Icons.person),
                             ),
                             Tab(
                               icon: Icon(
-                                Icons.announcement,
+                                Icons.person_off,
                               ),
                             ),
                             Tab(
@@ -125,112 +126,198 @@ class denememodpageState extends State<denememodpageScreen> {
                           // first tab bar view widget
 
                           Container(
-                              alignment: Alignment.topCenter,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Created Events",
-                                        style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic),
-                                      ),
-                                      Spacer(),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pushNamed(Routes.modpage2);
-                                        },
-                                        child: Text(
-                                          'Create New!',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    height: 490,
-                                    child: StreamBuilder(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('communities')
-                                          .doc(snapshot.data.toString())
-                                          .collection('events')
-                                          .snapshots(),
-                                      builder: (context,
-                                          AsyncSnapshot<
-                                                  QuerySnapshot<
-                                                      Map<String, dynamic>>>
-                                              snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        }
-                                        final events = snapshot.data?.docs;
+                            alignment: Alignment.topCenter,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Members",
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  height: 490,
+                                  child: StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('communities')
+                                        .doc(snapshot.data.toString())
+                                        .collection('participants')
+                                        .snapshots(),
+                                    builder: (context,
+                                        AsyncSnapshot<
+                                                QuerySnapshot<
+                                                    Map<String, dynamic>>>
+                                            snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      final participants = snapshot.data?.docs;
 
-                                        return ListView.builder(
-                                          itemCount: snapshot.data!.docs.length,
-                                          itemBuilder: (ctx, index) =>
-                                              Container(
-                                            margin: EdgeInsets.symmetric(),
-                                            child: Card(
-                                              child: Column(
-                                                //height: 120,
-                                                children: [
-                                                  Container(
-                                                    height: 80,
-                                                    child: Card(
-                                                      child: Row(
-                                                        children: [
-                                                          Container(
-                                                            width: 250,
-                                                            child: Expanded(
-                                                              child: TextButton(
-                                                                onPressed:
-                                                                    () {},
-                                                                child: Text(
-                                                                  events![index]
-                                                                      .get(
-                                                                          "event_id"),
-                                                                  textDirection:
-                                                                      TextDirection
-                                                                          .ltr,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          18.0),
-                                                                ),
+                                      return ListView.builder(
+                                        itemCount: snapshot.data!.docs.length,
+                                        itemBuilder: (ctx, index) => Container(
+                                          margin: EdgeInsets.symmetric(),
+                                          child: Card(
+                                            child: Column(
+                                              //height: 120,
+                                              children: [
+                                                Container(
+                                                  height: 80,
+                                                  child: Card(
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 250,
+                                                          child: Expanded(
+                                                            child: TextButton(
+                                                              onPressed: () {},
+                                                              child: Text(
+                                                                participants![
+                                                                        index]
+                                                                    .get(
+                                                                        "user_id"),
+                                                                textDirection:
+                                                                    TextDirection
+                                                                        .ltr,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18.0),
                                                               ),
                                                             ),
                                                           ),
-                                                          Spacer(),
-                                                          IconButton(
+                                                        ),
+                                                        Spacer(),
+                                                        IconButton(
+                                                            onPressed: () => {
+                                                                  showDialog<
+                                                                      String>(
+                                                                    context:
+                                                                        context,
+                                                                    builder: (BuildContext
+                                                                            context) =>
+                                                                        AlertDialog(
+                                                                      title: Text(
+                                                                          'Removing User!!!'),
+                                                                      content: Text("Are you sure you want to remove member " +
+                                                                          participants[index]
+                                                                              .get("user_id") +
+                                                                          " from the society"),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        TextButton(
+                                                                            onPressed: () => Navigator.pop(context,
+                                                                                'Cancel'),
+                                                                            child:
+                                                                                Text("Cancel")),
+                                                                        TextButton(
+                                                                            onPressed:
+                                                                                () async {
+                                                                              String userId = participants[index].get("user_id");
+                                                                              print(userId);
+                                                                              String comId = await FirebaseFirestore.instance.collection('users').where('user_id', isEqualTo: currentUserID).get().then((value) => value.docs[0]["mod_com"].toString());
+                                                                              print(comId);
+                                                                              String comName = await FirebaseFirestore.instance.collection('communities').where('id', isEqualTo: comId).get().then((value) => value.docs[0]["name"].toString());
+                                                                              print(comName);
+                                                                              FirebaseFirestore.instance.collection('communities').doc(comName).collection('participants').doc(userId).delete();
+                                                                              FirebaseFirestore.instance.collection('users').doc(userId).collection('following_coms').doc(comId).delete();
+                                                                            },
+                                                                            child:
+                                                                                Text("Remove")),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                },
+                                                            icon: Icon(
+                                                                Icons.close))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // second tab bar view widget
+                          Container(
+                            alignment: Alignment.topCenter,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Remove Requests",
+                                      style: TextStyle(
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  height: 490,
+                                  child: StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('communities')
+                                        .doc(snapshot.data.toString())
+                                        .collection('remove_requests')
+                                        .snapshots(),
+                                    builder: (context,
+                                        AsyncSnapshot<
+                                                QuerySnapshot<
+                                                    Map<String, dynamic>>>
+                                            snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      final remove_requests =
+                                          snapshot.data?.docs;
+
+                                      return ListView.builder(
+                                        itemCount: snapshot.data!.docs.length,
+                                        itemBuilder: (ctx, index) => Container(
+                                          margin: EdgeInsets.symmetric(),
+                                          child: Card(
+                                            child: Column(
+                                              //height: 120,
+                                              children: [
+                                                Container(
+                                                  height: 80,
+                                                  child: Card(
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 250,
+                                                          child: Expanded(
+                                                            child: TextButton(
                                                               onPressed:
                                                                   () async {
-                                                                String
-                                                                    selectedeventid =
-                                                                    events[index]
+                                                                String comId =
+                                                                    remove_requests![
+                                                                            index]
                                                                         .get(
-                                                                            "event_id");
+                                                                            "com_id");
                                                                 print(
-                                                                    selectedeventid);
-
-                                                                String comId = await FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'users')
-                                                                    .where(
-                                                                        'user_id',
-                                                                        isEqualTo:
-                                                                            currentUserID)
-                                                                    .get()
-                                                                    .then((value) => value
-                                                                        .docs[0]
-                                                                            [
-                                                                            "mod_com"]
-                                                                        .toString());
+                                                                    "ComId: " +
+                                                                        comId);
                                                                 String comName = await FirebaseFirestore
                                                                     .instance
                                                                     .collection(
@@ -247,139 +334,211 @@ class denememodpageState extends State<denememodpageScreen> {
                                                                 print(
                                                                     "ComName: " +
                                                                         comName);
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'communities')
-                                                                    .doc(
-                                                                        comName)
-                                                                    .collection(
-                                                                        "events")
-                                                                    .doc(
-                                                                        selectedeventid)
-                                                                    .delete();
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder: (BuildContext context) => AlertDialog(
+                                                                        title: Text(
+                                                                            "User Information"),
+                                                                        content: Text('User ID: ' +
+                                                                            remove_requests[index].get(
+                                                                                "user_id") +
+                                                                            "\n\n" +
+                                                                            "Society: " +
+                                                                            comName),
+                                                                        actions: <
+                                                                            Widget>[]));
                                                               },
-                                                              icon: Icon(
-                                                                  Icons.delete))
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  )
-                                ],
-                              )),
-
-                          // second tab bar view widget
-                          Container(
-                              alignment: Alignment.topCenter,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Created Announcement",
-                                        style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic),
-                                      ),
-                                      Spacer(),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pushNamed(Routes.modpage3);
-                                        },
-                                        child: Text(
-                                          'Create New!',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    height: 490,
-                                    child: StreamBuilder(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('communities')
-                                          .doc(snapshot.data.toString())
-                                          .collection('announcements')
-                                          .orderBy("created_date")
-                                          .snapshots(),
-                                      builder: (context,
-                                          AsyncSnapshot<
-                                                  QuerySnapshot<
-                                                      Map<String, dynamic>>>
-                                              snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        }
-                                        final announcements =
-                                            snapshot.data?.docs;
-
-                                        return ListView.builder(
-                                          itemCount: snapshot.data!.docs.length,
-                                          itemBuilder: (ctx, index) =>
-                                              Container(
-                                            margin: EdgeInsets.symmetric(),
-                                            child: Card(
-                                              child: Column(
-                                                //height: 120,
-                                                children: [
-                                                  Container(
-                                                    height: 80,
-                                                    child: Card(
-                                                      child: Row(
-                                                        children: [
-                                                          Container(
-                                                            width: 250,
-                                                            child: Expanded(
-                                                              child: TextButton(
-                                                                onPressed:
-                                                                    () {},
-                                                                child: Text(
-                                                                  announcements![
-                                                                          index]
-                                                                      .get(
-                                                                          "description"),
-                                                                  textDirection:
-                                                                      TextDirection
-                                                                          .ltr,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          18.0),
-                                                                ),
+                                                              child: Text(
+                                                                remove_requests![
+                                                                        index]
+                                                                    .get(
+                                                                        "user_id"),
+                                                                textDirection:
+                                                                    TextDirection
+                                                                        .ltr,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18.0),
                                                               ),
                                                             ),
                                                           ),
-                                                          Spacer(),
-                                                          IconButton(
-                                                              onPressed: () {},
-                                                              icon: Icon(
-                                                                  Icons.delete))
-                                                        ],
-                                                      ),
+                                                        ),
+                                                        // Text(
+                                                        //   remove_requests[index]
+                                                        //       .get("com_id"),
+                                                        //   textDirection:
+                                                        //       TextDirection.ltr,
+                                                        //   style:
+                                                        //       TextStyle(fontSize: 18.0),
+                                                        // ),
+                                                        Spacer(),
+                                                        IconButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String comId =
+                                                                  remove_requests[
+                                                                          index]
+                                                                      .get(
+                                                                          "com_id");
+                                                              print("ComId: " +
+                                                                  comId);
+                                                              String userId =
+                                                                  remove_requests[
+                                                                          index]
+                                                                      .get(
+                                                                          'user_id');
+                                                              String comName = await FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'communities')
+                                                                  .where('id',
+                                                                      isEqualTo:
+                                                                          comId)
+                                                                  .get()
+                                                                  .then((value) => value
+                                                                      .docs[0][
+                                                                          "name"]
+                                                                      .toString());
+                                                              print(
+                                                                  "ComName: " +
+                                                                      comName);
+
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'communities')
+                                                                  .doc(comName)
+                                                                  .collection(
+                                                                      'remove_requests')
+                                                                  .doc(userId)
+                                                                  .delete();
+
+                                                              // var collection =
+                                                              //     FirebaseFirestore
+                                                              //         .instance
+                                                              //         .collection(
+                                                              //             'remove_requests');
+                                                              // var snapshot = await collection
+                                                              //     .where(
+                                                              //         'com_id',
+                                                              //         isEqualTo:
+                                                              //             comId)
+                                                              //     .where(
+                                                              //         'user_id',
+                                                              //         isEqualTo:
+                                                              //             userId)
+                                                              //     .get();
+                                                              // await snapshot
+                                                              //     .docs
+                                                              //     .first
+                                                              //     .reference
+                                                              //     .delete();
+                                                            },
+                                                            icon: Icon(
+                                                                Icons.cancel)),
+                                                        SizedBox(
+                                                          width: 2,
+                                                        ),
+                                                        IconButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String comId =
+                                                                  remove_requests[
+                                                                          index]
+                                                                      .get(
+                                                                          "com_id");
+                                                              print("ComId: " +
+                                                                  comId);
+                                                              String userId =
+                                                                  remove_requests[
+                                                                          index]
+                                                                      .get(
+                                                                          'user_id');
+                                                              print("UserID: " +
+                                                                  userId);
+                                                              String comName = await FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'communities')
+                                                                  .where('id',
+                                                                      isEqualTo:
+                                                                          comId)
+                                                                  .get()
+                                                                  .then((value) => value
+                                                                      .docs[0][
+                                                                          "name"]
+                                                                      .toString());
+                                                              print(
+                                                                  "ComName: " +
+                                                                      comName);
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'communities')
+                                                                  .doc(comName)
+                                                                  .collection(
+                                                                      'participants')
+                                                                  .doc(userId)
+                                                                  .delete();
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .doc(userId)
+                                                                  .collection(
+                                                                      'following_coms')
+                                                                  .doc(comId)
+                                                                  .delete();
+
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'communities')
+                                                                  .doc(comName)
+                                                                  .collection(
+                                                                      'remove_requests')
+                                                                  .doc(userId)
+                                                                  .delete();
+
+                                                              // var collection =
+                                                              //     FirebaseFirestore
+                                                              //         .instance
+                                                              //         .collection(
+                                                              //             'remove_requests');
+                                                              // var snapshot = await collection
+                                                              //     .where(
+                                                              //         'com_id',
+                                                              //         isEqualTo:
+                                                              //             comId)
+                                                              //     .where(
+                                                              //         'user_id',
+                                                              //         isEqualTo:
+                                                              //             userId)
+                                                              //     .get();
+                                                              // await snapshot
+                                                              //     .docs
+                                                              //     .first
+                                                              //     .reference
+                                                              //     .delete();
+                                                            },
+                                                            icon: Icon(
+                                                                Icons.check))
+                                                      ],
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  )
-                                ],
-                              )),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           // third tab bar view widget
                           //*************************
                           //****************************
@@ -482,9 +641,8 @@ class denememodpageState extends State<denememodpageScreen> {
                                                                               print("ComId: " + comId);
                                                                               String userId = participants[index].get("user_id");
                                                                               print("UserId: " + userId);
-                                                                              String comName = await FirebaseFirestore.instance.collection('communities').where('id', isEqualTo: comId).get().then((value) => value.docs[0]["name"].toString());
                                                                               DummyRemoveRequests dummyRemoveRequests = new DummyRemoveRequests(user_id: userId, com_id: comId);
-                                                                              FirebaseFirestore.instance.collection('communities').doc(comName).collection('remove_requests').doc(userId).set(dummyRemoveRequests.toJson());
+                                                                              FirebaseFirestore.instance.collection('remove_requests').doc(userId).set(dummyRemoveRequests.toJson());
                                                                               Navigator.pop(context, 'Cancel');
                                                                             },
                                                                             child:
