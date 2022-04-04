@@ -21,7 +21,8 @@ class User_Service {
     return Users.fromSnap(documentSnapshot);
   }
 
-  Future<void> signUpUser(String user_id, String password, Uint8List im) async {
+  Future<void> signUpUser(
+      String user_id, String password, String name, Uint8List im) async {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
             email: user_id + "@mail.baskent.edu.tr", password: password)
@@ -33,7 +34,7 @@ class User_Service {
       Users user = new Users(
         department: '',
         //following_comms: [],
-        user_name: '',
+        user_name: name,
         mod_com: '',
         password: password,
         card_url: downloadUrl,
@@ -41,8 +42,18 @@ class User_Service {
         user_id: user_id,
       );
       await _firestore.collection("users").doc(user.user_id).set(user.toJson());
-      await _firestore.collection('users').doc(user_id).collection('following_coms').doc(user.user_id).set(user.toJson());
-      await _firestore.collection('users').doc(user_id).collection('following_coms').doc(user_id).delete();
+      await _firestore
+          .collection('users')
+          .doc(user_id)
+          .collection('following_coms')
+          .doc(user.user_id)
+          .set(user.toJson());
+      await _firestore
+          .collection('users')
+          .doc(user_id)
+          .collection('following_coms')
+          .doc(user_id)
+          .delete();
     });
   }
 

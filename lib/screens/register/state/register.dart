@@ -28,8 +28,8 @@ class RegisterState {
 
   RegisterState(this._reader);
 
-  Future<void> addUser(String password, String user_id, BuildContext context,
-      Uint8List im) async {
+  Future<void> addUser(String password, String user_id, String name,
+      BuildContext context, Uint8List im) async {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
@@ -39,7 +39,7 @@ class RegisterState {
     if (!validateUserId(user_id)) {
       AlertDialog alert = AlertDialog(
         title: Text(
-          "Your student id must consist 8 digits",
+          "Your student id must consist 8 digits ",
         ),
         actions: [
           okButton,
@@ -73,7 +73,7 @@ class RegisterState {
       );
     } else {
       try {
-        await User_Service().signUpUser(user_id, password, im);
+        await User_Service().signUpUser(user_id, password, name, im);
 
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => VerifyScreen()));

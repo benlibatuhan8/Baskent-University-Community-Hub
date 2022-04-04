@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:comhub/models/user.dart';
 import 'package:comhub/screens/login/state/login.dart';
 import 'package:comhub/screens/register/state/register.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
@@ -34,6 +34,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool textScanning = false;
+  XFile? imageFile;
+  String scannedText = "";
+  String? name = "";
+  String? studentID = "";
+
   bool _switchValue = false;
   bool isAdvisor = false;
   String dropdownvalue = 'Item 1';
@@ -85,30 +91,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   children: <Widget>[
                     Visibility(
-                      visible: !isAdvisor,
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(color: Colors.white54))),
-                        child: TextFormField(
-                          controller: usernameController,
-                          validator: (value) {
-                            if (value?.isEmpty ?? true) {
-                              return 'Student ID cant be empty';
-                            }
-                            return null;
-                          },
-                          keyboardType: TextInputType.emailAddress,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                            hintText: 'Student ID',
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          ),
-                        ),
-                      ),
-                    ),
+                        visible: !isAdvisor,
+                        child: Column(
+                          children: [
+                            TextButton.icon(
+                                onPressed: () {
+                                  getImage(ImageSource.camera);
+                                },
+                                icon: Icon(Icons.camera_alt),
+                                label: Text("Camera")),
+                            TextButton.icon(
+                                onPressed: () {
+                                  getImage(ImageSource.gallery);
+                                },
+                                icon: Icon(Icons.photo),
+                                label: Text("Gallery")),
+                            Container(
+                              child: Text(
+                                "Student ID: " +
+                                    studentID.toString() +
+                                    "\nName: " +
+                                    name.toString(),
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        )),
                     Visibility(
                       visible: isAdvisor,
                       child: Container(
@@ -244,8 +252,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             // addAdvisor ekle
                           } else if (passwordController.text ==
                               passwordController2.text) {
-                            state.addUser(passwordController.text,
-                                usernameController.text, context, _im);
+                            state.addUser(
+                                passwordController.text,
+                                studentID.toString(),
+                                name.toString(),
+                                context,
+                                _im);
                           } else {
                             Widget okButton = TextButton(
                               child: Text("OK"),
@@ -280,5 +292,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  void getImage(ImageSource source) async {
+    try {
+      final pickedImage = await ImagePicker().pickImage(source: source);
+      if (pickedImage != null) {
+        imageFile = pickedImage;
+        setState(() {});
+        getRecognisedText(pickedImage);
+        _im = await pickedImage.readAsBytes();
+      }
+    } catch (e) {
+      textScanning = false;
+      imageFile = null;
+      scannedText = "Error occured while scanning";
+      setState(() {});
+    }
+  }
+
+  void getRecognisedText(XFile image) async {
+    final inputImage = InputImage.fromFilePath(image.path);
+    final textDetector = GoogleMlKit.vision.textDetector();
+    RecognisedText recognisedText = await textDetector.processImage(inputImage);
+    await textDetector.close();
+    scannedText = "";
+    for (TextBlock block in recognisedText.blocks) {
+      for (TextLine line in block.lines) {
+        scannedText = scannedText + line.text + "\n";
+      }
+    }
+    parseImageText(scannedText);
+    textScanning = false;
+    setState(() {});
+  }
+
+  void parseImageText(String text) {
+    RegExp numExp = RegExp(r"2[0-9]{7}");
+    RegExp strExp = RegExp(r"ADI SOYADI.*\n");
+    studentID = numExp.firstMatch(text)?.group(0).toString();
+    name = strExp.firstMatch(text)?.group(0).toString();
+    name = name.toString().replaceAll("ADI SOYADI", "");
   }
 }
