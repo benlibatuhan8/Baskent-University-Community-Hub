@@ -21,7 +21,23 @@ var currentUser = FirebaseAuth.instance.currentUser;
 List<String>? result = currentUser!.email?.split("@");
 String currentUserID = result![0];
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  ProfileScreenState createState() => ProfileScreenState();
+}
+
+_submit() async {
+  // BURDA SUBMİTE BASINCA YAPILCAKLAR Yazılır
+}
+
+class ProfileScreenState extends State<ProfileScreen> {
+  final _formKeyProfile = GlobalKey<FormState>();
+  String oldpassword = '';
+  String newpassword = '';
+  String confirmnewpassword = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +50,6 @@ class ProfileScreen extends StatelessWidget {
         Stack(
           children: <Widget>[
             Container(
-              color: SecondaryColor,
               width: MediaQuery.of(context).size.width,
               height: topSectionHeight,
             ),
@@ -67,7 +82,6 @@ class ProfileScreen extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xff1B4B3D),
                             fontFamily: 'Futura'))),
               ])),
               decoration: BoxDecoration(
@@ -78,46 +92,81 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
         Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(225, 95, 27, .3),
-                      blurRadius: 20,
-                      offset: Offset(0, 10))
-                ] //BoxShadow
-                ), //BoXDecoration
-            child: Column(children: <Widget>[
-              Text("Change Password"),
-              SizedBox(
-                height: 10.0,
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+          ), //BoXDecoration
+          child: Form(
+            key: _formKeyProfile,
+            child: Scrollbar(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Card(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ...[
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                filled: true,
+                                hintText: 'Enter old password',
+                                labelText: 'Old Password',
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  oldpassword = value;
+                                });
+                              },
+                              maxLines: 1,
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                filled: true,
+                                hintText: 'Enter new password',
+                                labelText: 'New Password',
+                              ),
+                              onChanged: (value) {
+                                newpassword = value;
+                              },
+                              maxLines: 1,
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                filled: true,
+                                hintText: 'Enter new password again',
+                                labelText: 'Confirm Password',
+                              ),
+                              onChanged: (value) {
+                                confirmnewpassword = value;
+                              },
+                              maxLines: 1,
+                            ),
+                            ElevatedButton(
+                                onPressed: _submit, child: Text("Submit"))
+                          ].expand(
+                            (widget) => [
+                              widget,
+                              const SizedBox(
+                                height: 24,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border:
-                          Border(bottom: BorderSide(color: Colors.white54))),
-                  child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "Old Password",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none))),
-              Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border:
-                          Border(bottom: BorderSide(color: Colors.white54))),
-                  child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "New Password",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none))),
-              Container(
-                child: TextButton(onPressed: () {}, child: Text("Save")),
-              )
-            ])),
+            ),
+          ),
+        ),
       ]),
     );
   }
