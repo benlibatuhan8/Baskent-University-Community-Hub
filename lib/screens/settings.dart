@@ -21,7 +21,7 @@ String currentUserID = result![0];
 
 class SettingsScreen extends StatelessWidget {
   int val = -1;
-  bool _value = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,58 +68,24 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   SwitchListTile(
-                    activeColor: Colors.purple,
+                    activeColor: Colors.indigo[800],
                     value: true,
                     title: Text("Event Notifications"),
                     onChanged: (val) {},
                   ),
                   _buildDivider(),
                   SwitchListTile(
-                    activeColor: Colors.purple,
+                    activeColor: Colors.indigo[800],
                     value: true,
                     title: Text("News Notifications"),
                     onChanged: (val) {},
                   ),
                   _buildDivider(),
                   SwitchListTile(
-                    activeColor: Colors.purple,
+                    activeColor: Colors.indigo[800],
                     value: true,
                     title: Text("Chat Notifications"),
                     onChanged: (val) {},
-                  ),
-                ],
-              ),
-            ),
-            Text(
-              "Language Settings",
-              style: TextStyle(fontSize: 17.0),
-            ),
-            Card(
-              margin: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 0,
-              ),
-              child: Column(
-                children: <Widget>[
-                  _buildDivider(),
-                  ListTile(
-                    title: Text("Türkçe"),
-                    leading: Radio(
-                      value: 1,
-                      groupValue: val,
-                      onChanged: (value) {},
-                      activeColor: Colors.green,
-                    ),
-                  ),
-                  _buildDivider(),
-                  ListTile(
-                    title: Text("English"),
-                    leading: Radio(
-                      value: 1,
-                      groupValue: val,
-                      onChanged: (value) {},
-                      activeColor: Colors.green,
-                    ),
                   ),
                 ],
               ),
