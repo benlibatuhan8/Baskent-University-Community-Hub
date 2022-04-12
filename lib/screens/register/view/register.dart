@@ -3,6 +3,7 @@ import 'package:comhub/models/user.dart';
 import 'package:comhub/screens/login/state/login.dart';
 import 'package:comhub/screens/register/state/register.dart';
 import 'package:comhub/services/user_services.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -142,29 +143,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                               ),
                             ),
-                            Text(
-                                "Choose the community you would like to advise"),
-                            DropdownButton(
-                              // Initial Value
-                              value: dropdownvalue,
-
-                              // Down Arrow Icon
-                              icon: const Icon(Icons.keyboard_arrow_down),
-
-                              // Array list of items
-                              items: items.map((String items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(items),
-                                );
-                              }).toList(),
-                              // After selecting the desired option,it will
-                              // change button value to selected value
+                            Divider(),
+                            DropdownSearch<String>(
+                              mode: Mode.BOTTOM_SHEET,
+                              items: [
+                                "Computer Society",
+                                "Productivity",
+                                "item 3",
+                                'item 4',
+                                'item 5'
+                              ],
+                              dropdownSearchDecoration: InputDecoration(
+                                labelText: "Select Society",
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(12, 12, 0, 0),
+                                border: OutlineInputBorder(),
+                              ),
                               onChanged: (String? newValue) {
                                 setState(() {
                                   dropdownvalue = newValue!;
                                 });
                               },
+                              selectedItem: "Computer Society",
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(12, 12, 8, 0),
+                                  labelText: "Search a Society",
+                                ),
+                              ),
+                              popupTitle: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColorDark,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Topluluklar',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              popupShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(24),
+                                  topRight: Radius.circular(24),
+                                ),
+                              ),
                             ),
                           ],
                         ),
