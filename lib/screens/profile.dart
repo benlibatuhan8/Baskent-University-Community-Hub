@@ -30,6 +30,8 @@ class ProfileScreen extends StatefulWidget {
 
 _submit() async {
   // BURDA SUBMİTE BASINCA YAPILCAKLAR Yazılır
+  // new password ile confirm password aynı mı kontrol et
+  // eski password doğru ise yeni passwordu eskinin üzerine yaz
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
