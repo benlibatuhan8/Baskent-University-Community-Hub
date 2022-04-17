@@ -66,7 +66,7 @@ class MyDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Home'),
+            title: const Text('Ana Sayfa'),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name.toString() == "/home") {
                 Navigator.pop(context);
@@ -77,7 +77,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('My Communities'),
+            title: const Text('Topluluklarım'),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name.toString() ==
                   "/mycompage") {
@@ -89,7 +89,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('All Communities'),
+            title: const Text('Tüm Topluluklar'),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name.toString() ==
                   "/allcompage") {
@@ -101,7 +101,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Calendar'),
+            title: const Text('Takvim'),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name.toString() ==
                   "/calendarscreen") {
@@ -113,7 +113,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Profile'),
+            title: const Text('Profil'),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name.toString() ==
                   "/profile") {
@@ -124,7 +124,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Settings'),
+            title: const Text('Ayarlar'),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name.toString() ==
                   "/settings") {
@@ -136,7 +136,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Moderator Page'),
+            title: const Text('Moderatör Ayarları'),
             onTap: () async {
               if (currentUser != null) {
                 print(currentUser.email);
@@ -173,7 +173,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Advisor Page'),
+            title: const Text('Danışman Ayarları'),
             onTap: () async {
               if (currentUser != null) {
                 print(currentUser.email);
@@ -209,7 +209,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Admin Page'),
+            title: const Text('Admin Ayarları'),
             onTap: () async {
               if (currentUser != null) {
                 print(currentUser.email);
@@ -245,7 +245,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Log Out'),
+            title: const Text('Çıkış yap'),
             onTap: () {
               FirebaseAuth.instance.signOut().then(
                 (value) {

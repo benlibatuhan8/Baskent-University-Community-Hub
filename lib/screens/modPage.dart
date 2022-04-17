@@ -29,7 +29,7 @@ class modPageState extends State<ModPageScreen> {
                 child: Card(
                   color: Colors.grey.shade400,
                   child: Text(
-                    'EVENTS',
+                    'Etkinlikler',
                     style: TextStyle(fontSize: 40.0),
                   ),
                 ),

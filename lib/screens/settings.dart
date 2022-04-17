@@ -27,7 +27,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Settings",
+          "Ayarlar",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,

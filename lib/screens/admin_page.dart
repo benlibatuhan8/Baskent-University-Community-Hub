@@ -64,7 +64,7 @@ class adminpageState extends State<adminpageScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Admin Page',
+            'Admin Ayarları',
           ),
           centerTitle: true,
           backgroundColor: Colors.indigo.shade700,

@@ -27,7 +27,7 @@ class comListPageState extends State<ComListPageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Discover Communities"),
+        title: Text("Topluluk Keşfet"),
         centerTitle: true,
         backgroundColor: Colors.indigo.shade700,
       ),
