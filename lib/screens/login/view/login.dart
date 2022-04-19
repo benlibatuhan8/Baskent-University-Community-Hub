@@ -7,10 +7,19 @@ import 'package:comhub/widgets/button.dart';
 import 'package:comhub/screens/login/state/login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _switchValue = false;
+  bool isAdvisor = false;
+
   @override
   Widget build(BuildContext context) {
     final usernameController = TextEditingController();
+    final advisorMailController = TextEditingController();
     final passwordController = TextEditingController();
 
     return Scaffold(
@@ -66,26 +75,55 @@ class LoginScreen extends StatelessWidget {
                               ), //BoXDecoration
                           child: SingleChildScrollView(
                             child: Column(children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.white54))),
-                                child: TextFormField(
-                                  controller: usernameController,
-                                  validator: (value) {
-                                    if (value?.isEmpty ?? true) {
-                                      return 'Username cant be empty';
-                                    }
-                                    return null;
-                                  },
-                                  keyboardType: TextInputType.emailAddress,
-                                  autofocus: false,
-                                  decoration: InputDecoration(
-                                    hintText: 'Student ID',
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        10.0, 10.0, 20.0, 10.0),
+                              Visibility(
+                                visible: isAdvisor,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.white54))),
+                                  child: TextFormField(
+                                    controller: advisorMailController,
+                                    validator: (value) {
+                                      if (value?.isEmpty ?? true) {
+                                        return 'Username cant be empty';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.emailAddress,
+                                    autofocus: false,
+                                    decoration: InputDecoration(
+                                      hintText: 'Advisor Mail',
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 10.0, 20.0, 10.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: !isAdvisor,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.white54))),
+                                  child: TextFormField(
+                                    controller: usernameController,
+                                    validator: (value) {
+                                      if (value?.isEmpty ?? true) {
+                                        return 'Username cant be empty';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.emailAddress,
+                                    autofocus: false,
+                                    decoration: InputDecoration(
+                                      hintText: 'Student ID',
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 10.0, 20.0, 10.0),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -112,7 +150,19 @@ class LoginScreen extends StatelessWidget {
                                         10.0, 10.0, 20.0, 10.0),
                                   ),
                                 ),
-                              )
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Are you an advisor ?"),
+                                  Switch.adaptive(
+                                      value: _switchValue,
+                                      onChanged: (_switchValue) => setState(() {
+                                            this._switchValue = _switchValue;
+                                            isAdvisor = !isAdvisor;
+                                          })),
+                                ],
+                              ),
                             ]),
                           )), //Container
 
@@ -131,17 +181,33 @@ class LoginScreen extends StatelessWidget {
                           final isButtonLoading = false;
                           return ElevatedButton(
                             onPressed: () {
-                              Users newUser = new Users(
-                                password: passwordController.text,
-                                user_type: "user",
-                                user_id: usernameController.text,
-                                card_url: '',
-                                department: '',
-                                //following_comms: [],
-                                mod_com: '',
-                                user_name: '',
-                              );
-                              state.login(newUser, context);
+                              //eğer adivsor login olduysa tespit edip ona göre giriş yap
+                              if (!isAdvisor) {
+                                Users newUser = new Users(
+                                  password: passwordController.text,
+                                  user_type: "user",
+                                  user_id: usernameController.text,
+                                  card_url: '',
+                                  department: '',
+                                  //following_comms: [],
+                                  mod_com: '',
+                                  user_name: '',
+                                );
+                                state.login(newUser, context);
+                              } else {
+                                //SORUN OLABİLİR !!!
+                                Users newUser = new Users(
+                                  password: passwordController.text,
+                                  user_type: "advisor",
+                                  user_id: advisorMailController.text,
+                                  card_url: '',
+                                  department: '',
+                                  //following_comms: [],
+                                  mod_com: '',
+                                  user_name: '',
+                                );
+                                state.login(newUser, context);
+                              }
                             },
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
