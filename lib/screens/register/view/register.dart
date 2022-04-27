@@ -40,6 +40,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String scannedText = "";
   String? name = "";
   String? studentID = "";
+  bool? isFaceAvailable;
+  bool? isImageContainsBU;
 
   bool _switchValue = false;
   bool isAdvisor = false;
@@ -107,15 +109,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 },
                                 icon: Icon(Icons.photo),
                                 label: Text("Gallery")),
-                            Container(
-                              child: Text(
-                                "Student ID: " +
-                                    studentID.toString() +
-                                    "\nName: " +
-                                    name.toString(),
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
                           ],
                         )),
                     Visibility(
@@ -211,6 +204,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           border: Border(
                               bottom: BorderSide(color: Colors.white54))),
                       child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        obscureText: true,
+                        autofocus: false,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: 'Student ID: ' + studentID.toString(),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.white54))),
+                      child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        obscureText: true,
+                        autofocus: false,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: 'Name: ' + name.toString(),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.white54))),
+                      child: TextFormField(
                         controller: passwordController,
                         validator: (value) {
                           if (value?.isEmpty ?? true) {
@@ -251,13 +278,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    TextButton.icon(
-                        onPressed: () {
-                          _getFromCamera();
-                        },
-                        icon: Icon(Icons.photo),
-                        label: Text(
-                            "Please upload an image of your student card")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -336,6 +356,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         imageFile = pickedImage;
         setState(() {});
         getRecognisedText(pickedImage);
+        getFace(pickedImage);
         _im = await pickedImage.readAsBytes();
       }
     } catch (e) {
@@ -349,7 +370,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void getRecognisedText(XFile image) async {
     final inputImage = InputImage.fromFilePath(image.path);
     final textDetector = GoogleMlKit.vision.textDetector();
+
     RecognisedText recognisedText = await textDetector.processImage(inputImage);
+
     await textDetector.close();
     scannedText = "";
     for (TextBlock block in recognisedText.blocks) {
@@ -357,6 +380,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         scannedText = scannedText + line.text + "\n";
       }
     }
+    isImageContainsBU = scannedText.contains("BASKENT UNIVERSITY");
     parseImageText(scannedText);
     textScanning = false;
     setState(() {});
@@ -368,5 +392,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     studentID = numExp.firstMatch(text)?.group(0).toString();
     name = strExp.firstMatch(text)?.group(0).toString();
     name = name.toString().replaceAll("ADI SOYADI", "");
+  }
+
+  void getFace(XFile image) async {
+    final inputImage = InputImage.fromFilePath(image.path);
+    final faceDetector = GoogleMlKit.vision.faceDetector();
+    final List<Face> faces = await faceDetector.processImage(inputImage);
+    if (faces.isNotEmpty) {
+      isFaceAvailable = true;
+    }
+    setState(() {});
   }
 }
