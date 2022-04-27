@@ -101,20 +101,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: <Widget>[
                     Visibility(
                         visible: !isAdvisor,
-                        child: Column(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            TextButton.icon(
-                                onPressed: () {
-                                  getImage(ImageSource.camera);
-                                },
-                                icon: Icon(Icons.camera_alt),
-                                label: Text("Camera")),
-                            TextButton.icon(
-                                onPressed: () {
-                                  getImage(ImageSource.gallery);
-                                },
-                                icon: Icon(Icons.photo),
-                                label: Text("Gallery")),
+                            Expanded(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    getImage(ImageSource.camera);
+                                  },
+                                  icon: Icon(Icons.camera_alt),
+                                  label: Text("Kamera")),
+                            ),
+                            Expanded(
+                                child: TextButton.icon(
+                                    onPressed: () {
+                                      getImage(ImageSource.gallery);
+                                    },
+                                    icon: Icon(Icons.photo),
+                                    label: Text("Galeri"))),
                           ],
                         )),
                     Visibility(
@@ -137,9 +141,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               keyboardType: TextInputType.emailAddress,
                               autofocus: false,
                               decoration: InputDecoration(
-                                hintText: 'Advisor mail',
+                                hintText: 'Danışman Mail',
                                 contentPadding:
                                     EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom:
+                                          BorderSide(color: Colors.white54))),
+                              child: TextFormField(
+                                keyboardType: TextInputType.text,
+                                autofocus: false,
+                                decoration: InputDecoration(
+                                  hintText: 'İsim',
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      20.0, 10.0, 20.0, 10.0),
+                                ),
                               ),
                             ),
                             Divider(),
@@ -233,40 +253,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Colors.white54))),
-                      child: TextFormField(
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        autofocus: false,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: 'Student ID: ' + studentID.toString(),
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Colors.white54))),
-                      child: TextFormField(
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        autofocus: false,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: 'Name: ' + name.toString(),
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                        ),
-                      ),
-                    ),
+                    Visibility(
+                        visible: !isAdvisor,
+                        child: new Column(children: [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(color: Colors.white54))),
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              obscureText: true,
+                              autofocus: false,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                hintText: 'Öğrenci Numarası:  ' +
+                                    studentID.toString(),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(color: Colors.white54))),
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              obscureText: true,
+                              autofocus: false,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                hintText: 'İsim: ' + name.toString(),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                              ),
+                            ),
+                          ),
+                        ])),
                     Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -276,7 +301,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: passwordController,
                         validator: (value) {
                           if (value?.isEmpty ?? true) {
-                            return 'Password cant be empty';
+                            return 'Şifre boş olamaz.';
                           }
                           return null;
                         },
@@ -284,7 +309,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         obscureText: true,
                         autofocus: false,
                         decoration: InputDecoration(
-                          hintText: 'Password',
+                          hintText: 'Şifre',
                           contentPadding:
                               EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                         ),
@@ -299,7 +324,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: passwordController2,
                         validator: (value) {
                           if (value?.isEmpty ?? true) {
-                            return 'Password cant be empty';
+                            return 'Şifre boş olamaz.';
                           }
                           return null;
                         },
@@ -307,7 +332,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         obscureText: true,
                         autofocus: false,
                         decoration: InputDecoration(
-                          hintText: 'Repeat Password',
+                          hintText: 'Şifre tekrar',
                           contentPadding:
                               EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                         ),
@@ -316,7 +341,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Are you an advisor ?"),
+                        Text("Danışman mısınız?"),
                         Switch.adaptive(
                             value: _switchValue,
                             onChanged: (_switchValue) => setState(() {
@@ -363,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
 
                             AlertDialog alert = AlertDialog(
-                              title: Text("Passwords dont match"),
+                              title: Text("Şifreler eşleşmiyor."),
                               actions: [
                                 okButton,
                               ],
@@ -377,7 +402,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                         },
                         child: Text(
-                          'Register',
+                          'Kayıt Ol',
                           style: TextStyle(color: Colors.white),
                         ));
                   },
