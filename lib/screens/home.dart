@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
       // key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          "Home",
+          "Ana Sayfa",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,
@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
           ),
           Container(
             child: Text(
-              "Upcoming Events",
+              "Yaklaşan Etkinlikler",
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             alignment: Alignment.topCenter,
@@ -58,7 +58,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ListTile(
                       title: Text("MEETING EVENT"),
-                      subtitle: Text("First even of semester. Come and meet with members!"),
+                      subtitle: Text(
+                          "First even of semester. Come and meet with members!"),
                     ),
                     Card(
                       child: Row(
@@ -150,7 +151,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ListTile(
                       title: Text("BREAKFAST EVENT"),
-                      subtitle: Text("Come and taste delicious food with our members!"),
+                      subtitle: Text(
+                          "Come and taste delicious food with our members!"),
                     ),
                     Card(
                       child: Row(

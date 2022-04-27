@@ -24,6 +24,19 @@ class adminpageScreen extends StatefulWidget {
   adminpageState createState() => adminpageState();
 }
 
+Future<List> getComms() async {
+  List list = [];
+  var snap = await FirebaseFirestore.instance
+      .collection("communities")
+      .orderBy('name')
+      .get()
+      .then((value) => value.docs.forEach((element) {
+            list.add(element["name"]);
+          }));
+  // print(list);
+  return list;
+}
+
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 var currentUser = FirebaseAuth.instance.currentUser;
 List<String>? result = currentUser!.email?.split("@");
@@ -57,14 +70,15 @@ class adminpageState extends State<adminpageScreen> {
     final comController = TextEditingController();
     late String comId;
     late String userId;
-    String dropdownvalue = 'Item 1';
+    String dropdownvalue = '';
+    String dropdownvalueforcomms = '';
 
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Admin Page',
+            'Admin Ayarları',
           ),
           centerTitle: true,
           backgroundColor: Colors.indigo.shade700,
@@ -112,6 +126,349 @@ class adminpageState extends State<adminpageScreen> {
                 children: [
                   // first tab bar view widget
 
+                  Container(
+                      alignment: Alignment.topCenter,
+                      child: Column(
+                        children: [
+                          Divider(),
+                          Row(
+                            children: [
+                              Text(
+                                "Users",
+                                style: TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              /*Spacer(),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(Routes.modpage2);
+                                },
+                                child: Text(
+                                  'Create New!',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),*/
+                            ],
+                          ),
+                          Divider(),
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<
+                                          QuerySnapshot<Map<String, dynamic>>>
+                                      snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                final users = snapshot.data!.docs.map((doc) {
+                                  final data = doc.data();
+                                  return data['user_id'] as String;
+                                }).toList();
+
+                                return DropdownSearch<String>(
+                                  mode: Mode.BOTTOM_SHEET,
+                                  items: users,
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Select User",
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(12, 12, 0, 0),
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdownvalue = newValue!;
+                                      String isModControlModCom;
+                                      String userName;
+                                      String comName;
+                                      String isModControlUserType;
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          title: Text(newValue),
+                                          content: Text(
+                                              'Bu kullanıcı hakkında ne yapmak istiyorsunuz?'),
+                                          actions: <Widget>[
+                                            //1.SAYFA TEXT BUTTON
+                                            //**********************
+                                            TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Cancel'),
+                                                child: Text("İptal")),
+                                            //2.SAYFA TEXT BUTTON
+                                            //**********************
+                                            TextButton(
+                                                onPressed:
+                                                    () => showDialog<String>(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              AlertDialog(
+                                                            title:
+                                                                Text(newValue),
+                                                            content: Text(
+                                                                'Which community do you want to set a moderator?'),
+                                                            actions: <Widget>[
+                                                              FutureBuilder(
+                                                                  future:
+                                                                      getComms(),
+                                                                  builder: (BuildContext
+                                                                          context,
+                                                                      AsyncSnapshot<
+                                                                              dynamic>
+                                                                          snapshot) {
+                                                                    List<Widget>
+                                                                        children;
+                                                                    if (snapshot
+                                                                        .hasData) {
+                                                                      List<String>
+                                                                          items =
+                                                                          [];
+
+                                                                      List
+                                                                          Items =
+                                                                          snapshot
+                                                                              .data;
+                                                                      Items.forEach(
+                                                                          (element) {
+                                                                        items.add(
+                                                                            element.toString());
+                                                                      });
+
+                                                                      return DropdownSearch<
+                                                                          String>(
+                                                                        mode: Mode
+                                                                            .BOTTOM_SHEET,
+                                                                        items:
+                                                                            items,
+                                                                        dropdownSearchDecoration:
+                                                                            InputDecoration(
+                                                                          labelText:
+                                                                              "Select Society",
+                                                                          contentPadding: EdgeInsets.fromLTRB(
+                                                                              12,
+                                                                              12,
+                                                                              0,
+                                                                              0),
+                                                                          border:
+                                                                              OutlineInputBorder(),
+                                                                        ),
+                                                                        onChanged:
+                                                                            (String?
+                                                                                newValue) {
+                                                                          setState(
+                                                                              () {
+                                                                            dropdownvalueforcomms =
+                                                                                newValue!;
+                                                                          });
+                                                                        },
+                                                                        selectedItem:
+                                                                            "Please select a community",
+                                                                        showSearchBox:
+                                                                            true,
+                                                                        searchFieldProps:
+                                                                            TextFieldProps(
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            border:
+                                                                                OutlineInputBorder(),
+                                                                            contentPadding: EdgeInsets.fromLTRB(
+                                                                                12,
+                                                                                12,
+                                                                                8,
+                                                                                0),
+                                                                            labelText:
+                                                                                "Search a Society",
+                                                                          ),
+                                                                        ),
+                                                                        popupTitle:
+                                                                            Container(
+                                                                          height:
+                                                                              50,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            color:
+                                                                                Theme.of(context).primaryColorDark,
+                                                                            borderRadius:
+                                                                                BorderRadius.only(
+                                                                              topLeft: Radius.circular(20),
+                                                                              topRight: Radius.circular(20),
+                                                                            ),
+                                                                          ),
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              'Topluluklar',
+                                                                              style: TextStyle(
+                                                                                fontSize: 24,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.white,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        popupShape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.only(
+                                                                            topLeft:
+                                                                                Radius.circular(24),
+                                                                            topRight:
+                                                                                Radius.circular(24),
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    } else {
+                                                                      children =
+                                                                          const <
+                                                                              Widget>[
+                                                                        SizedBox(
+                                                                          width:
+                                                                              60,
+                                                                          height:
+                                                                              60,
+                                                                          child:
+                                                                              CircularProgressIndicator(),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding:
+                                                                              EdgeInsets.only(top: 16),
+                                                                          child:
+                                                                              Text('Awaiting result...'),
+                                                                        )
+                                                                      ];
+                                                                    }
+                                                                    return Center(
+                                                                      child:
+                                                                          Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.center,
+                                                                        children:
+                                                                            children,
+                                                                      ),
+                                                                    );
+                                                                  }),
+                                                              TextButton(
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                          context,
+                                                                          'Cancel'),
+                                                                  child: Text(
+                                                                      "Cancel")),
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async =>
+                                                                        {
+                                                                  print(
+                                                                      dropdownvalueforcomms),
+                                                                  userId =
+                                                                      newValue,
+                                                                  comId = await FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'communities')
+                                                                      .where(
+                                                                          'name',
+                                                                          isEqualTo:
+                                                                              dropdownvalueforcomms)
+                                                                      .get()
+                                                                      .then((value) => value
+                                                                          .docs[
+                                                                              0]
+                                                                              [
+                                                                              "id"]
+                                                                          .toString()),
+                                                                  print(comId),
+                                                                  print(userId),
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'users')
+                                                                      .doc(
+                                                                          userId)
+                                                                      .update({
+                                                                    'mod_com':
+                                                                        comId
+                                                                  }),
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'users')
+                                                                      .doc(
+                                                                          userId)
+                                                                      .update({
+                                                                    'user_type':
+                                                                        'mod'
+                                                                  }),
+                                                                  Navigator.pop(
+                                                                      context),
+                                                                  Navigator.pop(
+                                                                      context)
+                                                                },
+                                                                child: Text(
+                                                                    "Complete"),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                child: Text(
+                                                    "Set this user to society moderator")),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                                  },
+                                  selectedItem: "Please select a user",
+                                  showSearchBox: true,
+                                  searchFieldProps: TextFieldProps(
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      contentPadding:
+                                          EdgeInsets.fromLTRB(12, 12, 8, 0),
+                                      labelText: "Find user",
+                                    ),
+                                  ),
+                                  popupTitle: Container(
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColorDark,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Users',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  popupShape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(24),
+                                      topRight: Radius.circular(24),
+                                    ),
+                                  ),
+                                );
+                              })
+                        ],
+                      )),
+
+                  // second tab bar view widget
                   Container(
                       alignment: Alignment.topCenter,
                       child: Column(
@@ -311,238 +668,6 @@ class adminpageState extends State<adminpageScreen> {
                               })
                         ],
                       )),
-
-                  // second tab bar view widget
-                  Container(
-                    alignment: Alignment.topCenter,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Remove Requests",
-                              style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 490,
-                          child: StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('remove_requests')
-                                .snapshots(),
-                            builder: (context,
-                                AsyncSnapshot<
-                                        QuerySnapshot<Map<String, dynamic>>>
-                                    snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              final remove_requests = snapshot.data?.docs;
-
-                              return ListView.builder(
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (ctx, index) => Container(
-                                  margin: EdgeInsets.symmetric(),
-                                  child: Card(
-                                    child: Column(
-                                      //height: 120,
-                                      children: [
-                                        Container(
-                                          height: 80,
-                                          child: Card(
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 250,
-                                                  child: Expanded(
-                                                    child: TextButton(
-                                                      onPressed: () async {
-                                                        String comId =
-                                                            remove_requests![
-                                                                    index]
-                                                                .get("com_id");
-                                                        print(
-                                                            "ComId: " + comId);
-                                                        String comName =
-                                                            await FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'communities')
-                                                                .where('id',
-                                                                    isEqualTo:
-                                                                        comId)
-                                                                .get()
-                                                                .then((value) => value
-                                                                    .docs[0]
-                                                                        ["name"]
-                                                                    .toString());
-                                                        print("ComName: " +
-                                                            comName);
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (BuildContext context) => AlertDialog(
-                                                                title: Text(
-                                                                    "User Information"),
-                                                                content: Text('User ID: ' +
-                                                                    remove_requests[
-                                                                            index]
-                                                                        .get(
-                                                                            "user_id") +
-                                                                    "\n\n" +
-                                                                    "Society: " +
-                                                                    comName),
-                                                                actions: <
-                                                                    Widget>[]));
-                                                      },
-                                                      child: Text(
-                                                        remove_requests![index]
-                                                            .get("user_id"),
-                                                        textDirection:
-                                                            TextDirection.ltr,
-                                                        style: TextStyle(
-                                                            fontSize: 18.0),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                // Text(
-                                                //   remove_requests[index]
-                                                //       .get("com_id"),
-                                                //   textDirection:
-                                                //       TextDirection.ltr,
-                                                //   style:
-                                                //       TextStyle(fontSize: 18.0),
-                                                // ),
-                                                Spacer(),
-                                                IconButton(
-                                                    onPressed: () async {
-                                                      String comId =
-                                                          remove_requests[index]
-                                                              .get("com_id");
-                                                      print("ComId: " + comId);
-                                                      String userId =
-                                                          remove_requests[index]
-                                                              .get('user_id');
-                                                      String comName =
-                                                          await FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'communities')
-                                                              .where('id',
-                                                                  isEqualTo:
-                                                                      comId)
-                                                              .get()
-                                                              .then((value) => value
-                                                                  .docs[0]
-                                                                      ["name"]
-                                                                  .toString());
-                                                      print("ComName: " +
-                                                          comName);
-
-                                                      var collection =
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'remove_requests');
-                                                      var snapshot =
-                                                          await collection
-                                                              .where('com_id',
-                                                                  isEqualTo:
-                                                                      comId)
-                                                              .where('user_id',
-                                                                  isEqualTo:
-                                                                      userId)
-                                                              .get();
-                                                      await snapshot
-                                                          .docs.first.reference
-                                                          .delete();
-                                                    },
-                                                    icon: Icon(Icons.cancel)),
-                                                SizedBox(
-                                                  width: 2,
-                                                ),
-                                                IconButton(
-                                                    onPressed: () async {
-                                                      String comId =
-                                                          remove_requests[index]
-                                                              .get("com_id");
-                                                      print("ComId: " + comId);
-                                                      String userId =
-                                                          remove_requests[index]
-                                                              .get('user_id');
-                                                      print(
-                                                          "UserID: " + userId);
-                                                      String comName =
-                                                          await FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'communities')
-                                                              .where('id',
-                                                                  isEqualTo:
-                                                                      comId)
-                                                              .get()
-                                                              .then((value) => value
-                                                                  .docs[0]
-                                                                      ["name"]
-                                                                  .toString());
-                                                      print("ComName: " +
-                                                          comName);
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'communities')
-                                                          .doc(comName)
-                                                          .collection(
-                                                              'participants')
-                                                          .doc(userId)
-                                                          .delete();
-                                                      FirebaseFirestore.instance
-                                                          .collection('users')
-                                                          .doc(userId)
-                                                          .collection(
-                                                              'following_coms')
-                                                          .doc(comId)
-                                                          .delete();
-                                                      var collection =
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'remove_requests');
-                                                      var snapshot =
-                                                          await collection
-                                                              .where('com_id',
-                                                                  isEqualTo:
-                                                                      comId)
-                                                              .where('user_id',
-                                                                  isEqualTo:
-                                                                      userId)
-                                                              .get();
-                                                      await snapshot
-                                                          .docs.first.reference
-                                                          .delete();
-                                                    },
-                                                    icon: Icon(Icons.check))
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   // third tab bar view widget
                   Container(),
                   // four tab bar view widget

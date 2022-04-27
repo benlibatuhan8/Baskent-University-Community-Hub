@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:comhub/models/user.dart';
+import 'package:comhub/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/routes/route.dart';
@@ -28,17 +30,18 @@ class ProfileScreen extends StatefulWidget {
   ProfileScreenState createState() => ProfileScreenState();
 }
 
-_submit() async {
-  // BURDA SUBMİTE BASINCA YAPILCAKLAR Yazılır
-  // new password ile confirm password aynı mı kontrol et
-  // eski password doğru ise yeni passwordu eskinin üzerine yaz
-}
-
 class ProfileScreenState extends State<ProfileScreen> {
   final _formKeyProfile = GlobalKey<FormState>();
   String oldpassword = '';
   String newpassword = '';
   String confirmnewpassword = '';
+
+  _submit() async {
+    if (newpassword == confirmnewpassword) {
+      // eski şifre doğru ise alltakini yap
+      User_Service().updateUser(currentUserID, newpassword);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +124,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   labelText: 'Old Password',
                                 ),
                                 onChanged: (value) {
-                                  setState(() {
-                                    oldpassword = value;
-                                  });
+                                  oldpassword = value;
                                 },
                                 maxLines: 1,
                               ),

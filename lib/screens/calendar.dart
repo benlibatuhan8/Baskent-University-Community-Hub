@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-
 const PrimaryColor = Color(0xffECFEF3);
 
 class CalendarScreen extends StatelessWidget {
@@ -9,7 +8,7 @@ class CalendarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Calendar"),
+        title: Text("Takvim"),
         elevation: 0.0,
         backgroundColor: Colors.blue.shade900,
       ),
@@ -17,9 +16,6 @@ class CalendarScreen extends StatelessWidget {
       body: SfCalendar(
         view: CalendarView.month,
       ),
-     
     );
   }
 }
-
-

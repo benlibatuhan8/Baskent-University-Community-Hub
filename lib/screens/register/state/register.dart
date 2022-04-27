@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/screens/home.dart';
 import 'package:comhub/screens/login/view/login.dart';
+import 'package:comhub/services/advisor_services.dart';
 import 'package:comhub/services/regexp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -118,6 +119,62 @@ class RegisterState {
           },
         );
       }
+    }
+  }
+
+  Future<void> addAdvisor(String password, String advisor_mail,
+      BuildContext context, String mod_com) async {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    try {
+      await Advisor_Service().signUpAdvisor(advisor_mail, password, mod_com);
+
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => VerifyScreen()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        Widget okButton = TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+        AlertDialog alert = AlertDialog(
+          title: Text("Student id already in use"),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      }
+    } catch (e) {
+      Widget okButton = TextButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+      AlertDialog alert = AlertDialog(
+        title: Text(e.toString()),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
     }
   }
 }
