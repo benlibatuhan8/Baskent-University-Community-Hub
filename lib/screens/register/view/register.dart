@@ -180,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       mode: Mode.BOTTOM_SHEET,
                                       items: items,
                                       dropdownSearchDecoration: InputDecoration(
-                                        labelText: "Select Society",
+                                        labelText: "Topluluk seç:",
                                         contentPadding:
                                             EdgeInsets.fromLTRB(12, 12, 0, 0),
                                         border: OutlineInputBorder(),
@@ -381,7 +381,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 _im);
                           } else {
                             Widget okButton = TextButton(
-                              child: Text("OK"),
+                              child: Text("Tamam"),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },

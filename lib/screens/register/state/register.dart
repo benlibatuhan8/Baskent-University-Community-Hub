@@ -55,11 +55,11 @@ class RegisterState {
     } else if (!validatePassword(password)) {
       AlertDialog alert = AlertDialog(
         title: Text(
-          "Your password needs to",
+          "Şifreniz:",
           style: TextStyle(color: Colors.red.shade400),
         ),
         content: Text(
-          "-Include both upper and lower characters \n-Be at least 8 characters long.",
+          "-bir büyük bir küçük harf içermeli \n-en az 8 karakter olmalı.",
           style: TextStyle(fontSize: 20),
         ),
         actions: [
