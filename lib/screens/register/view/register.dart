@@ -446,7 +446,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
         scannedText = scannedText + line.text + "\n";
       }
     }
-    isImageContainsBU = scannedText.contains("BASKENT UNIVERSITY");
+    isImageContainsBU = scannedText.contains("KENT UNIVERSITY");
+    if (!isImageContainsBU!) {
+      Widget okButton = TextButton(
+        child: Text("Tamam"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+      AlertDialog alert = AlertDialog(
+        title: Text(
+          "Lütfen geçerli bir Başkent Üniversitesi öğrenci kimlik kartı kullanın.",
+        ),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
     parseImageText(scannedText);
     textScanning = false;
     setState(() {});
