@@ -1,19 +1,11 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:comhub/screens/home.dart';
-import 'package:comhub/screens/login/view/login.dart';
 import 'package:comhub/services/advisor_services.dart';
 import 'package:comhub/services/regexp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:comhub/routes/route.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:state_notifier/state_notifier.dart';
-import 'package:comhub/models/user.dart';
 
 import '../../../services/user_services.dart';
 import '../../verify.dart';
@@ -32,7 +24,7 @@ class RegisterState {
   Future<void> addUser(String password, String user_id, String name,
       BuildContext context, Uint8List im) async {
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text("Tamam"),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -40,7 +32,7 @@ class RegisterState {
     if (!validateUserId(user_id)) {
       AlertDialog alert = AlertDialog(
         title: Text(
-          "Your student id must consist 8 digits ",
+          "Öğrenci numaranız 8 karakterden oluşmalı. Lütfen tekrar deneyiniz.",
         ),
         actions: [
           okButton,
@@ -81,13 +73,14 @@ class RegisterState {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
           Widget okButton = TextButton(
-            child: Text("OK"),
+            child: Text("Tamam"),
             onPressed: () {
               Navigator.of(context).pop();
             },
           );
           AlertDialog alert = AlertDialog(
-            title: Text("Student id already in use"),
+            title: Text(
+                "Öğrenci numarası daha önce kullanılmış. Lütfen tekrar deneyiniz."),
             actions: [
               okButton,
             ],
@@ -101,7 +94,7 @@ class RegisterState {
         }
       } catch (e) {
         Widget okButton = TextButton(
-          child: Text("OK"),
+          child: Text("Tamam"),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -125,7 +118,7 @@ class RegisterState {
   Future<void> addAdvisor(String password, String advisor_mail,
       BuildContext context, String mod_com) async {
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text("Tamam"),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -138,13 +131,14 @@ class RegisterState {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         Widget okButton = TextButton(
-          child: Text("OK"),
+          child: Text("Tamam"),
           onPressed: () {
             Navigator.of(context).pop();
           },
         );
         AlertDialog alert = AlertDialog(
-          title: Text("Student id already in use"),
+          title: Text(
+              "Öğrenci numarası daha önce kullanılmış. Lütfen tekrar deneyiniz."),
           actions: [
             okButton,
           ],
@@ -158,7 +152,7 @@ class RegisterState {
       }
     } catch (e) {
       Widget okButton = TextButton(
-        child: Text("OK"),
+        child: Text("Tamam"),
         onPressed: () {
           Navigator.of(context).pop();
         },
