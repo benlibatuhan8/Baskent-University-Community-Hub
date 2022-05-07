@@ -31,7 +31,8 @@ dependencies:
     sdk: flutter
   flutter_hooks: ^0.18.0
   hooks_riverpod: ^1.0.3
-  syncfusion_flutter_calendar: ^19.4.41 
+  syncfusion_flutter_calendar: ^19.4.41
+  
 
   
 
@@ -44,6 +45,8 @@ dependencies:
   image_picker: 
   uuid: 
   dropdown_search: ^2.0.1
+  firebase_helpers: ^0.5.0
+  table_calendar: ^3.0.5
   
 
 dev_dependencies:
