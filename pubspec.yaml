@@ -47,6 +47,7 @@ dependencies:
   dropdown_search: ^2.0.1
   firebase_helpers: ^0.5.0
   table_calendar: ^3.0.5
+  path_provider: ^2.0.9
   
 
 dev_dependencies:
@@ -60,7 +61,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
-
+    - assets/textFiles/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

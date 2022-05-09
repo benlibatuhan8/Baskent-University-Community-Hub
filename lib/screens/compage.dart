@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,8 @@ import 'package:comhub/models/chatMessageModel.dart';
 import 'package:comhub/screens/admin_page.dart';
 import 'package:comhub/screens/assets.dart';
 import 'package:comhub/screens/home.dart';
+import 'package:comhub/screens/mycomlistpage.dart';
+import 'package:comhub/utils/Filter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,30 +22,13 @@ class ComPageScreen extends StatefulWidget {
   comPageState createState() => comPageState();
 }
 
-List<ChatMessage> messages = [
-  ChatMessage(
-      messageContent: "Merhaba",
-      messageType: "receiver2",
-      messageSender: "Burak"),
-  ChatMessage(
-      messageContent: "Hoşgeldin Burak",
-      messageType: "receiver1",
-      messageSender: "Batuhan"),
-  ChatMessage(
-      messageContent: "Bugün etkinlik var mı ?",
-      messageType: "sender",
-      messageSender: "Oğuzhan"),
-  ChatMessage(
-      messageContent: "Hayır,yok.",
-      messageType: "receiver3",
-      messageSender: "İrem"),
-];
-
 class comPageState extends State<ComPageScreen> {
   final _auth = FirebaseAuth.instance;
 
   late String messageText;
   final messageTextController = TextEditingController();
+
+  comPageState();
   @override
   void initState() {
     super.initState();
@@ -67,9 +53,7 @@ class comPageState extends State<ComPageScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            'Computer Society',
-          ),
+          title: Text(currentCom),
           centerTitle: true,
           backgroundColor: Colors.indigo.shade700,
           elevation: 0,
@@ -309,7 +293,6 @@ class comPageState extends State<ComPageScreen> {
                                       .collection("chat")
                                       .add({
                                     'text': messageText,
-                                    
                                     'sender': loggedInUser.email,
                                     'timestamp': FieldValue.serverTimestamp(),
                                   });
@@ -332,6 +315,41 @@ class comPageState extends State<ComPageScreen> {
         ),
       ),
     );
+    // return FutureBuilder(
+    //   future: FirebaseFirestore.instance
+    //       .collection("communities")
+    //       .where('id', isEqualTo: currentCom)
+    //       .get()
+    //       .then((value) {
+    //     value.docs.forEach((element) {
+    //       element.get("name");
+    //     });
+    //   }),
+    //   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+    //     List<Widget> children;
+    //     if (snapshot.hasData) {
+    //       return
+    //     } else {
+    //       children = const <Widget>[
+    //         SizedBox(
+    //           width: 60,
+    //           height: 60,
+    //           child: CircularProgressIndicator(),
+    //         ),
+    //         Padding(
+    //           padding: EdgeInsets.only(top: 16),
+    //           child: Text('Awaiting result...'),
+    //         )
+    //       ];
+    //     }
+    //     return Center(
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: children,
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }
 
@@ -385,7 +403,7 @@ class MessageBubble extends StatelessWidget {
   MessageBubble({required this.sender, required this.text, required this.isMe});
 
   final String sender;
-  final String text;
+  late final String text;
   final bool isMe;
 
   @override
@@ -418,12 +436,49 @@ class MessageBubble extends StatelessWidget {
             color: isMe ? Colors.lightBlueAccent : Colors.white,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: isMe ? Colors.white : Colors.black54,
-                  fontSize: 15.0,
-                ),
+              child: FutureBuilder(
+                future: Filter().filter(text),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  List<Widget> children;
+
+                  if (snapshot.hasData) {
+                    String? newText = snapshot.data;
+                    return Text(
+                      newText!,
+                      style: TextStyle(
+                        color: isMe ? Colors.white : Colors.black54,
+                        fontSize: 15.0,
+                      ),
+                    );
+                  } else {
+                    children = const <Widget>[
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('Awaiting result...'),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
+                },
+
+                // child: Text(
+                //   text,
+                //   style: TextStyle(
+                //     color: isMe ? Colors.white : Colors.black54,
+                //     fontSize: 15.0,
+                //   ),
+                // ),
               ),
             ),
           ),

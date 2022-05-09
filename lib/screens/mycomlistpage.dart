@@ -21,6 +21,7 @@ final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 var currentUser = FirebaseAuth.instance.currentUser;
 List<String>? result = currentUser!.email?.split("@");
 String currentUserID = result![0];
+late String currentCom;
 
 class MyComListPageState extends State<MyComListPageScreen> {
   @override
@@ -58,9 +59,9 @@ class MyComListPageState extends State<MyComListPageScreen> {
                   child: TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed(Routes.compage);
-                      late String currCom = "0";
-                      currCom = coms![index].get('id');
-                      print(currCom);
+
+                      currentCom = coms![index].get('id');
+                      print(currentCom);
                     },
                     child: Text(
                       coms![index].get("name"),

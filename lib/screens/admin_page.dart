@@ -24,19 +24,6 @@ class adminpageScreen extends StatefulWidget {
   adminpageState createState() => adminpageState();
 }
 
-Future<List> getComms() async {
-  List list = [];
-  var snap = await FirebaseFirestore.instance
-      .collection("communities")
-      .orderBy('name')
-      .get()
-      .then((value) => value.docs.forEach((element) {
-            list.add(element["name"]);
-          }));
-  // print(list);
-  return list;
-}
-
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 var currentUser = FirebaseAuth.instance.currentUser;
 List<String>? result = currentUser!.email?.split("@");
@@ -70,8 +57,7 @@ class adminpageState extends State<adminpageScreen> {
     final comController = TextEditingController();
     late String comId;
     late String userId;
-    String dropdownvalue = '';
-    String dropdownvalueforcomms = '';
+    String dropdownvalue = 'Item 1';
 
     return DefaultTabController(
       length: 4,
@@ -206,222 +192,239 @@ class adminpageState extends State<adminpageScreen> {
                                             //2.SAYFA TEXT BUTTON
                                             //**********************
                                             TextButton(
-                                                onPressed:
-                                                    () => showDialog<String>(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              AlertDialog(
-                                                            title:
-                                                                Text(newValue),
-                                                            content: Text(
-                                                                'Which community do you want to set a moderator?'),
-                                                            actions: <Widget>[
-                                                              FutureBuilder(
-                                                                  future:
-                                                                      getComms(),
-                                                                  builder: (BuildContext
-                                                                          context,
-                                                                      AsyncSnapshot<
-                                                                              dynamic>
-                                                                          snapshot) {
-                                                                    List<Widget>
-                                                                        children;
-                                                                    if (snapshot
-                                                                        .hasData) {
-                                                                      List<String>
-                                                                          items =
-                                                                          [];
+                                                onPressed: () async => {
+                                                      isModControlModCom =
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .where('user_id',
+                                                                  isEqualTo:
+                                                                      newValue)
+                                                              .get()
+                                                              .then((value) => value
+                                                                  .docs[0][
+                                                                      "mod_com"]
+                                                                  .toString()),
+                                                      isModControlUserType =
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .where('user_id',
+                                                                  isEqualTo:
+                                                                      newValue)
+                                                              .get()
+                                                              .then((value) => value
+                                                                  .docs[0][
+                                                                      "user_type"]
+                                                                  .toString()),
+                                                      print(
+                                                          isModControlUserType),
+                                                      userName =
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .where('user_id',
+                                                                  isEqualTo:
+                                                                      newValue)
+                                                              .get()
+                                                              .then((value) => value
+                                                                  .docs[0][
+                                                                      "user_name"]
+                                                                  .toString()),
+                                                      print(userName),
 
-                                                                      List
-                                                                          Items =
-                                                                          snapshot
-                                                                              .data;
-                                                                      Items.forEach(
-                                                                          (element) {
-                                                                        items.add(
-                                                                            element.toString());
-                                                                      });
-
-                                                                      return DropdownSearch<
-                                                                          String>(
-                                                                        mode: Mode
-                                                                            .BOTTOM_SHEET,
-                                                                        items:
-                                                                            items,
-                                                                        dropdownSearchDecoration:
-                                                                            InputDecoration(
-                                                                          labelText:
-                                                                              "Select Society",
-                                                                          contentPadding: EdgeInsets.fromLTRB(
-                                                                              12,
-                                                                              12,
-                                                                              0,
-                                                                              0),
-                                                                          border:
-                                                                              OutlineInputBorder(),
-                                                                        ),
-                                                                        onChanged:
-                                                                            (String?
-                                                                                newValue) {
-                                                                          setState(
-                                                                              () {
-                                                                            dropdownvalueforcomms =
-                                                                                newValue!;
-                                                                          });
-                                                                        },
-                                                                        selectedItem:
-                                                                            "Please select a community",
-                                                                        showSearchBox:
-                                                                            true,
-                                                                        searchFieldProps:
-                                                                            TextFieldProps(
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            border:
-                                                                                OutlineInputBorder(),
-                                                                            contentPadding: EdgeInsets.fromLTRB(
-                                                                                12,
-                                                                                12,
-                                                                                8,
-                                                                                0),
-                                                                            labelText:
-                                                                                "Search a Society",
-                                                                          ),
-                                                                        ),
-                                                                        popupTitle:
-                                                                            Container(
-                                                                          height:
-                                                                              50,
-                                                                          decoration:
-                                                                              BoxDecoration(
-                                                                            color:
-                                                                                Theme.of(context).primaryColorDark,
-                                                                            borderRadius:
-                                                                                BorderRadius.only(
-                                                                              topLeft: Radius.circular(20),
-                                                                              topRight: Radius.circular(20),
-                                                                            ),
-                                                                          ),
-                                                                          child:
-                                                                              Center(
-                                                                            child:
-                                                                                Text(
-                                                                              'Topluluklar',
-                                                                              style: TextStyle(
-                                                                                fontSize: 24,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Colors.white,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        popupShape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.only(
-                                                                            topLeft:
-                                                                                Radius.circular(24),
-                                                                            topRight:
-                                                                                Radius.circular(24),
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    } else {
-                                                                      children =
-                                                                          const <
-                                                                              Widget>[
-                                                                        SizedBox(
-                                                                          width:
-                                                                              60,
-                                                                          height:
-                                                                              60,
-                                                                          child:
-                                                                              CircularProgressIndicator(),
-                                                                        ),
-                                                                        Padding(
-                                                                          padding:
-                                                                              EdgeInsets.only(top: 16),
-                                                                          child:
-                                                                              Text('Awaiting result...'),
-                                                                        )
-                                                                      ];
-                                                                    }
-                                                                    return Center(
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children:
-                                                                            children,
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                              TextButton(
-                                                                  onPressed: () =>
-                                                                      Navigator.pop(
-                                                                          context,
-                                                                          'Cancel'),
+                                                      print(isModControlModCom),
+                                                      // KULLANICI MOD İSE İF KONTROLU
+                                                      // ************************
+                                                      if (isModControlModCom !=
+                                                              "" &&
+                                                          isModControlUserType ==
+                                                              "mod")
+                                                        {
+                                                          comName = await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'communities')
+                                                              .where('id',
+                                                                  isEqualTo:
+                                                                      isModControlModCom)
+                                                              .get()
+                                                              .then((value) => value
+                                                                  .docs[0]
+                                                                      ["name"]
+                                                                  .toString()),
+                                                          showDialog<String>(
+                                                            context: context,
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  userName),
+                                                              content: Text(
+                                                                  'Kullanıcının moderatörü olduğu topluluk: ' +
+                                                                      comName +
+                                                                      "\n\n" +
+                                                                      "Bu kullanıcıyı moderatörlükten almak istiyor musunuz?"),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                    onPressed: () =>
+                                                                        Navigator.pop(
+                                                                            context,
+                                                                            'Cancel'),
+                                                                    child: Text(
+                                                                        "İptal")),
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () async =>
+                                                                          {
+                                                                    userId =
+                                                                        newValue,
+                                                                    FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            'users')
+                                                                        .doc(
+                                                                            userId)
+                                                                        .update({
+                                                                      'mod_com':
+                                                                          ""
+                                                                    }),
+                                                                    FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            'users')
+                                                                        .doc(
+                                                                            userId)
+                                                                        .update({
+                                                                      'user_type':
+                                                                          'user'
+                                                                    }),
+                                                                    Navigator.pop(
+                                                                        context),
+                                                                    Navigator.pop(
+                                                                        context)
+                                                                  },
                                                                   child: Text(
-                                                                      "Cancel")),
-                                                              TextButton(
-                                                                onPressed:
-                                                                    () async =>
-                                                                        {
-                                                                  print(
-                                                                      dropdownvalueforcomms),
-                                                                  userId =
-                                                                      newValue,
-                                                                  comId = await FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'communities')
-                                                                      .where(
-                                                                          'name',
-                                                                          isEqualTo:
-                                                                              dropdownvalueforcomms)
-                                                                      .get()
-                                                                      .then((value) => value
-                                                                          .docs[
-                                                                              0]
-                                                                              [
-                                                                              "id"]
-                                                                          .toString()),
-                                                                  print(comId),
-                                                                  print(userId),
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'users')
-                                                                      .doc(
-                                                                          userId)
-                                                                      .update({
-                                                                    'mod_com':
-                                                                        comId
-                                                                  }),
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'users')
-                                                                      .doc(
-                                                                          userId)
-                                                                      .update({
-                                                                    'user_type':
-                                                                        'mod'
-                                                                  }),
-                                                                  Navigator.pop(
-                                                                      context),
-                                                                  Navigator.pop(
-                                                                      context)
-                                                                },
-                                                                child: Text(
-                                                                    "Complete"),
-                                                              ),
-                                                            ],
+                                                                      "Evet"),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        }
+                                                      else
+                                                        {
+                                                          showDialog<String>(
+                                                            context: context,
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  newValue),
+                                                              content: Text(
+                                                                  'Bu kullanıcı herhangi bir topluluğun moderatörü değil.'),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    child: Text(
+                                                                        "Tamam"))
+                                                              ],
+                                                            ),
+                                                          )
+                                                        },
+                                                    },
+                                                child:
+                                                    Text("Moderatörlüğünü Al")),
+                                            //3.SAYFA TEXT BUTTON
+                                            //**********************
+                                            TextButton(
+                                                onPressed: () =>
+                                                    showDialog<String>(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          AlertDialog(
+                                                        title: Text(newValue),
+                                                        content: Text(
+                                                            'Which community do you want to set a moderator?'),
+                                                        actions: <Widget>[
+                                                          TextField(
+                                                            decoration:
+                                                                InputDecoration(
+                                                              border:
+                                                                  OutlineInputBorder(),
+                                                              hintText:
+                                                                  'Enter a Community Name',
+                                                            ),
+                                                            controller:
+                                                                comController,
                                                           ),
-                                                        ),
-                                                child: Text(
-                                                    "Set this user to society moderator")),
+                                                          TextButton(
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                      context,
+                                                                      'Cancel'),
+                                                              child: Text(
+                                                                  "Cancel")),
+                                                          TextButton(
+                                                            onPressed:
+                                                                () async => {
+                                                              print(
+                                                                  comController
+                                                                      .text),
+                                                              userId = newValue,
+                                                              comId = await FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'communities')
+                                                                  .where('name',
+                                                                      isEqualTo:
+                                                                          comController
+                                                                              .text)
+                                                                  .get()
+                                                                  .then((value) => value
+                                                                      .docs[0]
+                                                                          ["id"]
+                                                                      .toString()),
+                                                              print(comId),
+                                                              print(userId),
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .doc(userId)
+                                                                  .update({
+                                                                'mod_com': comId
+                                                              }),
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .doc(userId)
+                                                                  .update({
+                                                                'user_type':
+                                                                    'mod'
+                                                              }),
+                                                              Navigator.pop(
+                                                                  context),
+                                                              Navigator.pop(
+                                                                  context)
+                                                            },
+                                                            child: Text(
+                                                                "Complete"),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                child: Text("Moderatör Yap")),
                                           ],
                                         ),
                                       );
