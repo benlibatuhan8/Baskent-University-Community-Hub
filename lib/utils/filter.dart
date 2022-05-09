@@ -13,7 +13,6 @@ class Filter {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-
     return File('$path/assets/hard.txt');
   }
 
