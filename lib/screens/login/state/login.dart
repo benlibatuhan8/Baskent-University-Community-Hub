@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/user.dart';
+import 'package:comhub/services/advisor_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +36,52 @@ class LoginState {
         String currentUserID = result![0];
         User_Service user_service = new User_Service();
         Users currUser = await user_service.getUserById(currentUserID);
+        print(currUser.user_type.toString());
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        AlertDialog alert = AlertDialog(
+          title: Text("User not found"),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } else if (e.code == 'wrong-password') {
+        AlertDialog alert = AlertDialog(
+          title: Text("Invalid password"),
+          actions: [okButton],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      }
+    }
+  }
+
+  Future<void> loginAdvisor(Users user, BuildContext context) async {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    try {
+      await Advisor_Service().signInAdvisor(user, okButton, context);
+      var currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        print(currentUser.email);
+        User_Service user_service = new User_Service();
+        Users currUser = await user_service.getUserById(user.user_id);
         print(currUser.user_type.toString());
       }
     } on FirebaseAuthException catch (e) {

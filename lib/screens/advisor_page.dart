@@ -45,7 +45,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
         loggedInUser = user;
         List<String>? result = user.email?.split("@");
         String currentUserID = result![0];
-        Users userfields = await User_Service().getUserById(currentUserID);
+        Users userfields = await User_Service().getUserById(currentUser?.email);
 
         var snap = await FirebaseFirestore.instance
             .collection("communities")
@@ -222,7 +222,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                                                                 () async {
                                                                               String userId = participants[index].get("user_id");
                                                                               print(userId);
-                                                                              String comId = await FirebaseFirestore.instance.collection('users').where('user_id', isEqualTo: currentUserID).get().then((value) => value.docs[0]["mod_com"].toString());
+                                                                              String comId = await FirebaseFirestore.instance.collection('users').where('user_id', isEqualTo: currentUser?.email).get().then((value) => value.docs[0]["mod_com"].toString());
                                                                               print(comId);
                                                                               String comName = await FirebaseFirestore.instance.collection('communities').where('id', isEqualTo: comId).get().then((value) => value.docs[0]["name"].toString());
                                                                               print(comName);

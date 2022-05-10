@@ -60,6 +60,26 @@ class denememodpageState extends State<denememodpageScreen> {
     return null;
   }
 
+  Future getCurrentUserComs() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        List<String>? result = user.email?.split("@");
+        String currentUserID = result![0];
+        Users userfields = await User_Service().getUserById(currentUserID);
+        var snap = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUserID)
+            .collection('following_comms');
+        return snap;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(

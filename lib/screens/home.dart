@@ -1,9 +1,15 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:comhub/screens/comlistpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:comhub/routes/route.dart';
 import 'package:comhub/widgets/drawer.dart';
+
+import '../models/user.dart';
+import '../services/user_services.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
@@ -12,6 +18,35 @@ const PrimaryColor = Color(0xffECFEF3);
 const SecondaryColor = Color(0xffD9FDE8);
 
 class HomeScreen extends StatelessWidget {
+  final _auth = FirebaseAuth.instance;
+  Future getCurrentUserComs() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        List<String>? result = user.email?.split("@");
+        String currentUserID = result![0];
+        Users userfields = await User_Service().getUserById(currentUserID);
+        var snap = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUserID)
+            .collection('followingcomms')
+            .get()
+            .then((value) {
+          value.docs.forEach((element) {
+            print(element.data());
+          });
+        });
+
+        print(snap);
+        return snap;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,6 +279,22 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+      //  StreamBuilder(
+      //   stream: FirebaseFirestore.instance
+      //       .collection('users')
+      //       .doc(currentUserID)
+      //       .collection('following_coms')
+      //       .snapshots(),
+      //   builder: (context,
+      //       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return const Center(
+      //         child: CircularProgressIndicator(),
+      //       );
+      //     }
+      //     final coms = snapshot.data?.docs;
+      //     return ListView.builder(itemCount: snapshot.data?.docs.length,itemBuilder: ,);
+      // ),
     );
   }
 }

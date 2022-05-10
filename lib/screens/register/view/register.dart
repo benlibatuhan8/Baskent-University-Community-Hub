@@ -186,8 +186,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         border: OutlineInputBorder(),
                                       ),
                                       onChanged: (String? newValue) {
-                                        setState(() {
+                                        setState(() async {
                                           dropdownvalue = newValue!;
+                                          var snap = await FirebaseFirestore
+                                              .instance
+                                              .collection("communities")
+                                              .where('name',
+                                                  isEqualTo: newValue)
+                                              .get()
+                                              .then((value) =>
+                                                  value.docs[0]["id"]);
+                                          dropdownvalue = snap;
                                         });
                                       },
                                       selectedItem: "Computer Society",

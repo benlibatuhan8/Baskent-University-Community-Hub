@@ -1,18 +1,25 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/chatMessageModel.dart';
-import 'package:comhub/screens/admin_page.dart';
+import 'package:comhub/models/user.dart';
+import 'package:comhub/routes/route.dart';
+import 'package:comhub/screens/admin_page.dart' as prefix;
 import 'package:comhub/screens/assets.dart';
 import 'package:comhub/screens/home.dart';
 import 'package:comhub/screens/mycomlistpage.dart';
+import 'package:comhub/services/user_services.dart';
 import 'package:comhub/utils/Filter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/widgets/drawer.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final _firestore = FirebaseFirestore.instance;
 var loggedInUser;
@@ -47,273 +54,488 @@ class comPageState extends State<ComPageScreen> {
     }
   }
 
+  Future getCurrentComName() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        List<String>? result = user.email?.split("@");
+        String currentUserID = result![0];
+        Users userfields = await User_Service().getUserById(currentUserID);
+
+        var snap = await FirebaseFirestore.instance
+            .collection("communities")
+            .where('id', isEqualTo: currentCom)
+            .get()
+            .then((value) => value.docs[0]["name"]);
+        print(snap);
+        return snap;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(currentCom),
-          centerTitle: true,
-          backgroundColor: Colors.indigo.shade700,
-          elevation: 0,
-          // give the app bar rounded corners
-        ),
-        drawer: MyDrawer(),
-        body: Column(
-          children: <Widget>[
-            // construct the profile details widget here
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.headline2!,
+      textAlign: TextAlign.center,
+      child: FutureBuilder<dynamic>(
+          future: getCurrentComName(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            List<Widget> children;
+            return DefaultTabController(
+              length: 3,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(
+                    snapshot.data.toString(),
+                  ),
+                  centerTitle: true,
+                  backgroundColor: Colors.indigo.shade700,
+                  elevation: 0,
+                  // give the app bar rounded corners
+                ),
+                drawer: MyDrawer(),
+                body: Column(
+                  children: <Widget>[
+                    // construct the profile details widget here
 
-            // the tab bar with two items
-            SizedBox(
-              height: 50,
-              child: AppBar(
-                bottom: TabBar(
-                  tabs: [
-                    Tab(
-                      icon: Icon(Icons.event),
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.announcement,
+                    // the tab bar with two items
+                    SizedBox(
+                      height: 50,
+                      child: AppBar(
+                        bottom: TabBar(
+                          tabs: [
+                            Tab(
+                              icon: Icon(Icons.event),
+                            ),
+                            Tab(
+                              icon: Icon(
+                                Icons.announcement,
+                              ),
+                            ),
+                            Tab(
+                              icon: Icon(
+                                Icons.chat,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Tab(
-                      icon: Icon(
-                        Icons.chat,
+
+                    // create widgets for each tab bar here
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          // first tab bar view widget
+                          Container(
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Spacer(),
+                                      Text(
+                                        "Etkinlikler",
+                                        style: TextStyle(
+                                            fontSize: 42,
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                      Spacer(),
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 490,
+                                    child: StreamBuilder(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('communities')
+                                          .doc(snapshot.data.toString())
+                                          .collection('events')
+                                          .snapshots(),
+                                      builder: (context,
+                                          AsyncSnapshot<
+                                                  QuerySnapshot<
+                                                      Map<String, dynamic>>>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                        final events = snapshot.data?.docs;
+
+                                        return ListView.builder(
+                                          itemCount: snapshot.data!.docs.length,
+                                          itemBuilder: (ctx, index) =>
+                                              Container(
+                                            margin: EdgeInsets.symmetric(),
+                                            child: Card(
+                                              color: Colors.indigo.shade700,
+                                              child: Column(
+                                                //height: 120,
+                                                children: [
+                                                  Container(
+                                                    height: 280,
+                                                    child: Card(
+                                                      child: Column(
+                                                        children: [
+                                                          // Etkinlik ismi BAŞLANGIÇ
+                                                          Row(
+                                                            children: [
+                                                              Spacer(),
+                                                              Container(
+                                                                width: 350,
+                                                                child: Expanded(
+                                                                  child:
+                                                                      TextButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Text(
+                                                                      events![index]
+                                                                          .get(
+                                                                              "event_id"),
+                                                                      style: TextStyle(
+                                                                          decoration: TextDecoration
+                                                                              .underline,
+                                                                          fontSize:
+                                                                              24.0,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Spacer(),
+                                                            ],
+                                                          ),
+                                                          // Etkinlik ismi BİTİŞ
+                                                          // Etkinlik açıklaması BAŞLANGIÇ
+
+                                                          Row(
+                                                            children: [
+                                                              Spacer(),
+                                                              Container(
+                                                                width: 350,
+                                                                child: Expanded(
+                                                                  child:
+                                                                      TextButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Text(
+                                                                      events[index]
+                                                                          .get(
+                                                                              "description"),
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              18.0,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Spacer(),
+                                                            ],
+                                                          ),
+                                                          // Etkinlik açıklaması BİTİŞ
+                                                          // Etkinlik tarihi BAŞLANGIÇ
+
+                                                          Row(
+                                                            children: [
+                                                              Spacer(),
+                                                              Container(
+                                                                width: 250,
+                                                                child: Expanded(
+                                                                  child:
+                                                                      TextButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Text(
+                                                                      events[index]
+                                                                          .get(
+                                                                              "date")
+                                                                          .toDate()
+                                                                          .toString(),
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              18.0,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Spacer()
+                                                            ],
+                                                          ),
+                                                          // Etkinlik tarihi BİTİŞ
+                                                          // Etkinlik adresi BAŞLANGIÇ
+
+                                                          Row(
+                                                            children: [
+                                                              Spacer(),
+                                                              Container(
+                                                                width: 250,
+                                                                child: Expanded(
+                                                                    child: RichText(
+                                                                        text: TextSpan(children: [
+                                                                  TextSpan(
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .black,
+                                                                          fontSize:
+                                                                              18.0),
+                                                                      text:
+                                                                          "Lokasyonu görmek için "),
+                                                                  TextSpan(
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .indigo
+                                                                            .shade700,
+                                                                        fontSize:
+                                                                            18.0,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                      text:
+                                                                          "tıklayın",
+                                                                      recognizer:
+                                                                          TapGestureRecognizer()
+                                                                            ..onTap =
+                                                                                () async {
+                                                                              var url = events[index].get("location");
+                                                                              if (await canLaunch(url)) {
+                                                                                await launch(url);
+                                                                              } else {
+                                                                                throw 'Could not launch $url';
+                                                                              }
+                                                                            }),
+                                                                ]))),
+                                                              ),
+                                                              Spacer(),
+                                                            ],
+                                                          ),
+                                                          // Etkinlik adresi BİTİŞ
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              )),
+
+                          // second tab bar view widget
+                          Container(
+                            alignment: Alignment.topCenter,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Spacer(),
+                                    Text(
+                                      "Duyurular",
+                                      style: TextStyle(
+                                          fontSize: 42,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                    Spacer(),
+                                  ],
+                                ),
+                                Container(
+                                  height: 490,
+                                  child: StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('communities')
+                                        .doc(snapshot.data.toString())
+                                        .collection('announcements')
+                                        .snapshots(),
+                                    builder: (context,
+                                        AsyncSnapshot<
+                                                QuerySnapshot<
+                                                    Map<String, dynamic>>>
+                                            snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      final anns = snapshot.data?.docs;
+
+                                      return ListView.builder(
+                                        itemCount: snapshot.data!.docs.length,
+                                        itemBuilder: (ctx, index) => Container(
+                                          margin: EdgeInsets.symmetric(),
+                                          child: Card(
+                                            color: Colors.indigo.shade700,
+                                            child: Column(
+                                              //height: 120,
+                                              children: [
+                                                Container(
+                                                  height: 150,
+                                                  child: Card(
+                                                    child: Column(
+                                                      children: [
+                                                        // Duyuru açıklaması BAŞLANGIÇ
+                                                        Row(
+                                                          children: [
+                                                            Spacer(),
+                                                            Container(
+                                                              width: 350,
+                                                              child: Expanded(
+                                                                child:
+                                                                    TextButton(
+                                                                  onPressed:
+                                                                      () {},
+                                                                  child: Text(
+                                                                    anns![index]
+                                                                        .get(
+                                                                            "description"),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            18.0,
+                                                                        color: Colors
+                                                                            .black),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Spacer()
+                                                          ],
+                                                        ),
+                                                        // Duyuru açıklaması BİTİŞ
+
+                                                        // Duyuru tarihi BAŞLANGIÇ
+
+                                                        Row(
+                                                          children: [
+                                                            Spacer(),
+                                                            Container(
+                                                              width: 250,
+                                                              child: Expanded(
+                                                                child:
+                                                                    TextButton(
+                                                                  onPressed:
+                                                                      () {},
+                                                                  child: Text(
+                                                                    anns[index]
+                                                                        .get(
+                                                                            "created_date")
+                                                                        .toDate()
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            18.0,
+                                                                        color: Colors
+                                                                            .black),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Spacer()
+                                                          ],
+                                                        ),
+                                                        // Duyuru tarihi BİTİŞ
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                          // third tab bar view widget
+                          SafeArea(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                MessagesStream(),
+                                Container(
+                                  decoration: kMessageContainerDecoration,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: TextField(
+                                          controller: messageTextController,
+                                          onChanged: (value) {
+                                            messageText = value;
+                                          },
+                                          decoration:
+                                              kMessageTextFieldDecoration,
+                                        ),
+                                      ),
+                                      FlatButton(
+                                        onPressed: () {
+                                          messageTextController.clear();
+                                          _firestore
+                                              .collection('communities')
+                                              .doc(
+                                                snapshot.data.toString(),
+                                              )
+                                              .collection("chat")
+                                              .add({
+                                            'text': messageText,
+                                            'sender': loggedInUser.email,
+                                            'timestamp':
+                                                FieldValue.serverTimestamp(),
+                                          });
+                                        },
+                                        child: Text(
+                                          'Send',
+                                          style: kSendButtonTextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-            // create widgets for each tab bar here
-            Expanded(
-              child: TabBarView(
-                children: [
-                  // first tab bar view widget
-                  Container(
-                      color: Colors.indigo.shade700,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Text(
-                            '\nAbout Society...\n',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Center(
-                              child: Card(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Computer Society",
-                                  style: TextStyle(fontSize: 20.0),
-                                ),
-                                ListTile(
-                                  title: Text("MEETING EVENT"),
-                                  subtitle: Text(
-                                      "First even of semester. Come and meet with members!"),
-                                ),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      "assets/images/basres1.jpg",
-                                      scale: 25.0,
-                                    ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    Text(
-                                      "Avni Akyol Conference Hall\n\nFatih Sultan 06790\nEtimesgut/Ankara",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 50.0,
-                                    ),
-                                    Icon(Icons.assistant_direction_rounded)
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20.0,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 100.0,
-                                      height: 100.0,
-                                      child: Card(
-                                        color: Colors.yellow,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.access_time),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Text("11:00")
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 100.0,
-                                      height: 100.0,
-                                      child: Card(
-                                        color: Colors.lightBlue,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.calendar_today_outlined),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Text("07.01.2022")
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )),
-                        ],
-                      )),
-
-                  // second tab bar view widget
-                  Container(
-                    color: Colors.indigo.shade700,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n14/11/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "\nChairperson selection  will be held on 20 December.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n02/12/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            "\nMember registration can be done by filling a form pusplished just now.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // third tab bar view widget
-                  SafeArea(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        MessagesStream(),
-                        Container(
-                          decoration: kMessageContainerDecoration,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                child: TextField(
-                                  controller: messageTextController,
-                                  onChanged: (value) {
-                                    messageText = value;
-                                  },
-                                  decoration: kMessageTextFieldDecoration,
-                                ),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  messageTextController.clear();
-                                  _firestore
-                                      .collection('communities')
-                                      .doc("Computer Society")
-                                      .collection("chat")
-                                      .add({
-                                    'text': messageText,
-                                    'sender': loggedInUser.email,
-                                    'timestamp': FieldValue.serverTimestamp(),
-                                  });
-                                },
-                                child: Text(
-                                  'Send',
-                                  style: kSendButtonTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
     // return FutureBuilder(
     //   future: FirebaseFirestore.instance

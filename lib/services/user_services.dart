@@ -14,7 +14,7 @@ import '../routes/route.dart';
 class User_Service {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  Future<Users> getUserById(String userId) async {
+  Future<Users> getUserById(String? userId) async {
     DocumentSnapshot documentSnapshot =
         await _firestore.collection("users").doc(userId).get();
     print(Users.fromSnap(documentSnapshot));

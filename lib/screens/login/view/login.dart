@@ -182,6 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return ElevatedButton(
                             onPressed: () {
                               //eğer adivsor login olduysa tespit edip ona göre giriş yap
+
                               if (!isAdvisor) {
                                 Users newUser = new Users(
                                   password: passwordController.text,
@@ -206,7 +207,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mod_com: '',
                                   user_name: '',
                                 );
-                                state.login(newUser, context);
+                                print(newUser.user_id);
+                                state.loginAdvisor(newUser, context);
                               }
                             },
                             style: ButtonStyle(

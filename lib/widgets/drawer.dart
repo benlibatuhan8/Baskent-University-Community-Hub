@@ -180,7 +180,8 @@ class MyDrawer extends StatelessWidget {
                 List<String>? result = currentUser.email?.split("@");
                 String currentUserID = result![0];
                 User_Service user_service = new User_Service();
-                Users currUser = await user_service.getUserById(currentUserID);
+                Users currUser =
+                    await user_service.getUserById(currentUser.email);
                 print(currUser.user_type.toString());
                 if (currUser.user_type == "advisor") {
                   Navigator.of(context).pushNamed(Routes.advisorpagescreen);
