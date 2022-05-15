@@ -479,57 +479,101 @@ class comPageState extends State<ComPageScreen> {
                           ),
 
                           // third tab bar view widget
-                          SafeArea(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                MessagesStream(
-                                  com: snapshot.data.toString(),
-                                ),
-                                Container(
-                                  decoration: kMessageContainerDecoration,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: TextField(
-                                          controller: messageTextController,
-                                          onChanged: (value) {
-                                            messageText = value;
-                                          },
+                          FutureBuilder(
+                              future: User_Service().getUserById(currentUserID),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<dynamic> snapshot2) {
+                                List<Widget> children;
+                                if (snapshot2.hasData) {
+                                  Users user = snapshot2.data;
+                                  return SafeArea(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        MessagesStream(
+                                          com: snapshot.data.toString(),
+                                          userName: user.user_name,
+                                        ),
+                                        Container(
                                           decoration:
-                                              kMessageTextFieldDecoration,
+                                              kMessageContainerDecoration,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: TextField(
+                                                  controller:
+                                                      messageTextController,
+                                                  onChanged: (value) {
+                                                    messageText = value;
+                                                  },
+                                                  decoration:
+                                                      kMessageTextFieldDecoration,
+                                                ),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () async {
+                                                  List<String>? result =
+                                                      loggedInUser.email
+                                                          ?.split("@");
+                                                  String currentUserID =
+                                                      result![0];
+                                                  Users userfields =
+                                                      await User_Service()
+                                                          .getUserById(
+                                                              currentUserID);
+
+                                                  messageTextController.clear();
+                                                  _firestore
+                                                      .collection('communities')
+                                                      .doc(
+                                                        snapshot.data
+                                                            .toString(),
+                                                      )
+                                                      .collection("chat")
+                                                      .add({
+                                                    'text': messageText,
+                                                    'sender':
+                                                        userfields.user_name,
+                                                    'timestamp': FieldValue
+                                                        .serverTimestamp(),
+                                                  });
+                                                },
+                                                child: Text(
+                                                  'Send',
+                                                  style: kSendButtonTextStyle,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      FlatButton(
-                                        onPressed: () {
-                                          messageTextController.clear();
-                                          _firestore
-                                              .collection('communities')
-                                              .doc(
-                                                snapshot.data.toString(),
-                                              )
-                                              .collection("chat")
-                                              .add({
-                                            'text': messageText,
-                                            'sender': loggedInUser.email,
-                                            'timestamp':
-                                                FieldValue.serverTimestamp(),
-                                          });
-                                        },
-                                        child: Text(
-                                          'Send',
-                                          style: kSendButtonTextStyle,
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  children = const <Widget>[
+                                    SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 16),
+                                      child: Text('Awaiting result...'),
+                                    )
+                                  ];
+                                }
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: children,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                );
+                              }),
                         ],
                       ),
                     ),
@@ -578,8 +622,10 @@ class comPageState extends State<ComPageScreen> {
 }
 
 class MessagesStream extends StatelessWidget {
-  const MessagesStream({Key? key, required this.com}) : super(key: key);
+  const MessagesStream({Key? key, required this.com, required this.userName})
+      : super(key: key);
   final String com;
+  final String userName;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -603,7 +649,7 @@ class MessagesStream extends StatelessWidget {
           final messageText = message.get("text");
           final messageSender = message.get("sender");
 
-          final currentUser = loggedInUser.email;
+          final currentUser = this.userName;
 
           final messageBubble = MessageBubble(
             sender: messageSender,
