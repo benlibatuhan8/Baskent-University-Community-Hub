@@ -24,6 +24,7 @@ class Advisor_Service {
 
   Future<void> signUpAdvisor(
       String advisor_mail, String password, String modcom) async {
+        
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: advisor_mail, password: password)
         .then((kullanici) async {

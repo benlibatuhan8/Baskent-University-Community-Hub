@@ -484,7 +484,9 @@ class comPageState extends State<ComPageScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
-                                MessagesStream(),
+                                MessagesStream(
+                                  com: snapshot.data.toString(),
+                                ),
                                 Container(
                                   decoration: kMessageContainerDecoration,
                                   child: Row(
@@ -576,12 +578,14 @@ class comPageState extends State<ComPageScreen> {
 }
 
 class MessagesStream extends StatelessWidget {
+  const MessagesStream({Key? key, required this.com}) : super(key: key);
+  final String com;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('communities')
-          .doc("Computer Society")
+          .doc(com)
           .collection("chat")
           .orderBy("timestamp")
           .snapshots(),
