@@ -9,7 +9,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:comhub/routes/route.dart';
 import 'package:comhub/widgets/drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:intl/intl.dart';
 import '../models/user.dart';
 import '../services/user_services.dart';
 
@@ -82,9 +82,15 @@ class HomeScreen extends StatelessWidget {
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (ctx, index) => Column(
               children: [
-                Text(
-                  comms[index].get("name"),
-                  style: Theme.of(context).textTheme.headline4,
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 15),
+                  child: Text(
+                    comms[index].get("name"),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4!
+                        .copyWith(color: Colors.black),
+                  ),
                 ),
                 StreamBuilder(
                   stream: FirebaseFirestore.instance
@@ -101,74 +107,129 @@ class HomeScreen extends StatelessWidget {
                       );
                     }
                     final events = snapshot2.data!.docs;
+                    if (events.isEmpty) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          "Şuanda görüntülenecek etkinlik bulunmamaktadır.",
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
                     return Row(
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 500,
+                          child: Container(
+                            height: 350,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: snapshot2.data!.docs.length,
-                              itemBuilder: (ctx, index) => Card(
-                                color: Colors.indigo.shade300,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      events[index].get("name"),
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                    Card(
-                                      child: Row(
+                              itemBuilder: (ctx, index) {
+                                String formattedDate = DateFormat('yyyy-MM-dd')
+                                    .format(events[index].get("date").toDate());
+                                String formattedTime = DateFormat('kk:mm')
+                                    .format(events[index].get("date").toDate());
+                                print(formattedTime);
+                                return Card(
+                                  color: Colors.indigo.shade500,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          events[index].get("name"),
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 15),
+                                        width: 270,
+                                        height: 100,
+                                        child: SingleChildScrollView(
+                                          child: Text(
+                                            events[index].get("description"),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
-                                            width: 10.0,
-                                          ),
-                                          Container(
-                                            width: 250,
-                                            child: Expanded(
-                                                child: RichText(
-                                                    text: TextSpan(children: [
-                                              TextSpan(
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18.0),
-                                                  text:
-                                                      "Lokasyonu görmek için "),
-                                              TextSpan(
-                                                  style: TextStyle(
-                                                    color:
-                                                        Colors.indigo.shade700,
-                                                    fontSize: 18.0,
-                                                    fontWeight: FontWeight.bold,
+                                            width: 100.0,
+                                            height: 100.0,
+                                            child: Card(
+                                              color: Colors.yellow,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.access_time),
+                                                  SizedBox(
+                                                    height: 10.0,
                                                   ),
-                                                  text: "tıklayın",
-                                                  recognizer:
-                                                      TapGestureRecognizer()
-                                                        ..onTap = () async {
-                                                          var url =
-                                                              events[index].get(
-                                                                  "location");
-                                                          if (await canLaunch(
-                                                              url)) {
-                                                            await launch(url);
-                                                          } else {
-                                                            throw 'Could not launch $url';
-                                                          }
-                                                        }),
-                                            ]))),
+                                                  Text(formattedTime),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                           SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Icon(
-                                              Icons.assistant_direction_rounded)
+                                            width: 100.0,
+                                            height: 100.0,
+                                            child: Card(
+                                              color: Colors.lightBlue,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons
+                                                      .calendar_today_outlined),
+                                                  SizedBox(
+                                                    height: 10.0,
+                                                  ),
+                                                  Text(formattedDate)
+                                                ],
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Card(
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 10.0,
+                                            ),
+                                            LocationContainer(
+                                              events: events,
+                                              index: index,
+                                            ),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Icon(Icons
+                                                .assistant_direction_rounded)
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -181,6 +242,46 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class LocationContainer extends StatelessWidget {
+  const LocationContainer({
+    Key? key,
+    required this.events,
+    required this.index,
+  }) : super(key: key);
+
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> events;
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 250,
+      child: Expanded(
+          child: RichText(
+              text: TextSpan(children: [
+        TextSpan(
+            style: TextStyle(color: Colors.black, fontSize: 18.0),
+            text: "Lokasyonu görmek için "),
+        TextSpan(
+            style: TextStyle(
+              color: Colors.indigo.shade700,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+            text: "tıklayın",
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                var url = events[index].get("location");
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              }),
+      ]))),
     );
   }
 }
