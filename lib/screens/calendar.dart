@@ -1,3 +1,4 @@
+import 'package:comhub/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -18,6 +19,7 @@ class _CalendarState extends State<CalendarScreen> {
         title: Text("Takvim"),
         centerTitle: true,
       ),
+      drawer: MyDrawer(),
       body: TableCalendar(
         focusedDay: selectedDay,
         firstDay: DateTime(2010),

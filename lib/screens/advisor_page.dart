@@ -73,7 +73,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
           List<Widget> children;
           if (snapshot.hasData) {
             return DefaultTabController(
-              length: 4,
+              length: 2,
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(
@@ -104,16 +104,6 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                 Icons.person_off,
                               ),
                             ),
-                            Tab(
-                              icon: Icon(
-                                Icons.person,
-                              ),
-                            ),
-                            Tab(
-                              icon: Icon(
-                                Icons.person_add,
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -132,7 +122,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Members",
+                                      "Üyeler",
                                       style: TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
@@ -183,7 +173,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                                                 participants![
                                                                         index]
                                                                     .get(
-                                                                        "user_id"),
+                                                                        "user_name"),
                                                                 textDirection:
                                                                     TextDirection
                                                                         .ltr,
@@ -205,18 +195,17 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                                                             context) =>
                                                                         AlertDialog(
                                                                       title: Text(
-                                                                          'Removing User!!!'),
-                                                                      content: Text("Are you sure you want to remove member " +
-                                                                          participants[index]
-                                                                              .get("user_id") +
-                                                                          " from the society"),
+                                                                          'UYARI!!!'),
+                                                                      content: Text(
+                                                                          participants[index].get("user_name") +
+                                                                              " kullanıcısını topluluktan çıkartmak istediğinize emin misiniz ?"),
                                                                       actions: <
                                                                           Widget>[
                                                                         TextButton(
                                                                             onPressed: () => Navigator.pop(context,
                                                                                 'Cancel'),
                                                                             child:
-                                                                                Text("Cancel")),
+                                                                                Text("İptal")),
                                                                         TextButton(
                                                                             onPressed:
                                                                                 () async {
@@ -228,9 +217,10 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                                                               print(comName);
                                                                               FirebaseFirestore.instance.collection('communities').doc(comName).collection('participants').doc(userId).delete();
                                                                               FirebaseFirestore.instance.collection('users').doc(userId).collection('following_coms').doc(comId).delete();
+                                                                              Navigator.pop(context);
                                                                             },
                                                                             child:
-                                                                                Text("Remove")),
+                                                                                Text("Çıkart")),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -261,7 +251,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Remove Requests",
+                                      "Çıkartma Talepleri",
                                       style: TextStyle(
                                           fontSize: 26,
                                           fontWeight: FontWeight.bold,
@@ -334,17 +324,33 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                                                 print(
                                                                     "ComName: " +
                                                                         comName);
+                                                                String userNameName = await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'users')
+                                                                    .where(
+                                                                        'user_id',
+                                                                        isEqualTo:
+                                                                            remove_requests[index].get(
+                                                                                "user_id"))
+                                                                    .get()
+                                                                    .then((value) => value
+                                                                        .docs[0]
+                                                                            [
+                                                                            "user_name"]
+                                                                        .toString());
+                                                                        print("UserName: " + userNameName);
                                                                 showDialog(
                                                                     context:
                                                                         context,
                                                                     builder: (BuildContext context) => AlertDialog(
                                                                         title: Text(
-                                                                            "User Information"),
-                                                                        content: Text('User ID: ' +
+                                                                            "Üye Bilgisi"),
+                                                                        content: Text('Numarası: ' +
                                                                             remove_requests[index].get(
                                                                                 "user_id") +
                                                                             "\n\n" +
-                                                                            "Society: " +
+                                                                            "Topluluk: " +
                                                                             comName),
                                                                         actions: <
                                                                             Widget>[]));
@@ -353,7 +359,7 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                                                                 remove_requests![
                                                                         index]
                                                                     .get(
-                                                                        "user_id"),
+                                                                        "user_name"),
                                                                 textDirection:
                                                                     TextDirection
                                                                         .ltr,
@@ -539,312 +545,6 @@ class AdvisorPageState extends State<AdvisorPageScreen> {
                               ],
                             ),
                           ),
-                          // third tab bar view widget
-                          //*************************
-                          //****************************
-                          Container(
-                            alignment: Alignment.topCenter,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Members",
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 490,
-                                  child: StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('communities')
-                                        .doc(snapshot.data.toString())
-                                        .collection('participants')
-                                        .snapshots(),
-                                    builder: (context,
-                                        AsyncSnapshot<
-                                                QuerySnapshot<
-                                                    Map<String, dynamic>>>
-                                            snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                      final participants = snapshot.data?.docs;
-
-                                      return ListView.builder(
-                                        itemCount: snapshot.data!.docs.length,
-                                        itemBuilder: (ctx, index) => Container(
-                                          margin: EdgeInsets.symmetric(),
-                                          child: Card(
-                                            child: Column(
-                                              //height: 120,
-                                              children: [
-                                                Container(
-                                                  height: 80,
-                                                  child: Card(
-                                                    child: Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 250,
-                                                          child: Expanded(
-                                                            child: TextButton(
-                                                              onPressed: () {},
-                                                              child: Text(
-                                                                participants![
-                                                                        index]
-                                                                    .get(
-                                                                        "user_id"),
-                                                                textDirection:
-                                                                    TextDirection
-                                                                        .ltr,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        18.0),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Spacer(),
-                                                        IconButton(
-                                                            onPressed: () => {
-                                                                  showDialog<
-                                                                      String>(
-                                                                    context:
-                                                                        context,
-                                                                    builder: (BuildContext
-                                                                            context) =>
-                                                                        AlertDialog(
-                                                                      title: Text(
-                                                                          'Removing User!!!'),
-                                                                      content: Text("Are you sure you want to remove member " +
-                                                                          participants[index]
-                                                                              .get("user_id") +
-                                                                          " from the society"),
-                                                                      actions: <
-                                                                          Widget>[
-                                                                        TextButton(
-                                                                            onPressed: () => Navigator.pop(context,
-                                                                                'Cancel'),
-                                                                            child:
-                                                                                Text("Cancel")),
-                                                                        TextButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                              String comId = await FirebaseFirestore.instance.collection('users').where('user_id', isEqualTo: currentUserID).get().then((value) => value.docs[0]["mod_com"].toString());
-                                                                              print("ComId: " + comId);
-                                                                              String userId = participants[index].get("user_id");
-                                                                              print("UserId: " + userId);
-                                                                              DummyRemoveRequests dummyRemoveRequests = new DummyRemoveRequests(user_id: userId, com_id: comId);
-                                                                              FirebaseFirestore.instance.collection('remove_requests').doc(userId).set(dummyRemoveRequests.toJson());
-                                                                              Navigator.pop(context, 'Cancel');
-                                                                            },
-                                                                            child:
-                                                                                Text("Remove")),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                },
-                                                            icon: Icon(
-                                                                Icons.close))
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          //************************
-                          //************************
-
-                          // four tab bar view widget
-                          //**************************
-                          //******************************
-                          Container(
-                              //   alignment: Alignment.topCenter,
-                              //   child: Column(
-                              //     children: [
-                              //       SizedBox(
-                              //         height: 5.0,
-                              //       ),
-                              //       Row(
-                              //         children: [
-                              //           Text(
-                              //             "Requests",
-                              //             style: TextStyle(
-                              //                 fontSize: 22,
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontStyle: FontStyle.italic),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //       SizedBox(
-                              //         height: 5.0,
-                              //       ),
-                              //       Container(
-                              //         height: 490,
-                              //         child: StreamBuilder(
-                              //           stream: FirebaseFirestore.instance
-                              //               .collection('communities')
-                              //               .doc(snapshot.data.toString())
-                              //               .collection('join_requests')
-                              //               .snapshots(),
-                              //           builder: (context,
-                              //               AsyncSnapshot<
-                              //                       QuerySnapshot<
-                              //                           Map<String, dynamic>>>
-                              //                   snapshot) {
-                              //             if (snapshot.connectionState ==
-                              //                 ConnectionState.waiting) {
-                              //               return const Center(
-                              //                 child: CircularProgressIndicator(),
-                              //               );
-                              //             }
-                              //             final join_requests = snapshot.data?.docs;
-
-                              //             return ListView.builder(
-                              //               itemCount: snapshot.data!.docs.length,
-                              //               itemBuilder: (ctx, index) => Container(
-                              //                 margin: EdgeInsets.symmetric(),
-                              //                 child: Card(
-                              //                   child: Column(
-                              //                     //height: 120,
-                              //                     children: [
-                              //                       Container(
-                              //                         height: 80,
-                              //                         child: Card(
-                              //                           child: Row(
-                              //                             children: [
-                              //                               Container(
-                              //                                 width: 250,
-                              //                                 child: Expanded(
-                              //                                   child: TextButton(
-                              //                                     onPressed: () {},
-                              //                                     child: Text(
-                              //                                       join_requests![
-                              //                                               index]
-                              //                                           .get(
-                              //                                               "user_id"),
-                              //                                       textDirection:
-                              //                                           TextDirection
-                              //                                               .ltr,
-                              //                                       style: TextStyle(
-                              //                                           fontSize:
-                              //                                               18.0),
-                              //                                     ),
-                              //                                   ),
-                              //                                 ),
-                              //                               ),
-                              //                               Spacer(),
-                              //                               IconButton(
-                              //                                 onPressed: () async {
-                              //                                   String userId =
-                              //                                       join_requests[
-                              //                                               index]
-                              //                                           .get(
-                              //                                               "user_id");
-                              //                                   print("UserId: " +
-                              //                                       userId);
-                              //                                   String comId = await FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'users')
-                              //                                       .where(
-                              //                                           'user_id',
-                              //                                           isEqualTo:
-                              //                                               currentUserID)
-                              //                                       .get()
-                              //                                       .then((value) => value
-                              //                                           .docs[0][
-                              //                                               "mod_com"]
-                              //                                           .toString());
-                              //                                   print("ComId: " +
-                              //                                       comId);
-                              //                                   DummyCommunity
-                              //                                       dummyCommunity =
-                              //                                       new DummyCommunity(
-                              //                                           id: comId);
-                              //                                   FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'users')
-                              //                                       .doc(userId)
-                              //                                       .collection(
-                              //                                           'following_coms')
-                              //                                       .doc(comId)
-                              //                                       .set(dummyCommunity
-                              //                                           .toJson());
-                              //                                   String comName = await FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'communities')
-                              //                                       .where('id',
-                              //                                           isEqualTo:
-                              //                                               comId)
-                              //                                       .get()
-                              //                                       .then((value) => value
-                              //                                           .docs[0]
-                              //                                               ["name"]
-                              //                                           .toString());
-                              //                                   print("ComName: " +
-                              //                                       comName);
-                              //                                   FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'communities')
-                              //                                       .doc(comName)
-                              //                                       .collection(
-                              //                                           'join_requests')
-                              //                                       .doc(userId)
-                              //                                       .delete();
-                              //                                   DummyUser
-                              //                                       dummyUser =
-                              //                                       new DummyUser(
-                              //                                           user_id:
-                              //                                               userId);
-                              //                                   FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'communities')
-                              //                                       .doc(comName)
-                              //                                       .collection(
-                              //                                           'participants')
-                              //                                       .doc(userId)
-                              //                                       .set(dummyUser
-                              //                                           .toJson());
-                              //                                 },
-                              //                                 icon:
-                              //                                     Icon(Icons.check),
-                              //                               ),
-                              //                             ],
-                              //                           ),
-                              //                         ),
-                              //                       ),
-                              //                     ],
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             );
-                              //           },
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              ),
 
                           //four tab view sonu
                           //****************************

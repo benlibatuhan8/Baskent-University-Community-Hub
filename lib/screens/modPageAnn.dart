@@ -41,7 +41,7 @@ class modPageAnnState extends State<ModPageAnnouncementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Announcement'),
+        title: const Text('Duyuru Oluştur'),
       ),
       body: Form(
         key: _formKey,
@@ -62,8 +62,8 @@ class modPageAnnState extends State<ModPageAnnouncementScreen> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             filled: true,
-                            hintText: 'Enter a description...',
-                            labelText: 'Description',
+                            hintText: 'Duyuru açıklamanızı girin',
+                            labelText: 'Açıklama',
                           ),
                           onChanged: (value) {
                             description = value;
@@ -71,7 +71,7 @@ class modPageAnnState extends State<ModPageAnnouncementScreen> {
                           maxLines: 5,
                         ),
                         ElevatedButton(
-                            onPressed: _submit, child: Text("Submit"))
+                            onPressed: _submit, child: Text("Oluştur"))
                       ].expand(
                         (widget) => [
                           widget,

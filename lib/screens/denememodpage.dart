@@ -92,7 +92,7 @@ class denememodpageState extends State<denememodpageScreen> {
           List<Widget> children;
           if (snapshot.hasData) {
             return DefaultTabController(
-              length: 4,
+              length: 3,
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(
@@ -128,11 +128,6 @@ class denememodpageState extends State<denememodpageScreen> {
                                 Icons.person,
                               ),
                             ),
-                            Tab(
-                              icon: Icon(
-                                Icons.person_add,
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -151,7 +146,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        "Created Events",
+                                        "Mevcut Etkinlikler",
                                         style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.bold,
@@ -164,7 +159,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                               .pushNamed(Routes.modpage2);
                                         },
                                         child: Text(
-                                          'Create New!',
+                                          'Yeni Oluştur!',
                                           style: TextStyle(fontSize: 20),
                                         ),
                                       ),
@@ -304,7 +299,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        "Created Announcement",
+                                        "Mevcut Duyurular",
                                         style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.bold,
@@ -317,7 +312,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                               .pushNamed(Routes.modpage3);
                                         },
                                         child: Text(
-                                          'Create New!',
+                                          'Yeni Oluştur!',
                                           style: TextStyle(fontSize: 20),
                                         ),
                                       ),
@@ -356,7 +351,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                                 //height: 120,
                                                 children: [
                                                   Container(
-                                                    height: 80,
+                                                    height: 200,
                                                     child: Card(
                                                       child: Row(
                                                         children: [
@@ -410,7 +405,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Members",
+                                      "Üyeler",
                                       style: TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
@@ -461,7 +456,7 @@ class denememodpageState extends State<denememodpageScreen> {
                                                                 participants![
                                                                         index]
                                                                     .get(
-                                                                        "user_id"),
+                                                                        "user_name"),
                                                                 textDirection:
                                                                     TextDirection
                                                                         .ltr,
@@ -483,32 +478,37 @@ class denememodpageState extends State<denememodpageScreen> {
                                                                             context) =>
                                                                         AlertDialog(
                                                                       title: Text(
-                                                                          'Removing User!!!'),
-                                                                      content: Text("Are you sure you want to remove member " +
-                                                                          participants[index]
-                                                                              .get("user_id") +
-                                                                          " from the society"),
+                                                                          'Topluluktan Çıkartma Talebi'),
+                                                                      content: Text(
+                                                                          participants[index].get("user_name") +
+                                                                              " kullanıcısı için topluluktan çıkartma talebi oluşturmak istiyor musunuz?"),
                                                                       actions: <
                                                                           Widget>[
                                                                         TextButton(
                                                                             onPressed: () => Navigator.pop(context,
                                                                                 'Cancel'),
                                                                             child:
-                                                                                Text("Cancel")),
+                                                                                Text("İptal")),
                                                                         TextButton(
                                                                             onPressed:
                                                                                 () async {
                                                                               String comId = await FirebaseFirestore.instance.collection('users').where('user_id', isEqualTo: currentUserID).get().then((value) => value.docs[0]["mod_com"].toString());
                                                                               print("ComId: " + comId);
+
                                                                               String userId = participants[index].get("user_id");
                                                                               print("UserId: " + userId);
+                                                                              //
+                                                                              String userName = await FirebaseFirestore.instance.collection('users').where('user_id', isEqualTo: userId).get().then((value) => value.docs[0]["user_name"].toString());
+                                                                              print("ComId: " + comId);
+                                                                              //
                                                                               String comName = await FirebaseFirestore.instance.collection('communities').where('id', isEqualTo: comId).get().then((value) => value.docs[0]["name"].toString());
-                                                                              DummyRemoveRequests dummyRemoveRequests = new DummyRemoveRequests(user_id: userId, com_id: comId);
+                                                                              DummyRemoveRequests dummyRemoveRequests = new DummyRemoveRequests(user_id: userId, com_id: comId, user_name: userName);
                                                                               FirebaseFirestore.instance.collection('communities').doc(comName).collection('remove_requests').doc(userId).set(dummyRemoveRequests.toJson());
                                                                               Navigator.pop(context, 'Cancel');
+                                                                              
                                                                             },
                                                                             child:
-                                                                                Text("Remove")),
+                                                                                Text("Oluştur")),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -536,177 +536,6 @@ class denememodpageState extends State<denememodpageScreen> {
                           // four tab bar view widget
                           //**************************
                           //******************************
-                          Container(
-                              //   alignment: Alignment.topCenter,
-                              //   child: Column(
-                              //     children: [
-                              //       SizedBox(
-                              //         height: 5.0,
-                              //       ),
-                              //       Row(
-                              //         children: [
-                              //           Text(
-                              //             "Requests",
-                              //             style: TextStyle(
-                              //                 fontSize: 22,
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontStyle: FontStyle.italic),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //       SizedBox(
-                              //         height: 5.0,
-                              //       ),
-                              //       Container(
-                              //         height: 490,
-                              //         child: StreamBuilder(
-                              //           stream: FirebaseFirestore.instance
-                              //               .collection('communities')
-                              //               .doc(snapshot.data.toString())
-                              //               .collection('join_requests')
-                              //               .snapshots(),
-                              //           builder: (context,
-                              //               AsyncSnapshot<
-                              //                       QuerySnapshot<
-                              //                           Map<String, dynamic>>>
-                              //                   snapshot) {
-                              //             if (snapshot.connectionState ==
-                              //                 ConnectionState.waiting) {
-                              //               return const Center(
-                              //                 child: CircularProgressIndicator(),
-                              //               );
-                              //             }
-                              //             final join_requests = snapshot.data?.docs;
-
-                              //             return ListView.builder(
-                              //               itemCount: snapshot.data!.docs.length,
-                              //               itemBuilder: (ctx, index) => Container(
-                              //                 margin: EdgeInsets.symmetric(),
-                              //                 child: Card(
-                              //                   child: Column(
-                              //                     //height: 120,
-                              //                     children: [
-                              //                       Container(
-                              //                         height: 80,
-                              //                         child: Card(
-                              //                           child: Row(
-                              //                             children: [
-                              //                               Container(
-                              //                                 width: 250,
-                              //                                 child: Expanded(
-                              //                                   child: TextButton(
-                              //                                     onPressed: () {},
-                              //                                     child: Text(
-                              //                                       join_requests![
-                              //                                               index]
-                              //                                           .get(
-                              //                                               "user_id"),
-                              //                                       textDirection:
-                              //                                           TextDirection
-                              //                                               .ltr,
-                              //                                       style: TextStyle(
-                              //                                           fontSize:
-                              //                                               18.0),
-                              //                                     ),
-                              //                                   ),
-                              //                                 ),
-                              //                               ),
-                              //                               Spacer(),
-                              //                               IconButton(
-                              //                                 onPressed: () async {
-                              //                                   String userId =
-                              //                                       join_requests[
-                              //                                               index]
-                              //                                           .get(
-                              //                                               "user_id");
-                              //                                   print("UserId: " +
-                              //                                       userId);
-                              //                                   String comId = await FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'users')
-                              //                                       .where(
-                              //                                           'user_id',
-                              //                                           isEqualTo:
-                              //                                               currentUserID)
-                              //                                       .get()
-                              //                                       .then((value) => value
-                              //                                           .docs[0][
-                              //                                               "mod_com"]
-                              //                                           .toString());
-                              //                                   print("ComId: " +
-                              //                                       comId);
-                              //                                   DummyCommunity
-                              //                                       dummyCommunity =
-                              //                                       new DummyCommunity(
-                              //                                           id: comId);
-                              //                                   FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'users')
-                              //                                       .doc(userId)
-                              //                                       .collection(
-                              //                                           'following_coms')
-                              //                                       .doc(comId)
-                              //                                       .set(dummyCommunity
-                              //                                           .toJson());
-                              //                                   String comName = await FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'communities')
-                              //                                       .where('id',
-                              //                                           isEqualTo:
-                              //                                               comId)
-                              //                                       .get()
-                              //                                       .then((value) => value
-                              //                                           .docs[0]
-                              //                                               ["name"]
-                              //                                           .toString());
-                              //                                   print("ComName: " +
-                              //                                       comName);
-                              //                                   FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'communities')
-                              //                                       .doc(comName)
-                              //                                       .collection(
-                              //                                           'join_requests')
-                              //                                       .doc(userId)
-                              //                                       .delete();
-                              //                                   DummyUser
-                              //                                       dummyUser =
-                              //                                       new DummyUser(
-                              //                                           user_id:
-                              //                                               userId);
-                              //                                   FirebaseFirestore
-                              //                                       .instance
-                              //                                       .collection(
-                              //                                           'communities')
-                              //                                       .doc(comName)
-                              //                                       .collection(
-                              //                                           'participants')
-                              //                                       .doc(userId)
-                              //                                       .set(dummyUser
-                              //                                           .toJson());
-                              //                                 },
-                              //                                 icon:
-                              //                                     Icon(Icons.check),
-                              //                               ),
-                              //                             ],
-                              //                           ),
-                              //                         ),
-                              //                       ),
-                              //                     ],
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             );
-                              //           },
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              ),
 
                           //four tab view sonu
                           //****************************

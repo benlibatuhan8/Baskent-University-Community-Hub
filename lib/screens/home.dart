@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                       .collection("communities")
                       .doc(comms[index].get("name"))
                       .collection("events")
-                      .orderBy("date")
+                      .orderBy("date", descending: true)
                       .snapshots(),
                   builder: (context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -107,7 +107,17 @@ class HomeScreen extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    final events = snapshot2.data!.docs;
+                    var events = snapshot2.data!.docs;
+                    for (var i = 0; i < events.length; i++) {
+                      if (DateTime.now()
+                          .isAfter(events[i].get("date").toDate())) {
+                        events.removeWhere((element) =>
+                            element.get("date") == (events[i].get("date")));
+                        i = 0;
+                      }
+                    }
+
+                    // final events = snapshot2.data!.docs;
                     if (events.isEmpty) {
                       return Container(
                         margin: EdgeInsets.symmetric(vertical: 5),
@@ -118,6 +128,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     }
+
                     return Row(
                       children: [
                         Expanded(
@@ -135,7 +146,7 @@ class HomeScreen extends StatelessWidget {
                                     Duration(milliseconds: 2000),
                                 viewportFraction: 0.8,
                               ),
-                              itemCount: snapshot2.data!.docs.length,
+                              itemCount: events.length,
                               itemBuilder: (BuildContext ctx, int index, _) {
                                 String formattedDate = DateFormat('yyyy-MM-dd')
                                     .format(events[index].get("date").toDate());
@@ -148,6 +159,14 @@ class HomeScreen extends StatelessWidget {
                                 } else {
                                   cardColor = Colors.indigo.shade300;
                                 }
+                                ;
+                                // if (DateTime.now().isAfter(
+                                //     events[index].get("date").toDate())) {
+                                //   if (index != snapshot2.data!.docs.length) {
+                                //     index = index + 1;
+                                //   }
+                                // }
+
                                 return Card(
                                   color: cardColor,
                                   child: Column(

@@ -96,7 +96,7 @@ class modPageEventState extends State<ModPageEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Event'),
+        title: const Text('Etkinlik Oluştur'),
       ),
       body: Form(
         key: _formKey,
@@ -116,8 +116,8 @@ class modPageEventState extends State<ModPageEventScreen> {
                         TextFormField(
                           decoration: const InputDecoration(
                             filled: true,
-                            hintText: 'Enter a title...',
-                            labelText: 'Title',
+                            hintText: 'Bir Başlık Girin...',
+                            labelText: 'Başlık',
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -129,8 +129,8 @@ class modPageEventState extends State<ModPageEventScreen> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             filled: true,
-                            hintText: 'Enter a description...',
-                            labelText: 'Description',
+                            hintText: 'Bir Açıklama Girin...',
+                            labelText: 'Açıklama',
                           ),
                           onChanged: (value) {
                             description = value;
@@ -146,8 +146,8 @@ class modPageEventState extends State<ModPageEventScreen> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             filled: true,
-                            hintText: 'Enter a location...',
-                            labelText: 'Location',
+                            hintText: 'Lütfen lokasyon linkinizi buraya kopyalayın',
+                            labelText: 'Konum',
                           ),
                           onChanged: (value) {
                             location = value;
@@ -155,7 +155,7 @@ class modPageEventState extends State<ModPageEventScreen> {
                           maxLines: 5,
                         ),
                         ElevatedButton(
-                            onPressed: _submit, child: Text("Submit"))
+                            onPressed: _submit, child: Text("Oluştur"))
                       ].expand(
                         (widget) => [
                           widget,

@@ -57,12 +57,12 @@ class comListPageState extends State<ComListPageScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                         // title: Text(),
-                        content: Text('Do you want to join the ' +
-                            coms![index].get("name")),
+                        content: Text(
+                            coms![index].get("name")+"'na katılmak istiyor musunuz?"),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
+                            child: const Text('İptal'),
                           ),
                           TextButton(
                             onPressed: () async {
@@ -92,7 +92,7 @@ class comListPageState extends State<ComListPageScreen> {
                               Navigator.pop(context, 'Send Join Request');
                             },
                             //Navigator.pop(context, 'Request Join'),
-                            child: const Text('Join Society'),
+                            child: const Text('Topluluğa Katıl'),
                           ),
                         ],
                       ),

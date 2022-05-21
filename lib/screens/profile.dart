@@ -38,8 +38,17 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   _submit() async {
     if (newpassword == confirmnewpassword) {
-      // eski şifre doğru ise alltakini yap
-      User_Service().updateUser(currentUserID, newpassword);
+      final oldPassword = await FirebaseFirestore.instance
+          .collection("users")
+          .where('user_id', isEqualTo: currentUserID)
+          .get()
+          .then((value) => value.docs[0]["password"]);
+
+      if (oldPassword == oldpassword) {
+        print("lolsadgfasgfasdgfsdfgdsfg");
+        User_Service().updateUser(currentUserID, newpassword);
+        print(oldPassword);
+      }
     }
   }
 

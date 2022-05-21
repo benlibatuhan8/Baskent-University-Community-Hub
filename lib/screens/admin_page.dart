@@ -74,7 +74,7 @@ class adminpageState extends State<adminpageScreen> {
     String dropdownvalueforcomms = '';
 
     return DefaultTabController(
-      length: 4,
+      length: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -100,21 +100,7 @@ class adminpageState extends State<adminpageScreen> {
                     Tab(
                       icon: Icon(Icons.person),
                     ),
-                    Tab(
-                      icon: Icon(
-                        Icons.remove_circle,
-                      ),
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.chat,
-                      ),
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.chat,
-                      ),
-                    ),
+                    
                   ],
                 ),
               ),
@@ -134,7 +120,7 @@ class adminpageState extends State<adminpageScreen> {
                           Row(
                             children: [
                               Text(
-                                "Users",
+                                "Üyeler",
                                 style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.bold,
@@ -173,11 +159,16 @@ class adminpageState extends State<adminpageScreen> {
                                   return data['user_id'] as String;
                                 }).toList();
 
+                                final userNames = snapshot.data!.docs.map((doc) {
+                                  final data = doc.data();
+                                  return data['user_name'] as String;
+                                }).toList();
+
                                 return DropdownSearch<String>(
                                   mode: Mode.BOTTOM_SHEET,
-                                  items: users,
+                                  items: userNames,
                                   dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Select User",
+                                    labelText: "Bir Üye Seçiniz",
                                     contentPadding:
                                         EdgeInsets.fromLTRB(12, 12, 0, 0),
                                     border: OutlineInputBorder(),
@@ -216,7 +207,7 @@ class adminpageState extends State<adminpageScreen> {
                                                             title:
                                                                 Text(newValue),
                                                             content: Text(
-                                                                'Which community do you want to set a moderator?'),
+                                                                'Moderatör Olarak Ata'),
                                                             actions: <Widget>[
                                                               FutureBuilder(
                                                                   future:
@@ -253,7 +244,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                         dropdownSearchDecoration:
                                                                             InputDecoration(
                                                                           labelText:
-                                                                              "Select Society",
+                                                                              "Topluluk Seçiniz",
                                                                           contentPadding: EdgeInsets.fromLTRB(
                                                                               12,
                                                                               12,
@@ -272,7 +263,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                           });
                                                                         },
                                                                         selectedItem:
-                                                                            "Please select a community",
+                                                                            "Lütfen bir topluluk seçiniz",
                                                                         showSearchBox:
                                                                             true,
                                                                         searchFieldProps:
@@ -287,7 +278,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                                 8,
                                                                                 0),
                                                                             labelText:
-                                                                                "Search a Society",
+                                                                                "Topluluk Ara",
                                                                           ),
                                                                         ),
                                                                         popupTitle:
@@ -364,7 +355,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                           context,
                                                                           'Cancel'),
                                                                   child: Text(
-                                                                      "Cancel")),
+                                                                      "İptal")),
                                                               TextButton(
                                                                 onPressed:
                                                                     () async =>
@@ -416,13 +407,13 @@ class adminpageState extends State<adminpageScreen> {
                                                                       context)
                                                                 },
                                                                 child: Text(
-                                                                    "Complete"),
+                                                                    "Tamamla"),
                                                               ),
                                                             ],
                                                           ),
                                                         ),
                                                 child: Text(
-                                                    "Set this user to society moderator")),
+                                                    "Kullanıcıyı moderatör olarak ata")),
                                             TextButton(
                                                 onPressed: () async => {
                                                       isModControlModCom =
@@ -580,14 +571,14 @@ class adminpageState extends State<adminpageScreen> {
                                       );
                                     });
                                   },
-                                  selectedItem: "Please select a user",
+                                  selectedItem: "Lütfen bir üye seçin",
                                   showSearchBox: true,
                                   searchFieldProps: TextFieldProps(
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       contentPadding:
                                           EdgeInsets.fromLTRB(12, 12, 8, 0),
-                                      labelText: "Find user",
+                                      labelText: "Üye Ara",
                                     ),
                                   ),
                                   popupTitle: Container(
@@ -601,7 +592,7 @@ class adminpageState extends State<adminpageScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'Users',
+                                        'Üyeler',
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
@@ -622,278 +613,10 @@ class adminpageState extends State<adminpageScreen> {
                       )),
 
                   // second tab bar view widget
-                  Container(
-                      alignment: Alignment.topCenter,
-                      child: Column(
-                        children: [
-                          Divider(),
-                          Row(
-                            children: [
-                              Text(
-                                "Users",
-                                style: TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
-                              ),
-                              /*Spacer(),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed(Routes.modpage2);
-                                },
-                                child: Text(
-                                  'Create New!',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ),*/
-                            ],
-                          ),
-                          Divider(),
-                          StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .snapshots(),
-                              builder: (context,
-                                  AsyncSnapshot<
-                                          QuerySnapshot<Map<String, dynamic>>>
-                                      snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                final users = snapshot.data!.docs.map((doc) {
-                                  final data = doc.data();
-                                  return data['user_id'] as String;
-                                }).toList();
-
-                                return DropdownSearch<String>(
-                                  mode: Mode.BOTTOM_SHEET,
-                                  items: users,
-                                  dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Select User",
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(12, 12, 0, 0),
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      dropdownvalue = newValue!;
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                          title: Text(newValue),
-                                          content: Text(
-                                              'What do you want to do with this user? '),
-                                          actions: <Widget>[
-                                            TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context, 'Cancel'),
-                                                child: Text("Cancel")),
-                                            //2.SAYFA TEXT BUTTON
-                                            //**********************
-                                            TextButton(
-                                                onPressed: () =>
-                                                    showDialog<String>(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          AlertDialog(
-                                                        title: Text(newValue),
-                                                        content: Text(
-                                                            'Which community do you want to set a moderator?'),
-                                                        actions: <Widget>[
-                                                          TextField(
-                                                            decoration:
-                                                                InputDecoration(
-                                                              border:
-                                                                  OutlineInputBorder(),
-                                                              hintText:
-                                                                  'Enter a Community Name',
-                                                            ),
-                                                            controller:
-                                                                comController,
-                                                          ),
-                                                          TextButton(
-                                                              onPressed: () =>
-                                                                  Navigator.pop(
-                                                                      context,
-                                                                      'Cancel'),
-                                                              child: Text(
-                                                                  "Cancel")),
-                                                          TextButton(
-                                                            onPressed:
-                                                                () async => {
-                                                              print(
-                                                                  comController
-                                                                      .text),
-                                                              userId = newValue,
-                                                              comId = await FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'communities')
-                                                                  .where('name',
-                                                                      isEqualTo:
-                                                                          comController
-                                                                              .text)
-                                                                  .get()
-                                                                  .then((value) => value
-                                                                      .docs[0]
-                                                                          ["id"]
-                                                                      .toString()),
-                                                              print(comId),
-                                                              print(userId),
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(userId)
-                                                                  .update({
-                                                                'mod_com': comId
-                                                              }),
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(userId)
-                                                                  .update({
-                                                                'user_type':
-                                                                    'mod'
-                                                              }),
-                                                              Navigator.pop(
-                                                                  context),
-                                                              Navigator.pop(
-                                                                  context)
-                                                            },
-                                                            child: Text(
-                                                                "Complete"),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                child: Text(
-                                                    "Set this user to society moderator")),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                                  },
-                                  selectedItem: "Please select a user",
-                                  showSearchBox: true,
-                                  searchFieldProps: TextFieldProps(
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      contentPadding:
-                                          EdgeInsets.fromLTRB(12, 12, 8, 0),
-                                      labelText: "Find user",
-                                    ),
-                                  ),
-                                  popupTitle: Container(
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColorDark,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Users',
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  popupShape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(24),
-                                      topRight: Radius.circular(24),
-                                    ),
-                                  ),
-                                );
-                              })
-                        ],
-                      )),
+                  
                   // third tab bar view widget
-                  Container(),
+
                   // four tab bar view widget
-                  Container(
-                    color: Colors.indigo.shade700,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n14/11/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "\nChairperson selection  will be held on 20 December.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Card(
-                              child: SizedBox(
-                                  height: 150.0,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "\n02/12/2021",
-                                        //textDirection: TextDirection.rtl,
-                                        //textAlign: TextAlign.end,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            "\nMember registration can be done by filling a form pusplished just now.",
-                                            style: TextStyle(fontSize: 16.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ))),
-                        ],
-                      ),
-                    ),
-                  ),
 
                   // third tab bar view widget
                 ],
