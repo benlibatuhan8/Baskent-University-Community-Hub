@@ -97,6 +97,7 @@ class HomeScreen extends StatelessWidget {
                       .collection("communities")
                       .doc(comms[index].get("name"))
                       .collection("events")
+                      .orderBy("date")
                       .snapshots(),
                   builder: (context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -122,17 +123,33 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: Container(
                             height: 350,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
+                            child: CarouselSlider.builder(
+                              options: CarouselOptions(
+                                height: 450.0,
+                                enlargeCenterPage: true,
+                                autoPlay: true,
+                                aspectRatio: 16 / 9,
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                enableInfiniteScroll: true,
+                                autoPlayAnimationDuration:
+                                    Duration(milliseconds: 2000),
+                                viewportFraction: 0.8,
+                              ),
                               itemCount: snapshot2.data!.docs.length,
-                              itemBuilder: (ctx, index) {
+                              itemBuilder: (BuildContext ctx, int index, _) {
                                 String formattedDate = DateFormat('yyyy-MM-dd')
                                     .format(events[index].get("date").toDate());
                                 String formattedTime = DateFormat('kk:mm')
                                     .format(events[index].get("date").toDate());
                                 print(formattedTime);
+                                Color cardColor;
+                                if (index % 2 == 1) {
+                                  cardColor = Colors.indigo.shade700;
+                                } else {
+                                  cardColor = Colors.indigo.shade300;
+                                }
                                 return Card(
-                                  color: Colors.indigo.shade500,
+                                  color: cardColor,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
