@@ -120,7 +120,7 @@ class adminpageState extends State<adminpageScreen> {
                           Row(
                             children: [
                               Text(
-                                "Üyeler",
+                                "Kullanıcılar",
                                 style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.bold,
@@ -156,19 +156,14 @@ class adminpageState extends State<adminpageScreen> {
                                 }
                                 final users = snapshot.data!.docs.map((doc) {
                                   final data = doc.data();
-                                  return data['user_id'] as String;
-                                }).toList();
-
-                                final userNames = snapshot.data!.docs.map((doc) {
-                                  final data = doc.data();
                                   return data['user_name'] as String;
                                 }).toList();
 
                                 return DropdownSearch<String>(
                                   mode: Mode.BOTTOM_SHEET,
-                                  items: userNames,
+                                  items: users,
                                   dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Bir Üye Seçiniz",
+                                    labelText: "Kullanıcı Seç",
                                     contentPadding:
                                         EdgeInsets.fromLTRB(12, 12, 0, 0),
                                     border: OutlineInputBorder(),
@@ -176,18 +171,17 @@ class adminpageState extends State<adminpageScreen> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownvalue = newValue!;
-                                      print(newValue);
-                                    });
-                                      
                                       String isModControlModCom;
                                       String userName;
                                       String comName;
                                       String isModControlUserType;
+                                      String ogrNo;
+                                      String ogrAd;
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) =>
                                             AlertDialog(
-                                          title: Text(newValue!),
+                                          title: Text(newValue),
                                           content: Text(
                                               'Bu kullanıcı hakkında ne yapmak istiyorsunuz?'),
                                           actions: <Widget>[
@@ -210,7 +204,7 @@ class adminpageState extends State<adminpageScreen> {
                                                             title:
                                                                 Text(newValue),
                                                             content: Text(
-                                                                'Moderatör Olarak Ata'),
+                                                                'Kullanıcıyı hangi topluluğun moderatörü yapmak istiyorsunuz?'),
                                                             actions: <Widget>[
                                                               FutureBuilder(
                                                                   future:
@@ -247,7 +241,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                         dropdownSearchDecoration:
                                                                             InputDecoration(
                                                                           labelText:
-                                                                              "Topluluk Seçiniz",
+                                                                              "Topluluk Seçin",
                                                                           contentPadding: EdgeInsets.fromLTRB(
                                                                               12,
                                                                               12,
@@ -263,11 +257,10 @@ class adminpageState extends State<adminpageScreen> {
                                                                               () {
                                                                             dropdownvalueforcomms =
                                                                                 newValue!;
-                                                                            print(newValue);
                                                                           });
                                                                         },
                                                                         selectedItem:
-                                                                            "Lütfen bir topluluk seçiniz",
+                                                                            "Lütfen bir topluluk seçin",
                                                                         showSearchBox:
                                                                             true,
                                                                         searchFieldProps:
@@ -282,7 +275,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                                 8,
                                                                                 0),
                                                                             labelText:
-                                                                                "Topluluk Ara",
+                                                                                "Topluluk Arayın",
                                                                           ),
                                                                         ),
                                                                         popupTitle:
@@ -385,12 +378,29 @@ class adminpageState extends State<adminpageScreen> {
                                                                           .toString()),
                                                                   print(comId),
                                                                   print(userId),
+                                                                  //*********************** */
+                                                                  ogrAd = await FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'users')
+                                                                      .where(
+                                                                          'user_name',
+                                                                          isEqualTo:
+                                                                              newValue)
+                                                                      .get()
+                                                                      .then((value) => value
+                                                                          .docs[
+                                                                              0]
+                                                                              [
+                                                                              "user_id"]
+                                                                          .toString()),
+                                                                  //************************ */
                                                                   FirebaseFirestore
                                                                       .instance
                                                                       .collection(
                                                                           'users')
                                                                       .doc(
-                                                                          userId)
+                                                                          ogrAd)
                                                                       .update({
                                                                     'mod_com':
                                                                         comId
@@ -400,7 +410,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                       .collection(
                                                                           'users')
                                                                       .doc(
-                                                                          userId)
+                                                                          ogrAd)
                                                                       .update({
                                                                     'user_type':
                                                                         'mod'
@@ -417,9 +427,24 @@ class adminpageState extends State<adminpageScreen> {
                                                           ),
                                                         ),
                                                 child: Text(
-                                                    "Kullanıcıyı moderatör olarak ata")),
+                                                    "Moderatör Yap")),
                                             TextButton(
                                                 onPressed: () async => {
+                                                  ogrAd = await FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'users')
+                                                                      .where(
+                                                                          'user_name',
+                                                                          isEqualTo:
+                                                                              newValue)
+                                                                      .get()
+                                                                      .then((value) => value
+                                                                          .docs[
+                                                                              0]
+                                                                              [
+                                                                              "user_id"]
+                                                                          .toString()),
                                                       isModControlModCom =
                                                           await FirebaseFirestore
                                                               .instance
@@ -427,7 +452,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                   'users')
                                                               .where('user_id',
                                                                   isEqualTo:
-                                                                      newValue)
+                                                                      ogrAd)
                                                               .get()
                                                               .then((value) => value
                                                                   .docs[0][
@@ -440,7 +465,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                   'users')
                                                               .where('user_id',
                                                                   isEqualTo:
-                                                                      newValue)
+                                                                      ogrAd)
                                                               .get()
                                                               .then((value) => value
                                                                   .docs[0][
@@ -455,7 +480,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                   'users')
                                                               .where('user_id',
                                                                   isEqualTo:
-                                                                      newValue)
+                                                                      ogrAd)
                                                               .get()
                                                               .then((value) => value
                                                                   .docs[0][
@@ -507,6 +532,21 @@ class adminpageState extends State<adminpageScreen> {
                                                                   onPressed:
                                                                       () async =>
                                                                           {
+                                                                            ogrAd = await FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'users')
+                                                                      .where(
+                                                                          'user_name',
+                                                                          isEqualTo:
+                                                                              newValue)
+                                                                      .get()
+                                                                      .then((value) => value
+                                                                          .docs[
+                                                                              0]
+                                                                              [
+                                                                              "user_id"]
+                                                                          .toString()),
                                                                     userId =
                                                                         newValue,
                                                                     FirebaseFirestore
@@ -514,17 +554,17 @@ class adminpageState extends State<adminpageScreen> {
                                                                         .collection(
                                                                             'users')
                                                                         .doc(
-                                                                            userId)
+                                                                            ogrAd)
                                                                         .update({
                                                                       'mod_com':
-                                                                          ''
+                                                                          ""
                                                                     }),
                                                                     FirebaseFirestore
                                                                         .instance
                                                                         .collection(
                                                                             'users')
                                                                         .doc(
-                                                                            userId)
+                                                                            ogrAd)
                                                                         .update({
                                                                       'user_type':
                                                                           'user'
@@ -573,16 +613,16 @@ class adminpageState extends State<adminpageScreen> {
                                           ],
                                         ),
                                       );
-                                    
+                                    });
                                   },
-                                  selectedItem: "Lütfen bir üye seçin",
+                                  selectedItem: "Lütfen bir kullanıcı seçin",
                                   showSearchBox: true,
                                   searchFieldProps: TextFieldProps(
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       contentPadding:
                                           EdgeInsets.fromLTRB(12, 12, 8, 0),
-                                      labelText: "Üye Ara",
+                                      labelText: "Kullanıcıları ara",
                                     ),
                                   ),
                                   popupTitle: Container(
@@ -596,7 +636,7 @@ class adminpageState extends State<adminpageScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'Üyeler',
+                                        'Kullanıcılar',
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
@@ -619,8 +659,9 @@ class adminpageState extends State<adminpageScreen> {
                   // second tab bar view widget
                   
                   // third tab bar view widget
-
+                  
                   // four tab bar view widget
+                  
 
                   // third tab bar view widget
                 ],
