@@ -163,8 +163,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                               TextFormField(
                                 decoration: const InputDecoration(
                                   filled: true,
-                                  hintText: 'Enter old password',
-                                  labelText: 'Old Password',
+                                  hintText: 'Eski Şifreyi Giriniz',
+                                  labelText: 'Eski Şifre',
                                 ),
                                 onChanged: (value) {
                                   oldpassword = value;
@@ -175,8 +175,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   filled: true,
-                                  hintText: 'Enter new password',
-                                  labelText: 'New Password',
+                                  hintText: 'Yeni Şifrenizi Giriniz',
+                                  labelText: 'Yeni Şifre',
                                 ),
                                 onChanged: (value) {
                                   newpassword = value;
@@ -187,8 +187,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   filled: true,
-                                  hintText: 'Enter new password again',
-                                  labelText: 'Confirm Password',
+                                  hintText: 'Yeni Şifrenizi Tekrar Giriniz',
+                                  labelText: 'Yeni Şifre Tekrar',
                                 ),
                                 onChanged: (value) {
                                   confirmnewpassword = value;
@@ -196,7 +196,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 maxLines: 1,
                               ),
                               ElevatedButton(
-                                  onPressed: _submit, child: Text("Submit"))
+                                  onPressed: _submit, child: Text("Onayla"))
                             ].expand(
                               (widget) => [
                                 widget,
