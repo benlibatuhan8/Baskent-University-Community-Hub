@@ -67,7 +67,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
       // key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          "Verification",
+          "Doğrulama",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,
@@ -79,7 +79,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'A verification email has been sent to ${user.email}.',
+              'Doğrulama maili şu adrese gönderildi: ${user.email}.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20),
             ),
@@ -111,7 +111,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 size: 32,
               ),
               label: Text(
-                'Resent Email',
+                'Tekrar Mail Gönder',
                 style: TextStyle(fontSize: 24),
               ),
               onPressed: () {
@@ -126,7 +126,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   );
                   AlertDialog alert = AlertDialog(
                     title: Text(
-                      "You can't resent email more than twice",
+                      "2 den fazla tekrar mail gönderemezsiniz",
                       textAlign: TextAlign.center,
                     ),
                     actions: [

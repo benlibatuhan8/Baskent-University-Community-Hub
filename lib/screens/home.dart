@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/screens/comlistpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -78,6 +76,16 @@ class HomeScreen extends StatelessWidget {
             );
           }
           final comms = snapshot.data!.docs;
+          if (comms.isEmpty) {
+            return Container(
+              margin: EdgeInsets.symmetric(vertical: 5),
+              child: Text(
+                "Etkinlikleri görebilmek için en az bir topluluğa kayıt olmanız gerekmektedir.",
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (ctx, index) => Column(

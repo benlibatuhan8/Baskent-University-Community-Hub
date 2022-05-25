@@ -87,14 +87,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: advisorMailController,
                                     validator: (value) {
                                       if (value?.isEmpty ?? true) {
-                                        return 'Username cant be empty';
+                                        return 'Kullanıcı ismi boş olamaz';
                                       }
                                       return null;
                                     },
                                     keyboardType: TextInputType.emailAddress,
                                     autofocus: false,
                                     decoration: InputDecoration(
-                                      hintText: 'Advisor Mail',
+                                      hintText: 'Danışman Maili',
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 10.0, 20.0, 10.0),
                                     ),
@@ -113,14 +113,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: usernameController,
                                     validator: (value) {
                                       if (value?.isEmpty ?? true) {
-                                        return 'Username cant be empty';
+                                        return 'Kullanıcı adı boş olamaz';
                                       }
                                       return null;
                                     },
                                     keyboardType: TextInputType.emailAddress,
                                     autofocus: false,
                                     decoration: InputDecoration(
-                                      hintText: 'Student ID',
+                                      hintText: 'Öğrenci No',
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 10.0, 20.0, 10.0),
                                     ),
@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   controller: passwordController,
                                   validator: (value) {
                                     if (value?.isEmpty ?? true) {
-                                      return 'Password cannot be empty';
+                                      return 'Şifre boş olamaz!';
                                     }
                                     return null;
                                   },
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   autofocus: false,
                                   obscureText: true,
                                   decoration: InputDecoration(
-                                    hintText: 'Password',
+                                    hintText: 'Şifre',
                                     contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 10.0, 20.0, 10.0),
                                   ),
@@ -154,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Are you an advisor ?"),
+                                  Text("Danışman mısınız?"),
                                   Switch.adaptive(
                                       value: _switchValue,
                                       onChanged: (_switchValue) => setState(() {
@@ -169,10 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.grey),
-                      ),
+                      
 
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 15.0),
@@ -224,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 24,
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text('Log in',
+                                : Text('Giriş yap',
                                     style: TextStyle(color: Colors.white)),
                           );
                         }),
@@ -239,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(24)))),
-                        child: Text('Register',
+                        child: Text('Kayıt Ol',
                             style: TextStyle(color: Colors.white)),
                       ),
 

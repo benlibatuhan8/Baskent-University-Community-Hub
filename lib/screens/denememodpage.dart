@@ -378,7 +378,57 @@ class denememodpageState extends State<denememodpageScreen> {
                                                           ),
                                                           Spacer(),
                                                           IconButton(
-                                                              onPressed: () {},
+                                                              onPressed: () async {
+                                                                String
+                                                                    selectedeventid =
+                                                                    announcements[index]
+                                                                        .get(
+                                                                            "description");
+                                                                print(
+                                                                    selectedeventid);
+
+                                                                String comId = await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'users')
+                                                                    .where(
+                                                                        'user_id',
+                                                                        isEqualTo:
+                                                                            currentUserID)
+                                                                    .get()
+                                                                    .then((value) => value
+                                                                        .docs[0]
+                                                                            [
+                                                                            "mod_com"]
+                                                                        .toString());
+                                                                String comName = await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'communities')
+                                                                    .where('id',
+                                                                        isEqualTo:
+                                                                            comId)
+                                                                    .get()
+                                                                    .then((value) => value
+                                                                        .docs[0]
+                                                                            [
+                                                                            "name"]
+                                                                        .toString());
+                                                                print(
+                                                                    "ComName: " +
+                                                                        comName);
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'communities')
+                                                                    .doc(
+                                                                        comName)
+                                                                    .collection(
+                                                                        "announcements")
+                                                                    .doc(
+                                                                        selectedeventid)
+                                                                    .delete();
+                                                              },
                                                               icon: Icon(
                                                                   Icons.delete))
                                                         ],

@@ -92,12 +92,46 @@ class ProfileScreenState extends State<ProfileScreen> {
                       scale: 10.0,
                     ),
                   ),
-                  Container(
-                      child: Text(currentUserID,
-                          style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Futura'))),
+                  FutureBuilder(
+                    future: FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(currentUserID)
+                        .get()
+                        .then((value) {
+                      print(value.get("user_name"));
+                      return value.get("user_name");
+                    }),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      List<Widget> children;
+                      if (snapshot.hasData) {
+                        return Container(
+                            child: Text(snapshot.data,
+                                style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Futura')));
+                      } else {
+                        children = const <Widget>[
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16),
+                            child: Text('Awaiting result...'),
+                          )
+                        ];
+                      }
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: children,
+                        ),
+                      );
+                    },
+                  ),
                 ])),
                 decoration: BoxDecoration(
                     color: PrimaryColor,

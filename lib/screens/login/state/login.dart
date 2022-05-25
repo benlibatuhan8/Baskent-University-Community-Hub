@@ -41,7 +41,7 @@ class LoginState {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         AlertDialog alert = AlertDialog(
-          title: Text("User not found"),
+          title: Text("Kullanıcı bulunamadı"),
           actions: [
             okButton,
           ],
@@ -54,7 +54,7 @@ class LoginState {
         );
       } else if (e.code == 'wrong-password') {
         AlertDialog alert = AlertDialog(
-          title: Text("Invalid password"),
+          title: Text("Yanlış Şifre"),
           actions: [okButton],
         );
         showDialog(
@@ -69,7 +69,7 @@ class LoginState {
 
   Future<void> loginAdvisor(Users user, BuildContext context) async {
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text("Tamam"),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -87,7 +87,7 @@ class LoginState {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         AlertDialog alert = AlertDialog(
-          title: Text("User not found"),
+          title: Text("Kullanıcı bulunamadı"),
           actions: [
             okButton,
           ],
@@ -100,7 +100,7 @@ class LoginState {
         );
       } else if (e.code == 'wrong-password') {
         AlertDialog alert = AlertDialog(
-          title: Text("Invalid password"),
+          title: Text("Yanlış Şifre"),
           actions: [okButton],
         );
         showDialog(

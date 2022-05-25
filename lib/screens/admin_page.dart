@@ -176,6 +176,9 @@ class adminpageState extends State<adminpageScreen> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownvalue = newValue!;
+                                      print(newValue);
+                                    });
+                                      
                                       String isModControlModCom;
                                       String userName;
                                       String comName;
@@ -184,7 +187,7 @@ class adminpageState extends State<adminpageScreen> {
                                         context: context,
                                         builder: (BuildContext context) =>
                                             AlertDialog(
-                                          title: Text(newValue),
+                                          title: Text(newValue!),
                                           content: Text(
                                               'Bu kullanıcı hakkında ne yapmak istiyorsunuz?'),
                                           actions: <Widget>[
@@ -260,6 +263,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                               () {
                                                                             dropdownvalueforcomms =
                                                                                 newValue!;
+                                                                            print(newValue);
                                                                           });
                                                                         },
                                                                         selectedItem:
@@ -513,7 +517,7 @@ class adminpageState extends State<adminpageScreen> {
                                                                             userId)
                                                                         .update({
                                                                       'mod_com':
-                                                                          ""
+                                                                          ''
                                                                     }),
                                                                     FirebaseFirestore
                                                                         .instance
@@ -569,7 +573,7 @@ class adminpageState extends State<adminpageScreen> {
                                           ],
                                         ),
                                       );
-                                    });
+                                    
                                   },
                                   selectedItem: "Lütfen bir üye seçin",
                                   showSearchBox: true,

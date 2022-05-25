@@ -72,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          "Register",
+          "Kayıt Ol",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,

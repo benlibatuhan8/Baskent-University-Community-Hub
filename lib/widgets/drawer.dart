@@ -100,18 +100,7 @@ class MyDrawer extends StatelessWidget {
               }
             },
           ),
-          ListTile(
-            title: const Text('Takvim'),
-            onTap: () {
-              if (ModalRoute.of(context)!.settings.name.toString() ==
-                  "/calendarscreen") {
-                Navigator.pop(context);
-              } else {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    Routes.calendarscreen, (route) => false);
-              }
-            },
-          ),
+          
           ListTile(
             title: const Text('Profil'),
             onTap: () {
@@ -123,18 +112,7 @@ class MyDrawer extends StatelessWidget {
               }
             },
           ),
-          ListTile(
-            title: const Text('Ayarlar'),
-            onTap: () {
-              if (ModalRoute.of(context)!.settings.name.toString() ==
-                  "/settings") {
-                Navigator.pop(context);
-              } else {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(Routes.settings, (route) => false);
-              }
-            },
-          ),
+          
           ListTile(
             title: const Text('Moderatör Ayarları'),
             onTap: () async {

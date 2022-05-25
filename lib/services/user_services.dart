@@ -110,11 +110,12 @@ class User_Service {
 
   Future<void> updateUser(String user_id, String password) {
     return _firestore
+        .collection('users')
         .doc(user_id)
         .update({
           'password': password,
         })
-        .then((value) => print("User Updated"))
+        .then((value) => ("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
 }
