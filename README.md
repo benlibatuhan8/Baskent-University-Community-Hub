@@ -1,6 +1,6 @@
 # comhub
 
-A new Flutter project.
+The limited communication between Başkent University communities and community members causes communities to fail to fulfill some of their goals. Some of the aims of student societies are to create a student mass, organize events and announce their activities to their members. With this project, it is aimed to provide more communication opportunities to the communities. The Başkent CommunityHUB application allows Başkent University students to become members of the community they want, to message each other, to access community events and announcements. Interactive communication will enable student clubs to be active. Flutter, Dart, Firebase and GitHub technologies were used on Başkent CommunityHUB.
 
 ## Getting Started
 
