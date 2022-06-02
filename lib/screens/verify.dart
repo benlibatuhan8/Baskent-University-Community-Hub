@@ -13,16 +13,14 @@ class VerifyScreen extends StatefulWidget {
   _VerifyScreenState createState() => _VerifyScreenState();
 }
 
+CollectionReference users = FirebaseFirestore.instance.collection('users');
+
 class _VerifyScreenState extends State<VerifyScreen> {
   final auth = FirebaseAuth.instance;
   late User user;
   late Timer timer, timer2;
   late bool canResendEmail = true;
-  final usersRef =
-      FirebaseFirestore.instance.collection('users').withConverter<Users>(
-            fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
+
   CountDownController controller = CountDownController();
 
   @override
@@ -66,10 +64,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      key: scaffoldKey,
+      // key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          "Verification",
+          "Doğrulama",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,
@@ -81,7 +79,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'A verification email has been sent to ${user.email}.',
+              'Doğrulama maili şu adrese gönderildi: ${user.email}.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20),
             ),
@@ -90,17 +88,16 @@ class _VerifyScreenState extends State<VerifyScreen> {
               height: MediaQuery.of(context).size.height / 2,
               isReverseAnimation: true,
               isReverse: true,
-              duration: 120,
+              duration: 300,
               fillColor: Colors.blueAccent[100]!,
               backgroundColor: Colors.blue[500],
               ringColor: Colors.grey[300]!,
               onComplete: () {
                 List<String>? result = user.email?.split("@");
                 String currentUserID = result![0];
-                usersRef.doc(currentUserID).delete().then((value) {
+                users.doc(currentUserID).delete().then((value) {
                   FirebaseAuth.instance.currentUser!.delete();
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
                 });
               },
             ),
@@ -114,7 +111,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 size: 32,
               ),
               label: Text(
-                'Resent Email',
+                'Tekrar Mail Gönder',
                 style: TextStyle(fontSize: 24),
               ),
               onPressed: () {
@@ -129,7 +126,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   );
                   AlertDialog alert = AlertDialog(
                     title: Text(
-                      "You can't resent email more than twice",
+                      "2 den fazla tekrar mail gönderemezsiniz",
                       textAlign: TextAlign.center,
                     ),
                     actions: [
@@ -156,8 +153,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     await user2.reload();
     if (user2.emailVerified) {
       timer.cancel();
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
     }
   }
 }

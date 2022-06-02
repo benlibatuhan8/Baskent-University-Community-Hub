@@ -1,10 +1,12 @@
+import 'package:comhub/screens/admin_page.dart';
+import 'package:comhub/screens/advisor_page.dart';
 import 'package:comhub/screens/calendar.dart';
 import 'package:comhub/screens/comlistpage.dart';
 import 'package:comhub/screens/compage.dart';
-import 'package:comhub/screens/modPage.dart';
+import 'package:comhub/screens/denememodpage.dart';
 import 'package:comhub/screens/modPageAnn.dart';
 import 'package:comhub/screens/modPageEvent.dart';
-import 'package:comhub/screens/MyComListPage.dart';
+import 'package:comhub/screens/mycomlistpage.dart';
 import 'package:comhub/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:comhub/screens/login/view/login.dart';
@@ -19,14 +21,15 @@ class Routes {
   static const settings = '/settings';
   static const profile = '/profile';
   static const compage = '/compage';
-  static const modpage1 = '/modpage1';
+  static const modpage1 = 'denememodpage';
   static const modpage2 = '/modpage2';
   static const modpage3 = '/modpage3';
   static const mycompage = '/mycompage';
   static const allcompage = '/allcompage';
   static const computersocietypage = '/computersocietypage';
   static const calendarscreen = '/calendarscreen';
-
+  static const adminpagescreen = ' /adminpagescreen';
+  static const advisorpagescreen = ' /advisorpagescreen';
 
   static MaterialPageRoute generateRoute(RouteSettings routeSettings,
       {Widget? root, String? routeName}) {
@@ -63,13 +66,13 @@ class Routes {
         return ComPageScreen();
 
       case modpage1:
-        return ModPageScreen();
+        return denememodpageScreen();
 
       case modpage2:
         return ModPageEventScreen();
 
       case modpage3:
-        return ModPageAnnScreen();
+        return ModPageAnnouncementScreen();
 
       case mycompage:
         return MyComListPageScreen();
@@ -79,10 +82,15 @@ class Routes {
 
       case computersocietypage:
         return ComPageScreen();
-      
+
       case calendarscreen:
         return CalendarScreen();
 
+      case adminpagescreen:
+        return adminpageScreen();
+
+      case advisorpagescreen:
+        return AdvisorPageScreen();
 
       default:
         return LoginScreen(); // 404 page

@@ -1,24 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:comhub/screens/home.dart';
-import 'package:comhub/screens/login/view/login.dart';
+import 'package:comhub/services/advisor_services.dart';
 import 'package:comhub/services/regexp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:comhub/routes/route.dart';
-import 'package:state_notifier/state_notifier.dart';
-import 'package:comhub/models/user.dart';
-import 'package:comhub/services/user_services.dart';
 
+import '../../../services/user_services.dart';
 import '../../verify.dart';
 
 class RegisterState {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  final usersRef =
-      FirebaseFirestore.instance.collection('users').withConverter<Users>(
-            fromFirestore: (snapshot, _) => Users.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
+
   static final provider =
       Provider.autoDispose<RegisterState>((ref) => RegisterState(ref.read));
   static final isButtonLoading = StateProvider.autoDispose<bool>((_) => false);
@@ -27,17 +21,18 @@ class RegisterState {
 
   RegisterState(this._reader);
 
-  Future<void> addUser(Users user, BuildContext context) async {
+  Future<void> addUser(String password, String user_id, String name,
+      BuildContext context, Uint8List im) async {
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text("Tamam"),
       onPressed: () {
         Navigator.of(context).pop();
       },
     );
-    if (!validateUserId(user.user_id)) {
+    if (!validateUserId(user_id)) {
       AlertDialog alert = AlertDialog(
         title: Text(
-          "Your student id must consist 8 digits",
+          "Öğrenci numaranız 8 karakterden oluşmalı. Lütfen tekrar deneyiniz.",
         ),
         actions: [
           okButton,
@@ -49,14 +44,14 @@ class RegisterState {
           return alert;
         },
       );
-    } else if (!validatePassword(user.password)) {
+    } else if (!validatePassword(password)) {
       AlertDialog alert = AlertDialog(
         title: Text(
-          "Your password needs to",
+          "Şifreniz:",
           style: TextStyle(color: Colors.red.shade400),
         ),
         content: Text(
-          "-Include both upper and lower characters \n-Be at least 8 characters long.",
+          "-bir büyük bir küçük harf içermeli \n-en az 8 karakter olmalı.",
           style: TextStyle(fontSize: 20),
         ),
         actions: [
@@ -71,44 +66,21 @@ class RegisterState {
       );
     } else {
       try {
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: user.user_id + "@mail.baskent.edu.tr",
-                password: user.password)
-            .then((kullanici) {
-          var newRef = users.doc(user.user_id);
-          return newRef.set({
-            'user_id': newRef.id,
-            'password': user.password,
-            'user_type': user.user_type,
-          });
-        });
+        await User_Service().signUpUser(user_id, password, name, im);
+
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => VerifyScreen()));
-        // showDialog(
-        //   context: context,
-        //   builder: (BuildContext context) {
-        //     return AlertDialog(
-        //         title: Text("Registiration Successful"),
-        //         actions: [
-        //           TextButton(
-        //               onPressed: () {
-        //                 Navigator.of(context).pop();
-        //               },
-        //               child: Text("OK"))
-        //         ]);
-        //   },
-        // );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
           Widget okButton = TextButton(
-            child: Text("OK"),
+            child: Text("Tamam"),
             onPressed: () {
               Navigator.of(context).pop();
             },
           );
           AlertDialog alert = AlertDialog(
-            title: Text("Student id already in use"),
+            title: Text(
+                "Öğrenci numarası daha önce kullanılmış. Lütfen tekrar deneyiniz."),
             actions: [
               okButton,
             ],
@@ -122,7 +94,7 @@ class RegisterState {
         }
       } catch (e) {
         Widget okButton = TextButton(
-          child: Text("OK"),
+          child: Text("Tamam"),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -140,6 +112,63 @@ class RegisterState {
           },
         );
       }
+    }
+  }
+
+  Future<void> addAdvisor(String password, String advisor_mail,
+      BuildContext context, String mod_com) async {
+    Widget okButton = TextButton(
+      child: Text("Tamam"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    try {
+      await Advisor_Service().signUpAdvisor(advisor_mail, password, mod_com);
+
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => VerifyScreen()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        Widget okButton = TextButton(
+          child: Text("Tamam"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+        AlertDialog alert = AlertDialog(
+          title: Text(
+              "Öğrenci numarası daha önce kullanılmış. Lütfen tekrar deneyiniz."),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      }
+    } catch (e) {
+      Widget okButton = TextButton(
+        child: Text("Tamam"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+      AlertDialog alert = AlertDialog(
+        title: Text(e.toString()),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
     }
   }
 }

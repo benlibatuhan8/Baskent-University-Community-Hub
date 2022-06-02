@@ -10,59 +10,45 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../routes/route.dart';
+import '../screens/comlistpage.dart';
 
-class User_Service {
+class Advisor_Service {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  Future<Users> getUserById(String? userId) async {
-    DocumentSnapshot documentSnapshot =
-        await _firestore.collection("users").doc(userId).get();
-    print(Users.fromSnap(documentSnapshot));
-    return Users.fromSnap(documentSnapshot);
-  }
+  // Future<Users> getUserById(String userId) async {
+  //   DocumentSnapshot documentSnapshot =
+  //       await _firestore.collection("users").doc(userId).get();
+  //   print(Users.fromSnap(documentSnapshot));
+  //   return Users.fromSnap(documentSnapshot);
+  // }asdasdfasdf
 
-  Future<void> signUpUser(
-      String user_id, String password, String name, Uint8List im) async {
+  Future<void> signUpAdvisor(
+      String advisor_mail, String password, String modcom) async {
+        
     await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-            email: user_id + "@mail.baskent.edu.tr", password: password)
+        .createUserWithEmailAndPassword(email: advisor_mail, password: password)
         .then((kullanici) async {
-      Reference ref = _storage.ref().child("usercards").child(user_id);
-      UploadTask uploadtask = ref.putData(im);
-      TaskSnapshot snap = await uploadtask;
-      String downloadUrl = await snap.ref.getDownloadURL();
       Users user = new Users(
         department: '',
         //following_comms: [],
-        user_name: name,
-        mod_com: '',
+        user_name: '',
+        mod_com: modcom,
         password: password,
-        card_url: downloadUrl,
-        user_type: "user",
-        user_id: user_id,
+        card_url: '',
+        user_type: "advisor",
+        user_id: advisor_mail,
       );
       await _firestore.collection("users").doc(user.user_id).set(user.toJson());
-      await _firestore
-          .collection('users')
-          .doc(user_id)
-          .collection('following_coms')
-          .doc(user.user_id)
-          .set(user.toJson());
-      await _firestore
-          .collection('users')
-          .doc(user_id)
-          .collection('following_coms')
-          .doc(user_id)
-          .delete();
     });
   }
 
-  Future<void> signInUser(
+  Future<void> signInAdvisor(
       Users user, Widget okButton, BuildContext context) async {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(
-            email: user.user_id + "@mail.baskent.edu.tr",
-            password: user.password)
+      email: user.user_id,
+      password: user.password,
+    )
         .then((kullanici) {
       if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
         if (DateTime.now().isAfter(FirebaseAuth
@@ -81,7 +67,7 @@ class User_Service {
               return alert;
             },
           );
-          var doc = FirebaseAuth.instance.currentUser!.email!.split("@")[0];
+          var doc = FirebaseAuth.instance.currentUser!.email!;
           FirebaseFirestore.instance.collection('users').doc(doc).delete();
           FirebaseAuth.instance.currentUser!.delete();
         } else {
@@ -109,12 +95,12 @@ class User_Service {
   }
 
   Future<void> updateUser(String user_id, String password) {
-    return FirebaseFirestore.instance.collection("users").doc(user_id).update({
-      'password': password,
-    }).then((value) {
-      print("User Updated");
-      print(FirebaseAuth.instance.currentUser!.email);
-      FirebaseAuth.instance.currentUser!.updatePassword(password);
-    }).catchError((error) => print("Failed to update user: $error"));
+    return _firestore
+        .doc(user_id)
+        .update({
+          'password': password,
+        })
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 }

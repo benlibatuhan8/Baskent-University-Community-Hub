@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comhub/models/user.dart';
+import 'package:comhub/services/advisor_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comhub/routes/route.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:comhub/services/user_services.dart';
+
+import '../../verify.dart';
 
 class LoginState {
   static final provider =
@@ -23,29 +27,7 @@ class LoginState {
       },
     );
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: user.user_id + "@mail.baskent.edu.tr",
-              password: user.password)
-          .then((kullanici) {
-        if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
-          AlertDialog alert = AlertDialog(
-            title: Text("You must verify your account"),
-            actions: [
-              okButton,
-            ],
-          );
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
-        } else {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.home, (route) => false);
-        }
-      });
+      await User_Service().signInUser(user, okButton, context);
       var currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
@@ -59,7 +41,7 @@ class LoginState {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         AlertDialog alert = AlertDialog(
-          title: Text("User not found"),
+          title: Text("Kullanıcı bulunamadı"),
           actions: [
             okButton,
           ],
@@ -72,7 +54,53 @@ class LoginState {
         );
       } else if (e.code == 'wrong-password') {
         AlertDialog alert = AlertDialog(
-          title: Text("Invalid password"),
+          title: Text("Yanlış Şifre"),
+          actions: [okButton],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      }
+    }
+  }
+
+  Future<void> loginAdvisor(Users user, BuildContext context) async {
+    Widget okButton = TextButton(
+      child: Text("Tamam"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    try {
+      await Advisor_Service().signInAdvisor(user, okButton, context);
+      var currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        print(currentUser.email);
+        User_Service user_service = new User_Service();
+        Users currUser = await user_service.getUserById(user.user_id);
+        print(currUser.user_type.toString());
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        AlertDialog alert = AlertDialog(
+          title: Text("Kullanıcı bulunamadı"),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } else if (e.code == 'wrong-password') {
+        AlertDialog alert = AlertDialog(
+          title: Text("Yanlış Şifre"),
           actions: [okButton],
         );
         showDialog(

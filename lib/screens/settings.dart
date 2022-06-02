@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,16 +14,20 @@ final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
 const PrimaryColor = Color(0xffECFEF3);
 const SecondaryColor = Color(0xffD9FDE8);
 
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+var currentUser = FirebaseAuth.instance.currentUser;
+List<String>? result = currentUser!.email?.split("@");
+String currentUserID = result![0];
+
 class SettingsScreen extends StatelessWidget {
   int val = -1;
-  bool _value = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          "Settings",
+          "Ayarlar",
           textAlign: TextAlign.center,
         ),
         elevation: 0.0,
@@ -43,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    title: Text("Oguzhan KELES"),
+                    title: Text(currentUserID),
                     onTap: () {},
                   ),
                   _buildDivider(),
@@ -62,21 +68,21 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   SwitchListTile(
-                    activeColor: Colors.purple,
+                    activeColor: Colors.indigo[800],
                     value: true,
                     title: Text("Event Notifications"),
                     onChanged: (val) {},
                   ),
                   _buildDivider(),
                   SwitchListTile(
-                    activeColor: Colors.purple,
+                    activeColor: Colors.indigo[800],
                     value: true,
                     title: Text("News Notifications"),
                     onChanged: (val) {},
                   ),
                   _buildDivider(),
                   SwitchListTile(
-                    activeColor: Colors.purple,
+                    activeColor: Colors.indigo[800],
                     value: true,
                     title: Text("Chat Notifications"),
                     onChanged: (val) {},
@@ -84,41 +90,6 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              "Language Settings",
-              style: TextStyle(fontSize: 17.0),
-            ),
-            Card(
-              margin: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 0,
-              ),
-              child: Column(
-                children: <Widget>[
-                  _buildDivider(),
-                  ListTile(
-                    title: Text("Türkçe"),
-                    leading: Radio(
-                      value: 1,
-                      groupValue: val,
-                      onChanged: (value) {},
-                      activeColor: Colors.green,
-                    ),
-                  ),
-                  _buildDivider(),
-                  ListTile(
-                    title: Text("English"),
-                    leading: Radio(
-                      value: 1,
-                      groupValue: val,
-                      onChanged: (value) {},
-                      activeColor: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
             const SizedBox(height: 60.0),
           ],
         ),
